@@ -1,17 +1,17 @@
 import React, { useState } from 'react'
 
 export default function App() {
-  const [activeOpen, setActiveOpen] = useState(true)   // активные — открыты по умолчанию
-  const [myOpen, setMyOpen] = useState(false)          // мои — закрыты
+  const [activeOpen, setActiveOpen] = useState(true)
+  const [myOpen, setMyOpen] = useState(false)
 
   const toggleActive = () => {
     setActiveOpen(!activeOpen)
-    setMyOpen(activeOpen)   // если активные открываются → мои закрываются, и наоборот
+    if (myOpen) setMyOpen(false)
   }
 
   const toggleMy = () => {
     setMyOpen(!myOpen)
-    setActiveOpen(myOpen)
+    if (activeOpen) setActiveOpen(false)
   }
 
   const hotTopics = [
@@ -35,7 +35,7 @@ export default function App() {
 
       {/* Верхний блок */}
       <div style={{ background: 'white', borderRadius: '20px', padding: '24px', textAlign: 'center', marginBottom: '30px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
-        <div style={{ fontSize: '80px', marginBottom: '16px' }}>🔥</div>
+        <img src="https://i.imgur.com/5z8kRjP.gif" alt="Гармония споров" style={{ width: '120px', marginBottom: '16px' }} />
         <div style={{ display: 'flex', alignItems: 'center', background: '#f0f0f0', borderRadius: '12px', padding: '10px 16px', marginBottom: '20px' }}>
           <span style={{ marginRight: '10px', fontSize: '20px' }}>🔍</span>
           <input type="text" placeholder="Поиск по обсуждениям" style={{ border: 'none', outline: 'none', width: '100%', background: 'transparent' }} />
@@ -45,12 +45,9 @@ export default function App() {
         </button>
       </div>
 
-      {/* Активные темы — открыты по умолчанию */}
+      {/* Активные темы */}
       <div style={{ marginBottom: '30px' }}>
-        <h2 
-          onClick={toggleActive} 
-          style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}
-        >
+        <h2 onClick={toggleActive} style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}>
           АКТИВНЫЕ ТЕМЫ: {activeOpen ? '▲' : '▼'}
         </h2>
         {activeOpen && (
@@ -66,12 +63,9 @@ export default function App() {
         )}
       </div>
 
-      {/* Мои темы — закрыты по умолчанию */}
+      {/* Мои темы */}
       <div>
-        <h2 
-          onClick={toggleMy} 
-          style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}
-        >
+        <h2 onClick={toggleMy} style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}>
           МОИ ТЕМЫ: {myOpen ? '▲' : '▼'}
         </h2>
         {myOpen && (
