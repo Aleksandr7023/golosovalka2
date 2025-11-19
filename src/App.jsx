@@ -1,4 +1,4 @@
-// src/App.jsx — v1.018
+// src/App.jsx — v1.019
 
 import React, { useState } from 'react'
 import CreatePollScreen from './CreatePollScreen.jsx'
@@ -10,12 +10,12 @@ export default function App() {
 
   const toggleActive = () => {
     setActiveOpen(prev => !prev)
-    if (myOpen && !activeOpen) setMyOpen(false)
+    if (myOpen && activeOpen) setMyOpen(false)
   }
 
   const toggleMy = () => {
     setMyOpen(prev => !prev)
-    if (activeOpen && !myOpen) setActiveOpen(false)
+    if (activeOpen && myOpen) setActiveOpen(false)
   }
 
   const hotTopics = [
@@ -33,13 +33,13 @@ export default function App() {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100vh' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v1.018
+        v1.019
       </div>
 
       {screen === 'main' && (
         <>
           <div style={{ textAlign: 'right', fontSize: '14px', color: '#555', marginBottom: '20px' }}>
-            🔷 78   🔶 135   ⭐ 7   ⚡ 53   💬 50
+            🔷 78 🔶 135 ⭐ 7 ⚡ 53 💬 50
           </div>
 
           <div style={{ background: 'white', borderRadius: '20px', padding: '24px', textAlign: 'center', marginBottom: '30px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
@@ -48,7 +48,7 @@ export default function App() {
               <span style={{ marginRight: '10px', fontSize: '20px' }}>🔍</span>
               <input type="text" placeholder="Поиск по обсуждениям" style={{ border: 'none', outline: 'none', width: '100%', background: 'transparent' }} />
             </div>
-            <button onClick={() => setScreencreate')} style={{ width: '100%', padding: '16px', background: '#4a90e2', color: 'white', border: 'none', borderRadius: '16px', fontSize: '18px', fontWeight: 'bold', boxShadow: '0 6px 16px RGBA(74,144,226,0.3)' }}>
+            <button onClick={() => setScreen('create')} style={{ width: '100%', padding: '16px', background: '#4a90e2', color: 'white', border: 'none', borderRadius: '16px', fontSize: '18px', fontWeight: 'bold', boxShadow: '0 6px 16px rgba(74,144,226,0.3)' }}>
               ЗАДАТЬ НОВЫЙ ОПРОС
             </button>
           </div>
