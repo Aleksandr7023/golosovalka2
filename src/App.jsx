@@ -10,7 +10,7 @@ export default function App() {
 
       {/* Верхний блок: картинка + поиск + кнопка */}
       <div style={{ background: 'white', borderRadius: '20px', padding: '24px', textAlign: 'center', marginBottom: '30px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
-        <img src="https://files.oaiusercontent.com/file-UW7lR1rGqP1b5Jq3fZ2kL9mX?se=2025-11-26T20%3A00%3A00Z&sp=r&sv=2024-08-04&sr=b&rscca=1&rssb=1&sig=3k%2B1wX9yZ8v7u6t5r4e3w2q1p0o9i8u7y6t5r4e3w2q1" alt="Жаркие споры" style={{ width: '120px', height: '120px', marginBottom: '20px' }} />
+        <img src="https://thumbs.dreamstime.com/b/%D0%BE%D0%B3%D0%BD%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9-%D0%BF%D1%83%D0%B7%D1%8B%D1%80%D1%8C-%D1%80%D0%B5%D1%87%D0%B8-%D0%B3%D0%BE%D1%80%D0%B8%D1%82-%D0%B8%D1%81%D0%BA%D1%80%D0%B0%D0%BC%D0%B8-%D0%BD%D0%B0-%D1%82%D0%B5%D0%BC%D0%BD%D0%BE%D0%BC-%D1%84%D0%BE%D0%BD%D0%B5-%D1%8F%D1%80%D0%BA%D0%BE-%D0%BE%D1%80%D0%B0%D0%BD%D0%B6%D0%B5%D0%B2%D1%8B%D0%BC-%D0%B8-363194551.jpg" alt="Жаркие споры" style={{ width: '120px', height: '120px', marginBottom: '20px' }} />
         <h1 style={{ margin: '0 0 20px 0', fontSize: '28px', fontWeight: 'bold' }}>Голосовалка</h1>
         <div style={{ display: 'flex', alignItems: 'center', background: '#f0f0f0', borderRadius: '12px', padding: '10px 16px', marginBottom: '20px' }}>
           <span style={{ marginRight: '10px', fontSize: '20px' }}>🔍</span>
