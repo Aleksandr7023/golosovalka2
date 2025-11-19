@@ -1,5 +1,3 @@
-// src/CreatePollScreen.jsx   —   Версия 2.001
-
 import React, { useState } from 'react'
 
 export default function CreatePollScreen({ onBack }) {
@@ -16,13 +14,13 @@ export default function CreatePollScreen({ onBack }) {
 
       <button onClick={onBack} style={{ marginBottom: '20px' }}>← Назад</button>
 
-      <h2 style={{ fontSize: '22px', marginBottom: '20px' }}>СОЗДАНИЕ НОВОГО ОПРОСА</h2>
+      <h2>СОЗДАНИЕ НОВОГО ОПРОСА</h2>
 
       <input
         placeholder="Вопрос"
         value={question}
         onChange={e => setQuestion(e.target.value)}
-        style={{ width: '100%', padding: '12px', fontSize: '18px', marginBottom: '20px', borderRadius: '12px', border: '1px solid #ccc' }}
+        style={{ width: '100%', padding: '12px', margin: '16px 0', fontSize: '18px' }}
       />
 
       {options.map((opt, i) => (
@@ -35,19 +33,15 @@ export default function CreatePollScreen({ onBack }) {
             newOpts[i] = e.target.value
             setOptions(newOpts)
           }}
-          style={{ width: '100%', padding: '12px', marginBottom: '12px', borderRadius: '12px', border: '1px solid #ccc' }}
+          style={{ width: '100%', padding: '12px', margin: '8px 0' }}
         />
       ))}
 
-      <button onClick={addOption} style={{ width: '100%', padding: '12px', background: '#4a90e2', color: 'white', borderRadius: '12px', marginBottom: '20px' }}>
+      <button onClick={addOption} style={{ margin: '16px 0' }}>
         + Добавить вариант
       </button>
 
-      <div style={{ background: '#e6f7ff', padding: '16px', borderRadius: '12px', marginBottom: '20px' }}>
-        Grok 4 предлагает: "Иногда нужна, но не во всех случаях"
-      </div>
-
-      <button style={{ width: '100%', padding: '16px', background: '#52c41a', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
+      <button style={{ width: '100%', padding: '16px', background: '#0066ff', color: 'white', fontSize: '18px' }}>
         ЗАПУСТИТЬ ОПРОС
       </button>
     </div>
