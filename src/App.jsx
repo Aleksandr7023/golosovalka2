@@ -1,30 +1,19 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 export default function App() {
+  const [activeOpen, setActiveOpen] = useState(false)
+  const [myOpen, setMyOpen] = useState(false)
+
   const hotTopics = [
-    "Ремонт в подъезде #47",
-    "Арта в 'Мир Танков'",
-    "Кофе без пластика",
-    "Новый парк в районе",
-    "Шум от соседей",
-    "Бесплатный Wi-Fi в метро",
-    "Цены на продукты",
-    "Экология города",
-    "Транспортные пробки",
-    "Безопасность на улицах"
+    "Ремонт в подъезде #47", "Арта в 'Мир Танков'", "Кофе без пластика",
+    "Новый парк в районе", "Шум от соседей", "Бесплатный Wi-Fi в метро",
+    "Цены на продукты", "Экология города", "Транспортные пробки", "Безопасность на улицах"
   ]
 
   const myTopics = [
-    "Мой вопрос про арту",
-    "Ремонт крыши",
-    "Кофе без пластика",
-    "Парк у дома",
-    "Тишина ночью",
-    "Wi-Fi в подъезде",
-    "Дороги в районе",
-    "Мусор на улице",
-    "Освещение двора",
-    "Детская площадка"
+    "Мой вопрос про арту", "Ремонт крыши", "Кофе без пластика",
+    "Парк у дома", "Тишина ночью", "Wi-Fi в подъезде",
+    "Дороги в районе", "Мусор на улице", "Освещение двора", "Детская площадка"
   ]
 
   return (
@@ -46,36 +35,50 @@ export default function App() {
         </button>
       </div>
 
-      {/* Активные темы */}
-      <div style={{ marginBottom: '40px' }}>
-        <h2 style={{ margin: '0 0 16px 0', fontSize: '20px', fontWeight: 'bold' }}>АКТИВНЫЕ ТЕМЫ:</h2>
-        <div style={{ height: '240px', overflowY: 'auto', paddingRight: '8px' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {hotTopics.map((topic, i) => (
-              <div key={i} style={{ background: 'white', padding: '18px', borderRadius: '14px', boxShadow: '0 4px 10px rgba(0,0,0,0.08)', fontSize: '17px' }}>
-                {topic}
-              </div>
-            ))}
+      {/* Активные темы — раскрываются по клику */}
+      <div style={{ marginBottom: '30px' }}>
+        <h2 
+          onClick={() => setActiveOpen(!activeOpen)} 
+          style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}
+        >
+          АКТИВНЫЕ ТЕМЫ: {activeOpen ? '▲' : '▼'}
+        </h2>
+        {activeOpen && (
+          <div style={{ height: '320px', overflowY: 'auto', paddingRight: '8px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {hotTopics.map((t, i) => (
+                <div key={i} style={{ background: 'white', padding: '16px', borderRadius: '14px', boxShadow: '0 4px 10px rgba(0,0,0,0.08)', fontSize: '17px' }}>
+                  {t}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
-      {/* Мои темы */}
+      {/* Мои темы — раскрываются по клику */}
       <div>
-        <h2 style={{ margin: '0 0 16px 0', fontSize: '20px', fontWeight: 'bold' }}>МОИ ТЕМЫ:</h2>
-        <div style={{ height: '240px', overflowY: 'auto', paddingRight: '8px' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {myTopics.length === 0 ? (
-              <div style={{ color: '#888' }}>(пока пусто)</div>
-            ) : (
-              myTopics.map((topic, i) => (
-                <div key={i} style={{ background: 'white', padding: '18px', borderRadius: '14px', boxShadow: '0 4px 10px rgba(0,0,0,0.08)', fontSize: '17px' }}>
-                  {topic}
-                </div>
-              ))
-            )}
+        <h2 
+          onClick={() => setMyOpen(!myOpen)} 
+          style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}
+        >
+          МОИ ТЕМЫ: {myOpen ? '▲' : '▼'}
+        </h2>
+        {myOpen && (
+          <div style={{ height: '320px', overflowY: 'auto', paddingRight: '8px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {myTopics.length === 0 ? (
+                <div style={{ color: '#888' }}>(пока пусто)</div>
+              ) : (
+                myTopics.map((t, i) => (
+                  <div key={i} style={{ background: 'white', padding: '16px', borderRadius: '14px', boxShadow: '0 4px 10px rgba(0,0,0,0.08)', fontSize: '17px' }}>
+                    {t}
+                  </div>
+                ))
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   )
