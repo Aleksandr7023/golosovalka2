@@ -1,16 +1,22 @@
-// src/App.jsx — v1.015 (темы возвращены)
+// src/App.jsx — v1.016
 
 import React, { useState } from 'react'
 import CreatePollScreen from './CreatePollScreen.jsx'
 
 export default function App() {
   const [screen, setScreen] = useState('main')
-
   const [activeOpen, setActiveOpen] = useState(true)
   const [myOpen, setMyOpen] = useState(false)
 
-  const toggleActive = () => setActiveOpen(!activeOpen)
-  const toggleMy = () => setMyOpen(!myOpen)
+  const toggleActive = () => {
+    setActiveOpen(true)
+    setMyOpen(false)
+  }
+
+  const toggleMy = () => {
+    setMyOpen(true)
+    setActiveOpen(false)
+  }
 
   const hotTopics = [
     "Ремонт в подъезде #47", "Арта в 'Мир Танков'", "Кофе без пластика",
@@ -27,7 +33,7 @@ export default function App() {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100vh' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v1.015
+        v1.016
       </div>
 
       {screen === 'main' && (
@@ -70,7 +76,7 @@ export default function App() {
             </h2>
             {myOpen && (
               <div style={{ height: '240px', overflowY: 'auto', paddingRight: '8px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '_span8px' }}>
                   {myTopics.length === 0 ? (
                     <div style={{ color: '#888' }}>(пока пусто)</div>
                   ) : (
