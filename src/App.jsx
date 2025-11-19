@@ -28,6 +28,11 @@ export default function App() {
 
   return (
     <div style={{ padding: '16px', fontFamily: 'system-ui, sans-serif', background: '#f8f9fa', minHeight: '100vh' }}>
+      {/* Версия */}
+      <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
+        v1.001
+      </div>
+
       {/* Строка достижений */}
       <div style={{ textAlign: 'right', fontSize: '14px', color: '#555', marginBottom: '20px' }}>
         🔷 78   🔶 135   ⭐ 7   ⚡ 53   💬 50
