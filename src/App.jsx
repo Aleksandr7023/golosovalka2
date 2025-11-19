@@ -1,7 +1,7 @@
 // src/App.jsx — v1.004 (кнопка открывает 2-й экран)
 
 import React, { useState } from 'react'
-import CreatePollScreen from './CreatePollScreen' // файл в src
+import CreatePollScreen from './CreatePollScreen.jsx' // файл в src
 
 export default function App() {
   const [screen, setScreen] = useState('main')
