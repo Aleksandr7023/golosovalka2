@@ -1,4 +1,4 @@
-// src/App.jsx — v1.021
+// src/App.jsx — v1.022
 
 import React, { useState } from 'react'
 import CreatePollScreen from './CreatePollScreen.jsx'
@@ -33,7 +33,7 @@ export default function App() {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100vh' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v1.021
+        v1.022
       </div>
 
       {screen === 'main' && (
@@ -51,6 +51,8 @@ export default function App() {
             <button onClick={() => setScreen('create')} style={{ width: '100%', padding: '16px', background: '#4a90e2', color: 'white', border: 'none', borderRadius: '16px', fontSize: '18px', fontWeight: 'bold', boxShadow: '0 6px 16px rgba(74,144,226,0.3)' }}>
               ЗАДАТЬ НОВЫЙ ОПРОС
             </button>
+          </div>
+
           </div>
 
           <div style={{ marginBottom: '30px' }}>
