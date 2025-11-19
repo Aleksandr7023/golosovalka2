@@ -1,10 +1,11 @@
-// src/App.jsx — v1.023 (исправлены все ошибки, кнопка работает)
+// src/App.jsx — v1.024 (накладывание версий исправлено)
 
 import React, { useState } from 'react'
 import CreatePollScreen from './CreatePollScreen.jsx'
 
 export default function App() {
   const [screen, setScreen] = useState('main')
+
   const [activeOpen, setActiveOpen] = useState(true)
   const [myOpen, setMyOpen] = useState(false)
 
@@ -31,17 +32,19 @@ export default function App() {
   ]
 
   return (
-    <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100vh' }}>
-      <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v1.023
-      </div>
-
-      {screen === 'main' && (
+    <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100vh', position: 'relative' }}>
+      {screen === 'main' ? (
         <>
+          <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
+            v1.024
+          </div>
+
+          {/* Строка достижений */}
           <div style={{ textAlign: 'right', fontSize: '14px', color: '#555', marginBottom: '20px' }}>
             🔷 78   🔶 135   ⭐ 7   ⚡ 53   💬 50
           </div>
 
+          {/* Верхний блок */}
           <div style={{ background: 'white', borderRadius: '20px', padding: '24px', textAlign: 'center', marginBottom: '30px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
             <img src="https://iili.io/fdku4vj.jpg" alt="Столкновение сил" style={{ width: '120px', marginBottom: '16px' }} />
             <div style={{ display: 'flex', alignItems: 'center', background: '#f0f0f0', borderRadius: '12px', padding: '10px 16px', marginBottom: '20px' }}>
@@ -53,6 +56,7 @@ export default function App() {
             </button>
           </div>
 
+          {/* Активные темы */}
           <div style={{ marginBottom: '30px' }}>
             <h2 onClick={toggleActive} style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}>
               АКТИВНЫЕ ТЕМЫ: {activeOpen ? '▲' : '▼'}
@@ -70,6 +74,7 @@ export default function App() {
             )}
           </div>
 
+          {/* Мои темы */}
           <div>
             <h2 onClick={toggleMy} style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}>
               МОИ ТЕМЫ: {myOpen ? '▲' : '▼'}
@@ -91,9 +96,9 @@ export default function App() {
             )}
           </div>
         </>
+      ) : (
+        <CreatePollScreen onBack={() => setScreen('main')} />
       )}
-
-      {screen === 'create' && <CreatePollScreen onBack={() => setScreen('main')} />}
     </div>
   )
 }
