@@ -1,4 +1,4 @@
-// src/App.jsx — v1.016
+// src/App.jsx — v1.017
 
 import React, { useState } from 'react'
 import CreatePollScreen from './CreatePollScreen.jsx'
@@ -33,7 +33,7 @@ export default function App() {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100vh' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v1.016
+        v1.017
       </div>
 
       {screen === 'main' && (
@@ -48,11 +48,12 @@ export default function App() {
               <span style={{ marginRight: '10px', fontSize: '20px' }}>🔍</span>
               <input type="text" placeholder="Поиск по обсуждениям" style={{ border: 'none', outline: 'none', width: '100%', background: 'transparent' }} />
             </div>
-            <button onClick={() => setScreen('create')} style={{ width: '100%', padding: '16px', background: '#4a90e2', color: 'white', border: 'none', borderRadius: '16px', fontSize: '18px', fontWeight: 'bold' }}>
+            <button onClick={() => setScreen('create')} style={{ width: '100%', padding: '16px', background: '#4a90e2', color: 'white', border: 'none', borderRadius: '16px', fontSize: '18px', fontWeight: 'bold', boxShadow: '0 6px 16px rgba(74,144,226,0.3)' }}>
               ЗАДАТЬ НОВЫЙ ОПРОС
             </button>
           </div>
 
+          {/* Активные темы */}
           <div style={{ marginBottom: '30px' }}>
             <h2 onClick={toggleActive} style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}>
               АКТИВНЫЕ ТЕМЫ: {activeOpen ? '▲' : '▼'}
@@ -70,13 +71,14 @@ export default function App() {
             )}
           </div>
 
+          {/* Мои темы — одинаковое оформление */}
           <div>
             <h2 onClick={toggleMy} style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}>
               МОИ ТЕМЫ: {myOpen ? '▲' : '▼'}
             </h2>
             {myOpen && (
               <div style={{ height: '240px', overflowY: 'auto', paddingRight: '8px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '_span8px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {myTopics.length === 0 ? (
                     <div style={{ color: '#888' }}>(пока пусто)</div>
                   ) : (
