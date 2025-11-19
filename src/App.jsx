@@ -1,7 +1,7 @@
-// src/App.jsx — v1.002
+// src/App.jsx — v1.003 (кнопка открывает 2-й экран)
 
 import React, { useState } from 'react'
-import CreatePollScreen from './CreatePollScreen'
+import CreatePollScreen from './CreatePollScreen' // файл CreatePollScreen.jsx в src
 
 export default function App() {
   const [screen, setScreen] = useState('main')
@@ -38,7 +38,7 @@ export default function App() {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100vh' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v1.002
+        v1.003
       </div>
 
       {/* Строка достижений */}
@@ -48,7 +48,7 @@ export default function App() {
 
       {/* Верхний блок */}
       <div style={{ background: 'white', borderRadius: '20px', padding: '24px', textAlign: 'center', marginBottom: '30px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
-        <img src="https://iili.io/fdku4vj.jpg" alt="Столкновение сил" style={{ width: '120px', marginBottom: '16px' }} />
+        <img src="https://iili.io/fdku4vj.jpg" alt="Столкновение сил" style={{ width: '120px', marginBottom: '16px }} />
         <div style={{ display: 'flex', alignItems: 'center', background: '#f0f0f0', borderRadius: '12px', padding: '10px 16px', marginBottom: '20px' }}>
           <span style={{ marginRight: '10px', fontSize: '20px' }}>🔍</span>
           <input type="text" placeholder="Поиск по обсуждениям" style={{ border: 'none', outline: 'none', width: '100%', background: 'transparent' }} />
