@@ -1,7 +1,7 @@
-// src/App.jsx — v1.004 (кнопка открывает 2-й экран)
+// src/App.jsx — v1.005 (кнопка открывает 2-й экран)
 
 import React, { useState } from 'react'
-import CreatePollScreen from './CreatePollScreen.jsx' // файл в src
+import CreatePollScreen from './CreatePollScreen.jsx'  // .jsx обязательно
 
 export default function App() {
   const [screen, setScreen] = useState('main')
@@ -38,7 +38,7 @@ export default function App() {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100vh' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v1.004
+        v1.005
       </div>
 
       <div style={{ textAlign: 'right', fontSize: '14px', color: '#555', marginBottom: '20px' }}>
