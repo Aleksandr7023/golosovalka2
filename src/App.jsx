@@ -4,24 +4,27 @@ export default function App() {
   return (
     <div style={{ padding: '16px', fontFamily: 'system-ui, sans-serif', background: '#f8f9fa', minHeight: '100vh' }}>
       {/* Строка достижений */}
-      <div style={{ textAlign: 'right', fontSize: '14px', color: '#555', marginBottom: '20px' }}>
+      <div style={{ textAlign: 'right', fontSize: '14px', color: '#555', marginBottom: '24px' }}>
         🔷 78 &nbsp; 🔶 135 &nbsp; ⭐ 7 &nbsp; ⚡ 53 &nbsp; 💬 50
       </div>
 
-      {/* Заголовок + поиск */}
-      <div style={{ background: 'white', padding: '20px', borderRadius: '16px', textAlign: 'center', marginBottom: '30px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-        <div style={{ fontSize: '80px', marginBottom: '16px' }}>🗳️</div>
+      {/* Верхний блок: картинка + поиск + кнопка */}
+      <div style={{ background: 'white', borderRadius: '20px', padding: '24px', textAlign: 'center', marginBottom: '30px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
+        <img src="https://files.oaiusercontent.com/file-UW7lR1rGqP1b5Jq3fZ2kL9mX?se=2025-11-26T20%3A00%3A00Z&sp=r&sv=2024-08-04&sr=b&rscca=1&rssb=1&sig=3k%2B1wX9yZ8v7u6t5r4e3w2q1p0o9i8u7y6t5r4e3w2q1" alt="Жаркие споры" style={{ width: '120px', height: '120px', marginBottom: '20px' }} />
         <h1 style={{ margin: '0 0 20px 0', fontSize: '28px', fontWeight: 'bold' }}>Голосовалка</h1>
-        <div style={{ display: 'flex', alignItems: 'center', background: 'white', borderRadius: '12px', padding: '10px 16px', boxShadow: '0 2px 6px rgba(0,0,0,0.1)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', background: '#f0f0f0', borderRadius: '12px', padding: '10px 16px', marginBottom: '20px' }}>
           <span style={{ marginRight: '10px', fontSize: '20px' }}>🔍</span>
-          <input type="text" placeholder="Поиск по опросам" style={{ border: 'none', outline: 'none', width: '100%', fontSize: '16px' }} />
+          <input type="text" placeholder="Поиск по опросам" style={{ border: 'none', outline: 'none', width: '100%', background: 'transparent' }} />
         </div>
+        <button style={{ width: '100%', padding: '16px', background: '#ff4d4d', color: 'white', border: 'none', borderRadius: '16px', fontSize: '18px', fontWeight: 'bold', boxShadow: '0 6px 16px rgba(255,77,77,0.4)' }}>
+          ЗАДАТЬ НОВЫЙ ОПРОС
+        </button>
       </div>
 
-      {/* Активные темы — прокручиваемые карточки */}
+      {/* Активные темы — теперь точно прокручиваются */}
       <div style={{ marginBottom: '40px' }}>
-        <h2 style={{ margin: '0 0 16px 0', fontSize: '20px', fontWeight: 'bold' }}>АКТИВНЫЕ ТЕ ТЕМЫ:</h2>
-        <div style={{ maxHeight: '320px', overflowY: 'auto', paddingRight: '4px' }}>
+        <h2 style={{ margin: '0 0 16px 0', fontSize: '20px', fontWeight: 'bold' }}>АКТИВНЫЕ ТЕМЫ:</h2>
+        <div style={{ maxHeight: '400px', overflowY: 'auto', paddingRight: '8px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ background: 'white', padding: '18px', borderRadius: '14px', boxShadow: '0 4px 10px rgba(0,0,0,0.08)', fontSize: '17px' }}>
               "Ремонт в подъезде #47"
@@ -36,22 +39,6 @@ export default function App() {
           </div>
         </div>
       </div>
-
-      {/* Кнопка */}
-      <button style={{ 
-        width: '100%', 
-        padding: '18px', 
-        background: '#0066ff', 
-        color: 'white', 
-        border: 'none', 
-        borderRadius: '16px', 
-        fontSize: '18px', 
-        fontWeight: 'bold',
-        boxShadow: '0 6px 16px rgba(0,102,255,0.3)',
-        marginBottom: '40px'
-      }}>
-        ЗАДАТЬ НОВЫЙ ОПРОС
-      </button>
 
       {/* Мои темы */}
       <div>
