@@ -1,8 +1,18 @@
 import React, { useState } from 'react'
 
 export default function App() {
-  const [activeOpen, setActiveOpen] = useState(false)
-  const [myOpen, setMyOpen] = useState(false)
+  const [activeOpen, setActiveOpen] = useState(true)   // активные — открыты по умолчанию
+  const [myOpen, setMyOpen] = useState(false)          // мои — закрыты
+
+  const toggleActive = () => {
+    setActiveOpen(!activeOpen)
+    setMyOpen(activeOpen)   // если активные открываются → мои закрываются, и наоборот
+  }
+
+  const toggleMy = () => {
+    setMyOpen(!myOpen)
+    setActiveOpen(myOpen)
+  }
 
   const hotTopics = [
     "Ремонт в подъезде #47", "Арта в 'Мир Танков'", "Кофе без пластика",
@@ -35,10 +45,10 @@ export default function App() {
         </button>
       </div>
 
-      {/* Активные темы — раскрываются, видно 3 темы */}
+      {/* Активные темы — открыты по умолчанию */}
       <div style={{ marginBottom: '30px' }}>
         <h2 
-          onClick={() => setActiveOpen(!activeOpen)} 
+          onClick={toggleActive} 
           style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}
         >
           АКТИВНЫЕ ТЕМЫ: {activeOpen ? '▲' : '▼'}
@@ -56,10 +66,10 @@ export default function App() {
         )}
       </div>
 
-      {/* Мои темы — раскрываются, видно 3 темы */}
+      {/* Мои темы — закрыты по умолчанию */}
       <div>
         <h2 
-          onClick={() => setMyOpen(!myOpen)} 
+          onClick={toggleMy} 
           style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}
         >
           МОИ ТЕМЫ: {myOpen ? '▲' : '▼'}
