@@ -1,4 +1,4 @@
-// src/App.jsx — v1.020
+// src/App.jsx — v1.021
 
 import React, { useState } from 'react'
 import CreatePollScreen from './CreatePollScreen.jsx'
@@ -33,17 +33,15 @@ export default function App() {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100vh' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v1.020
+        v1.021
       </div>
 
       {screen === 'main' && (
         <>
-          {/* Строка достижений */}
           <div style={{ textAlign: 'right', fontSize: '14px', color: '#555', marginBottom: '20px' }}>
             🔷 78   🔶 135   ⭐ 7   ⚡ 53   💬 50
           </div>
 
-          {/* Верхний блок */}
           <div style={{ background: 'white', borderRadius: '20px', padding: '24px', textAlign: 'center', marginBottom: '30px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
             <img src="https://iili.io/fdku4vj.jpg" alt="Столкновение сил" style={{ width: '120px', marginBottom: '16px' }} />
             <div style={{ display: 'flex', alignItems: 'center', background: '#f0f0f0', borderRadius: '12px', padding: '10px 16px', marginBottom: '20px' }}>
@@ -55,7 +53,6 @@ export default function App() {
             </button>
           </div>
 
-          {/* Активные темы */}
           <div style={{ marginBottom: '30px' }}>
             <h2 onClick={toggleActive} style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}>
               АКТИВНЫЕ ТЕМЫ: {activeOpen ? '▲' : '▼'}
@@ -73,7 +70,6 @@ export default function App() {
             )}
           </div>
 
-          {/* Мои темы */}
           <div>
             <h2 onClick={toggleMy} style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}>
               МОИ ТЕМЫ: {myOpen ? '▲' : '▼'}
@@ -82,7 +78,7 @@ export default function App() {
               <div style={{ height: '240px', overflowY: 'auto', paddingRight: '8px' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {myTopics.length === 0 ? (
-                    <  (пока пусто) />
+                    <div style={{ color: '#888' }}>(пока пусто)</div>
                   ) : (
                     myTopics.map((t, i) => (
                       <div key={i} style={{ background: 'white', padding: '16px', borderRadius: '14px', boxShadow: '0 4px 10px rgba(0,0,0,0.08)', fontSize: '17px' }}>
