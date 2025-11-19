@@ -1,7 +1,7 @@
 // src/App.jsx — v1.003 (кнопка открывает 2-й экран)
 
 import React, { useState } from 'react'
-import CreatePollScreen from './CreatePollScreen' // файл CreatePollScreen.jsx в src
+import CreatePollScreen from './CreatePollScreen'
 
 export default function App() {
   const [screen, setScreen] = useState('main')
@@ -41,14 +41,12 @@ export default function App() {
         v1.003
       </div>
 
-      {/* Строка достижений */}
       <div style={{ textAlign: 'right', fontSize: '14px', color: '#555', marginBottom: '20px' }}>
         🔷 78   🔶 135   ⭐ 7   ⚡ 53   💬 50
       </div>
 
-      {/* Верхний блок */}
       <div style={{ background: 'white', borderRadius: '20px', padding: '24px', textAlign: 'center', marginBottom: '30px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
-        <img src="https://iili.io/fdku4vj.jpg" alt="Столкновение сил" style={{ width: '120px', marginBottom: '16px }} />
+        <img src="https://iili.io/fdku4vj.jpg" alt="Столкновение сил" style={{ width: '120px', marginBottom: '16px' }} />
         <div style={{ display: 'flex', alignItems: 'center', background: '#f0f0f0', borderRadius: '12px', padding: '10px 16px', marginBottom: '20px' }}>
           <span style={{ marginRight: '10px', fontSize: '20px' }}>🔍</span>
           <input type="text" placeholder="Поиск по обсуждениям" style={{ border: 'none', outline: 'none', width: '100%', background: 'transparent' }} />
@@ -58,7 +56,6 @@ export default function App() {
         </button>
       </div>
 
-      {/* Активные темы */}
       <div style={{ marginBottom: '30px' }}>
         <h2 onClick={toggleActive} style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}>
           АКТИВНЫЕ ТЕМЫ: {activeOpen ? '▲' : '▼'}
@@ -76,7 +73,6 @@ export default function App() {
         )}
       </div>
 
-      {/* Мои темы */}
       <div>
         <h2 onClick={toggleMy} style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}>
           МОИ ТЕМЫ: {myOpen ? '▲' : '▼'}
