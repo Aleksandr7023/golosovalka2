@@ -35,7 +35,7 @@ export default function App() {
 
       {/* Верхний блок */}
       <div style={{ background: 'white', borderRadius: '20px', padding: '24px', textAlign: 'center', marginBottom: '30px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
-        <img src="https://iili.io/fdkBCa2.jpg" alt="Гармония споров" style={{ width: '120px', marginBottom: '16px' }} />
+        <img src="https://iili.io/fdku4vj.jpg" alt="Гармония споров" style={{ width: '120px', marginBottom: '16px' }} />
         <div style={{ display: 'flex', alignItems: 'center', background: '#f0f0f0', borderRadius: '12px', padding: '10px 16px', marginBottom: '20px' }}>
           <span style={{ marginRight: '10px', fontSize: '20px' }}>🔍</span>
           <input type="text" placeholder="Поиск по обсуждениям" style={{ border: 'none', outline: 'none', width: '100%', background: 'transparent' }} />
