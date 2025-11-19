@@ -38,7 +38,7 @@ export default function App() {
         <div style={{ fontSize: '80px', marginBottom: '16px' }}>🔥</div>
         <div style={{ display: 'flex', alignItems: 'center', background: '#f0f0f0', borderRadius: '12px', padding: '10px 16px', marginBottom: '20px' }}>
           <span style={{ marginRight: '10px', fontSize: '20px' }}>🔍</span>
-          <input type="text" placeholder="Поиск по опросам" style={{ border: 'none', outline: 'none', width: '100%', background: 'transparent' }} />
+          <input type="text" placeholder="Поиск по обсуждениям" style={{ border: 'none', outline: 'none', width: '100%', background: 'transparent' }} />
         </div>
         <button style={{ width: '100%', padding: '16px', background: '#4a90e2', color: 'white', border: 'none', borderRadius: '16px', fontSize: '18px', fontWeight: 'bold', boxShadow: '0 6px 16px rgba(74,144,226,0.3)' }}>
           ЗАДАТЬ НОВЫЙ ОПРОС
