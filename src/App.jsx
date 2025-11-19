@@ -35,7 +35,7 @@ export default function App() {
         </button>
       </div>
 
-      {/* Активные темы — раскрываются по клику */}
+      {/* Активные темы — раскрываются, видно 3 темы */}
       <div style={{ marginBottom: '30px' }}>
         <h2 
           onClick={() => setActiveOpen(!activeOpen)} 
@@ -44,7 +44,7 @@ export default function App() {
           АКТИВНЫЕ ТЕМЫ: {activeOpen ? '▲' : '▼'}
         </h2>
         {activeOpen && (
-          <div style={{ height: '320px', overflowY: 'auto', paddingRight: '8px' }}>
+          <div style={{ height: '240px', overflowY: 'auto', paddingRight: '8px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {hotTopics.map((t, i) => (
                 <div key={i} style={{ background: 'white', padding: '16px', borderRadius: '14px', boxShadow: '0 4px 10px rgba(0,0,0,0.08)', fontSize: '17px' }}>
@@ -56,7 +56,7 @@ export default function App() {
         )}
       </div>
 
-      {/* Мои темы — раскрываются по клику */}
+      {/* Мои темы — раскрываются, видно 3 темы */}
       <div>
         <h2 
           onClick={() => setMyOpen(!myOpen)} 
@@ -65,7 +65,7 @@ export default function App() {
           МОИ ТЕМЫ: {myOpen ? '▲' : '▼'}
         </h2>
         {myOpen && (
-          <div style={{ height: '320px', overflowY: 'auto', paddingRight: '8px' }}>
+          <div style={{ height: '240px', overflowY: 'auto', paddingRight: '8px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {myTopics.length === 0 ? (
                 <div style={{ color: '#888' }}>(пока пусто)</div>
