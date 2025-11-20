@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.020
+// src/CreatePollScreen.jsx — v2.021
 
 import React, { useState } from 'react'
 
@@ -7,35 +7,21 @@ export default function CreatePollScreen({ onBack }) {
   const [options, setOptions] = useState([])
   const [attachments, setAttachments] = useState([])
   const [error, setError] = useState('')
+  const [viewerFile, setViewerFile] = useState(null) // файл для просмотра
 
   const handleFiles = (e) => {
     const files = Array.from(e.target.files)
     const valid = files.filter(f => f.size <= 50 * 1024 * 1024)
     const invalid = files.filter(f => f.size > 50 * 1024 * 1024)
 
-    if (invalid.length > 0) {
-      setError('Файлы > 50 МБ запрещены')
-    } else {
-      setError('')
-    }
+    if (invalid.length > 0) setError('Файлы > 50 МБ запрещены')
+    else setError('')
 
-    if (attachments.length + valid.length > 3) {
-      setError('Максимум 3 вложения')
-    } else {
-      setAttachments([...attachments, ...valid].slice(0, 3))
-    }
+    if (attachments.length + valid.length > 3) setError('Максимум 3 вложения')
+    else setAttachments([...attachments, ...valid].slice(0, 3))
   }
 
   const removeAttachment = (i) => setAttachments(attachments.filter((_, idx) => idx !== i))
-
-  const openFile = (file) => {
-    const url = URL.createObjectURL(file)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = file.name
-    a.click()
-    URL.revokeObjectURL(url)
-  }
 
   const addOption = () => setOptions([...options, ''])
   const removeOption = (i) => setOptions(options.filter((_, idx) => idx !== i))
@@ -48,7 +34,7 @@ export default function CreatePollScreen({ onBack }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.020
+        v2.021
       </div>
 
       <button onClick={onBack} style={{ marginBottom: '20px' }}>← Назад</button>
@@ -77,6 +63,7 @@ export default function CreatePollScreen({ onBack }) {
         }}
       />
 
+      {/* Скрепка + превью */}
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
         <label>
           <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
@@ -87,7 +74,7 @@ export default function CreatePollScreen({ onBack }) {
           <div style={{ display: 'flex', gap: '8px', marginLeft: '12px' }}>
             {attachments.map((file, i) => (
               <div key={i} style={{ position: 'relative' }}>
-                <div onClick={() => openFile(file)} style={{ cursor: 'pointer' }}>
+                <div onClick={() => setViewerFile(file)} style={{ cursor: 'pointer' }}>
                   {file.type.startsWith('image/') ? (
                     <img src={URL.createObjectURL(file)} alt="" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '8px' }} />
                   ) : file.type.startsWith('video/') ? (
@@ -109,6 +96,23 @@ export default function CreatePollScreen({ onBack }) {
 
       {error && <div style={{ color: '#ff4d4d', marginBottom: '12px', fontSize: '14px' }}>{error}</div>}
 
+      {/* Просмотрщик файла */}
+      {viewerFile && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', zIndex: 1000, display: 'flex', flexDirection: 'column' }}>
+          <button onClick={() => setViewerFile(null)} style={{ alignSelf: 'flex-end', background: 'none', border: 'none', color: 'white', fontSize: '32px', padding: '16px' }}>×</button>
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+            {viewerFile.type.startsWith('image/') ? (
+              <img src={URL.createObjectURL(viewerFile)} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+            ) : viewerFile.type.startsWith('video/') ? (
+              <video src={URL.createObjectURL(viewerFile)} controls autoPlay style={{ maxWidth: '100%', maxHeight: '100%' }} />
+            ) : (
+              <div style={{ color: 'white', fontSize: '20px' }}>Файл: {viewerFile.name} (скачать)</div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Варианты */}
       <div style={{ flex: 1, overflowY: 'auto', maxHeight: '190px', marginBottom: '20px', paddingRight: '8px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
@@ -119,7 +123,7 @@ export default function CreatePollScreen({ onBack }) {
               style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '1px solid #ccc' }}
             />
             <button onClick={() => removeOption(i)} style={{ marginLeft: '8px', background: '#ff4d4d', color: 'white', borderRadius: '8px', padding: '0 12px' }}>
-              ✗
+              ✕
             </button>
           </div>
         ))}
