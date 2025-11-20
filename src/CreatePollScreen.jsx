@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.002
+// src/CreatePollScreen.jsx — v2.003
 
 import React, { useState } from 'react'
 
@@ -17,17 +17,15 @@ export default function CreatePollScreen({ onBack }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100vh' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.002
+        v2.003
       </div>
 
       <button onClick={onBack} style={{ marginBottom: '20px' }}>← Назад</button>
 
-      <h2 style={{ fontSize: '22px', marginBottom: '20px' }}>СОЗДАНИЕ НОВОГО ОПРОСА</h2>
+      <h2 style={{ fontSize: '22px', marginBottom: '20px' }}>НОВЫЙ ОПРОС</h2>
 
-      {/* Тема */}
       <input placeholder="Тема опроса" style={{ width: '100%', padding: '12px', fontSize: '18px', marginBottom: '20px', borderRadius: '12px', border: '1px solid #ccc' }} />
 
-      {/* Вопрос */}
       <input
         placeholder="Вопрос"
         value={question}
@@ -35,8 +33,8 @@ export default function CreatePollScreen({ onBack }) {
         style={{ width: '100%', padding: '12px', fontSize: '18px', marginBottom: '20px', borderRadius: '12px', border: '1px solid #ccc' }}
       />
 
-      {/* Варианты */}
-      <div style={{ marginBottom: '20px' }}>
+      {/* Прокручиваемые варианты */}
+      <div style={{ flex: 1, overflowY: 'auto', maxHeight: 'calc(100vh - 380px)', marginBottom: '20px', paddingRight: '8px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
             <input
@@ -52,7 +50,7 @@ export default function CreatePollScreen({ onBack }) {
         ))}
       </div>
 
-      <button onClick={addOption} style={{ width: '100%', padding: '12px', background: '#4a90e2', color: 'white', borderRadius: '12px', marginBottom: '20px' }}>
+      <button onClick={addOption} style={{ width: '100%', padding: '12px', background: '#4a90e2', color: 'white', borderRadius: '12px', marginBottom: '12px' }}>
         + Добавить вариант
       </button>
 
