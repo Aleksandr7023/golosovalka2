@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.015
+// src/CreatePollScreen.jsx — v2.016
 
 import React, { useState } from 'react'
 
@@ -6,6 +6,27 @@ export default function CreatePollScreen({ onBack }) {
   const [question, setQuestion] = useState('')
   const [options, setOptions] = useState([])
   const [attachments, setAttachments] = useState([])
+  const [error, setError] = useState('')
+
+  const handleFiles = (e) => {
+    const files = Array.from(e.target.files)
+    const validFiles = files.filter(f => f.size <= 50 * 1024 * 1024)
+    const invalid = files.filter(f => f.size > 50 * 1024 * 1024)
+
+    if (invalid.length > 0) {
+      setError('Файлы больше 50 МБ запрещены')
+    } else {
+      setError('')
+    }
+
+    if (attachments.length + validFiles.length > 3) {
+      setError('Максимум 3 вложения')
+    } else {
+      setAttachments([...attachments, ...validFiles].slice(0, 3))
+    }
+  }
+
+  const removeAttachment = (i) => setAttachments(attachments.filter((_, idx) => idx !== i))
 
   const addOption = () => setOptions([...options, ''])
   const removeOption = (i) => setOptions(options.filter((_, idx) => idx !== i))
@@ -15,19 +36,13 @@ export default function CreatePollScreen({ onBack }) {
     setOptions(newOpts)
   }
 
-  const handleFiles = (e) => {
-    const files = Array.from(e.target.files)
-    setAttachments([...attachments, ...files])
-  }
-
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.015
+        v2.016
       </div>
 
       <button onClick={onBack} style={{ marginBottom: '20px' }}>← Назад</button>
-
       <h2 style={{ fontSize: '22px', marginBottom: '20px' }}>НОВЫЙ ОПРОС</h2>
 
       <input placeholder="Тема опроса" style={{ width: '100%', padding: '12px', fontSize: '18px', marginBottom: '20px', borderRadius: '12px', border: '1px solid #ccc' }} />
@@ -52,41 +67,36 @@ export default function CreatePollScreen({ onBack }) {
         }}
       />
 
-      {/* Кнопка вложения */}
-      <label style={{ display: 'block', marginBottom: '20px' }}>
-        <input
-          type="file"
-          multiple
-          accept="image/*,video/*,.pdf,.doc,.docx,.txt"
-          onChange={handleFiles}
-          style={{ display: 'none' }}
-        />
-        <div style={{ padding: '12px', background: '#e0e0e0', borderRadius: '12px', textAlign: 'center', cursor: 'pointer' }}>
-          📎 Прикрепить фото, видео, документ...
-        </div>
-      </label>
+      {/* Скрепка + превью справа */}
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+        <label>
+          <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
+          <div style={{ fontSize: '28px', cursor: 'pointer' }}>📎</div>
+        </label>
 
-      {/* Превью вложений */}
-      {attachments.length > 0 && (
-        <div style={{ marginBottom: '20px', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-          {attachments.map((file, i) => (
-            <div key={i} style={{ position: 'relative' }}>
-              {file.type.startsWith('image/') ? (
-                <img src={URL.createObjectURL(file)} alt="preview" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px' }} />
-              ) : file.type.startsWith('video/') ? (
-                <video src={URL.createObjectURL(file)} controls style={{ width: '80px', height: '80px', borderRadius: '8px' }} />
-              ) : (
-                <div style={{ width: '80px', height: '80px', background: '#ddd', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', textAlign: 'center' }}>
-                  {file.name.slice(0, 10)}...
-                </div>
-              )}
-              <button onClick={() => setAttachments(attachments.filter((_, idx) => idx !== i))} style={{ position: 'absolute', top: '-8px', right: '-8px', background: '#ff4d4d', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', fontSize: '12px' }}>
-                ×
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
+        {attachments.length > 0 && (
+          <div style={{ display: 'flex', gap: '8px', marginLeft: '12px' }}>
+            {attachments.map((file, i) => (
+              <div key={i} style={{ position: 'relative' }}>
+                {file.type.startsWith('image/') ? (
+                  <img src={URL.createObjectURL(file)} alt="" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '8px' }} />
+                ) : file.type.startsWith('video/') ? (
+                  <div style={{ width: '40px', height: '40px', background: '#000', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>▶</div>
+                ) : (
+                  <div style={{ width: '40px', height: '40px', background: '#ddd', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>
+                    DOC
+                  </div>
+                )}
+                <button onClick={() => removeAttachment(i)} style={{ position: 'absolute', top: '-6px', right: '-6px', background: '#ff4d4d', color: 'white', border: 'none', borderRadius: '50%', width: '16px', height: '16px', fontSize: '10px' }}>
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {error && <div style={{ color: '#ff4d4d', marginBottom: '12px', fontSize: '14px' }}>{error}</div>}
 
       {/* Варианты */}
       <div style={{ flex: 1, overflowY: 'auto', maxHeight: '190px', marginBottom: '20px', paddingRight: '8px' }}>
