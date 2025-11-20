@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.016
+// src/CreatePollScreen.jsx — v2.017
 
 import React, { useState } from 'react'
 
@@ -13,11 +13,8 @@ export default function CreatePollScreen({ onBack }) {
     const validFiles = files.filter(f => f.size <= 50 * 1024 * 1024)
     const invalid = files.filter(f => f.size > 50 * 1024 * 1024)
 
-    if (invalid.length > 0) {
-      setError('Файлы больше 50 МБ запрещены')
-    } else {
-      setError('')
-    }
+    if (invalid.length > 0) setError('Файлы больше 50 МБ запрещены')
+    else setError('')
 
     if (attachments.length + validFiles.length > 3) {
       setError('Максимум 3 вложения')
@@ -39,10 +36,11 @@ export default function CreatePollScreen({ onBack }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.016
+        v2.017
       </div>
 
       <button onClick={onBack} style={{ marginBottom: '20px' }}>← Назад</button>
+
       <h2 style={{ fontSize: '22px', marginBottom: '20px' }}>НОВЫЙ ОПРОС</h2>
 
       <input placeholder="Тема опроса" style={{ width: '100%', padding: '12px', fontSize: '18px', marginBottom: '20px', borderRadius: '12px', border: '1px solid #ccc' }} />
@@ -71,7 +69,7 @@ export default function CreatePollScreen({ onBack }) {
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
         <label>
           <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
-          <div style={{ fontSize: '28px', cursor: 'pointer' }}>📎</div>
+          <div style={{ fontSize: '32px', cursor: 'pointer' }}>📎</div>
         </label>
 
         {attachments.length > 0 && (
