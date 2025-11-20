@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.033
+// src/CreatePollScreen.jsx — v2.035 (вложения не сохраняются, черновик работает)
 
 import React, { useState, useEffect } from 'react'
 
@@ -11,14 +11,14 @@ export default function CreatePollScreen({ onBack, draft }) {
   const [viewerFile, setViewerFile] = useState(null)
   const [draftId, setDraftId] = useState(null)
 
-  // Загрузка черновика
+  // Загрузка черновика (вложения не восстанавливаются)
   useEffect(() => {
     if (draft) {
       setTheme(draft.theme || '')
       setQuestion(draft.question || '')
       setOptions(draft.options || [])
-      setAttachments(draft.attachments || [])
       setDraftId(draft.id)
+      // attachments остаются пустыми — файлы не сохраняются в localStorage
     }
   }, [draft])
 
@@ -27,7 +27,7 @@ export default function CreatePollScreen({ onBack, draft }) {
       theme,
       question,
       options: options.filter(o => o.trim() !== ''),
-      attachments,
+      // attachments НЕ сохраняем — File объекты нельзя в localStorage
       timestamp: Date.now(),
       id: draftId || Date.now().toString()
     }
@@ -79,7 +79,7 @@ export default function CreatePollScreen({ onBack, draft }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.033
+        v2.035
       </div>
 
       <button onClick={handleBack} style={{ marginBottom: '20px' }}>← Назад</button>
@@ -164,7 +164,7 @@ export default function CreatePollScreen({ onBack, draft }) {
               onChange={e => updateOption(i, e.target.value)}
               style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '1px solid #ccc' }}
             />
-            <button onClick={() => removeOption(i)} style={{ marginLeft: '8px', background: '#ff4d4d', color: 'white', borderRadius: '8px', padding: '0 12px' }}>
+            <button onClick={() => removeOption(i)} style={{ marginLeft: '8px', background: '#ff4d', color: 'white', borderRadius: '8px', padding: '0 12px' }}>
               ✕
             </button>
           </div>
