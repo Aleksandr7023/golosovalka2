@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.012
+// src/CreatePollScreen.jsx — v2.013
 
 import React, { useState } from 'react'
 
@@ -17,15 +17,15 @@ export default function CreatePollScreen({ onBack }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.012
+        v2.013
       </div>
 
       <button onClick={onBack} style={{ marginBottom: '20px' }}>← Назад</button>
+
       <h2 style={{ fontSize: '22px', marginBottom: '20px' }}>НОВЫЙ ОПРОС</h2>
 
       <input placeholder="Тема опроса" style={{ width: '100%', padding: '12px', fontSize: '18px', marginBottom: '20px', borderRadius: '12px', border: '1px solid #ccc' }} />
 
-      {/* Вопрос — растягивается */}
       <textarea
         placeholder="Вопрос"
         value={question}
@@ -46,8 +46,8 @@ export default function CreatePollScreen({ onBack }) {
         }}
       />
 
-      {/* Варианты — flex: 1, занимает всё оставшееся место */}
-      <div style={{ flex: 1, overflowY: 'auto', paddingRight: '8px', marginBottom: '20px' }}>
+      {/* Уменьшена высота на одну строку */}
+      <div style={{ flex: 1, overflowY: 'auto', maxHeight: '190px', marginBottom: '20px', paddingRight: '8px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
             <input
