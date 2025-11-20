@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.010 (исправлена кнопка «Назад»)
+// src/CreatePollScreen.jsx — v2.011
 
 import React, { useState } from 'react'
 
@@ -17,35 +17,34 @@ export default function CreatePollScreen({ onBack }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.010
+        v2.011
       </div>
 
-      {/* Красивая кнопка «Назад» */}
-      <button
-        onClick={onBack}
-        style={{
-          alignSelf: 'flex-start',
-          background: 'none',
-          border: 'none',
-          fontSize: '32px',
-          padding: '4px 12px',
-          cursor: 'pointer',
-        }}
-        onMouseEnter={e => e.currentTarget.style.opacity = '0.7'}
-        onMouseLeave={e => e.currentTarget.style.opacity = '1'}
-      >
-        ←
-      </button>
+      <button onClick={onBack} style={{ marginBottom: '20px' }}>← Назад</button>
 
-      <h2 style={{ fontSize: '22px', margin: '0 0 20px 0' }}>НОВЫЙ ОПРОС</h2>
+      <h2 style={{ fontSize: '22px', marginBottom: '20px' }}>НОВЫЙ ОПРОС</h2>
 
       <input placeholder="Тема опроса" style={{ width: '100%', padding: '12px', fontSize: '18px', marginBottom: '20px', borderRadius: '12px', border: '1px solid #ccc' }} />
 
-      <input
+      {/* Вопрос — растягивается + прокрутка при очень длинном */}
+      <textarea
         placeholder="Вопрос"
         value={question}
         onChange={e => setQuestion(e.target.value)}
-        style={{ width: '100%', padding: '12px', fontSize: '18px', marginBottom: '20px', borderRadius: '12px', border: '1px solid #ccc' }}
+        rows={3}
+        style={{
+          width: '100%',
+          padding: '12px',
+          fontSize: '18px',
+          marginBottom: '20px',
+          borderRadius: '12px',
+          border: '1px solid #ccc',
+          resize: 'none',
+          minHeight: '80px',
+          maxHeight: '200px',
+          overflowY: 'auto',
+          fieldSizing: 'content'  // современные браузеры — авто-высота
+        }}
       />
 
       {/* Варианты */}
