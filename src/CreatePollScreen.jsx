@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.039 (кнопки не перекрывают при клавиатуре)
+// src/CreatePollScreen.jsx — v2.040 (идеальное поведение с клавиатурой)
 
 import React, { useState, useEffect } from 'react'
 
@@ -10,7 +10,7 @@ export default function CreatePollScreen({ onBack, draft }) {
   const [error, setError] = useState('')
   const [viewerFile, setViewerFile] = useState(null)
   const [draftId, setDraftId] = useState(null)
-  const [keyboardVisible, setKeyboardVisible] = useState(false)
+  const [keyboardHeight, setKeyboardHeight] = useState(0)
 
   useEffect(() => {
     if (draft) {
@@ -21,13 +21,25 @@ export default function CreatePollScreen({ onBack, draft }) {
     }
   }, [draft])
 
-  // Определяем появление клавиатуры (для мобильных)
+  // Отслеживание клавиатуры (на мобильных)
   useEffect(() => {
+    const originalHeight = window.innerHeight
+
     const handleResize = () => {
-      setKeyboardVisible(window.innerHeight < window.outerHeight * 0.75)
+      const currentHeight = window.innerHeight
+      const diff = originalHeight - currentHeight
+      setKeyboardHeight(diff > 100 ? diff : 0)
     }
+
     window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    window.addEventListener('focusin', handleResize)
+    window.addEventListener('focusout', handleResize)
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('focusin', handleResize)
+      window.removeEventListener('focusout', handleResize)
+    }
   }, [])
 
   const saveDraft = () => {
@@ -58,10 +70,8 @@ export default function CreatePollScreen({ onBack, draft }) {
     const files = Array.from(e.target.files)
     const valid = files.filter(f => f.size <= 50 * 1024 * 1024)
     const invalid = files.filter(f => f.size > 50 * 1024 * 1024)
-
     if (invalid.length > 0) setError('Файлы > 50 МБ запрещены')
     else setError('')
-
     if (attachments.length + valid.length > 3) setError('Максимум 3 вложения')
     else setAttachments([...attachments, ...valid].slice(0, 3))
   }
@@ -84,7 +94,7 @@ export default function CreatePollScreen({ onBack, draft }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.039
+        v2.040
       </div>
 
       <button onClick={handleBack} style={{ marginBottom: '20px' }}>← Назад</button>
@@ -144,7 +154,6 @@ export default function CreatePollScreen({ onBack, draft }) {
 
       {error && <div style={{ color: '#ff4d4d', marginBottom: '12px', fontSize: '14px' }}>{error}</div>}
 
-      {/* Просмотрщик */}
       {viewerFile && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', zIndex: 1000, display: 'flex', flexDirection: 'column' }}>
           <button onClick={() => setViewerFile(null)} style={{ alignSelf: 'flex-end', background: 'none', border: 'none', color: 'white', fontSize: '32px', padding: '16px' }}>×</button>
@@ -160,8 +169,8 @@ export default function CreatePollScreen({ onBack, draft }) {
         </div>
       )}
 
-      {/* Варианты — flex: 1 */}
-      <div style={{ flex: 1, overflowY: 'auto', paddingRight: '8px', paddingBottom: keyboardVisible ? '200px' : '20px' }}>
+      {/* Варианты — занимают всё место, клавиатура поднимает содержимое */}
+      <div style={{ flex: 1, overflowY: 'auto', paddingRight: '8px', paddingBottom: keyboardHeight > 0 ? `${keyboardHeight + 20}px` : '20px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
             <input
@@ -177,21 +186,11 @@ export default function CreatePollScreen({ onBack, draft }) {
         ))}
       </div>
 
-      {/* Кнопки — фиксированные, скрываются при клавиатуре */}
-      <div style={{ 
-        position: 'fixed', 
-        bottom: keyboardVisible ? '-200px' : 0, 
-        left: 0, 
-        right: 0, 
-        background: '#f8f9fa', 
-        padding: '12px 16px', 
-        borderTop: '1px solid #ddd',
-        transition: 'bottom 0.3s'
-      }}>
+      {/* Кнопки — приклеены к низу, но не перекрывают ввод */}
+      <div style={{ background: '#f8f9fa', padding: '12px 0', borderTop: '1px solid #ddd' }}>
         <button onClick={addOption} style={{ width: '100%', padding: '12px', background: '#4a90e2', color: 'white', borderRadius: '12px', marginBottom: '12px' }}>
           + Добавить вариант ответа
         </button>
-
         <div style={{ display: 'flex', gap: '12px' }}>
           <button style={{ flex: 1, padding: '16px', background: '#666', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
             ⚙️ Свойства опроса
