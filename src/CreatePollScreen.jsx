@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.036 (красные кнопки удаления)
+// src/CreatePollScreen.jsx — v2.037 (клавиатура не перекрывает ввод)
 
 import React, { useState, useEffect } from 'react'
 
@@ -29,11 +29,8 @@ export default function CreatePollScreen({ onBack, draft }) {
       timestamp: Date.now(),
       id: draftId || Date.now().toString()
     }
-
     if (!draftId) setDraftId(currentData.id)
-
     localStorage.setItem(`draft_${currentData.id}`, JSON.stringify(currentData))
-
     const ids = JSON.parse(localStorage.getItem('draftIds') || '[]')
     if (!ids.includes(currentData.id)) {
       ids.push(currentData.id)
@@ -75,9 +72,9 @@ export default function CreatePollScreen({ onBack, draft }) {
   }
 
   return (
-    <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.036
+        v2.037
       </div>
 
       <button onClick={handleBack} style={{ marginBottom: '20px' }}>← Назад</button>
@@ -153,7 +150,8 @@ export default function CreatePollScreen({ onBack, draft }) {
         </div>
       )}
 
-      <div style={{ flex: 1, overflowY: 'auto', maxHeight: '190px', marginBottom: '20px', paddingRight: '8px' }}>
+      {/* Варианты — теперь не перекрываются клавиатурой */}
+      <div style={{ flex: 1, overflowY: 'auto', paddingRight: '8px', marginBottom: '20px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
             <input
