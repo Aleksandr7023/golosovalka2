@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.006
+// src/CreatePollScreen.jsx — v2.007
 
 import React, { useState } from 'react'
 
@@ -17,7 +17,7 @@ export default function CreatePollScreen({ onBack }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.006
+        v2.007
       </div>
 
       <button onClick={onBack} style={{ marginBottom: '20px' }}>← Назад</button>
@@ -31,12 +31,11 @@ export default function CreatePollScreen({ onBack }) {
         style={{ width: '100%', padding: '12px', fontSize: '18px', marginBottom: '20px', borderRadius: '12px', border: '1px solid #ccc' }}
       />
 
-      {/* Видно ровно 3 варианта */}
       <div style={{ flex: 1, overflowY: 'auto', maxHeight: '240px', marginBottom: '20px', paddingRight: '8px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
             <input
-              placeholder={`Вариант ${i + 1}`}
+              placeholder={`Вариант ответа ${i + 1}`}
               value={opt}
               onChange={e => updateOption(i, e.target.value)}
               style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '1px solid #ccc' }}
@@ -49,7 +48,7 @@ export default function CreatePollScreen({ onBack }) {
       </div>
 
       <button onClick={addOption} style={{ width: '100%', padding: '12px', background: '#4a90e2', color: 'white', borderRadius: '12px', marginBottom: '12px' }}>
-        + Добавить вариант
+        + Добавить вариант ответа
       </button>
 
       <button style={{ width: '100%', padding: '16px', background: '#52c41a', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
