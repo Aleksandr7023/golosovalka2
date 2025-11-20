@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.007
+// src/CreatePollScreen.jsx — v2.008
 
 import React, { useState } from 'react'
 
@@ -17,13 +17,15 @@ export default function CreatePollScreen({ onBack }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.007
+        v2.008
       </div>
 
       <button onClick={onBack} style={{ marginBottom: '20px' }}>← Назад</button>
+
       <h2 style={{ fontSize: '22px', marginBottom: '20px' }}>НОВЫЙ ОПРОС</h2>
 
       <input placeholder="Тема опроса" style={{ width: '100%', padding: '12px', fontSize: '18px', marginBottom: '20px', borderRadius: '12px', border: '1px solid #ccc' }} />
+
       <input
         placeholder="Вопрос"
         value={question}
@@ -31,6 +33,7 @@ export default function CreatePollScreen({ onBack }) {
         style={{ width: '100%', padding: '12px', fontSize: '18px', marginBottom: '20px', borderRadius: '12px', border: '1px solid #ccc' }}
       />
 
+      {/* Варианты */}
       <div style={{ flex: 1, overflowY: 'auto', maxHeight: '240px', marginBottom: '20px', paddingRight: '8px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
@@ -51,9 +54,15 @@ export default function CreatePollScreen({ onBack }) {
         + Добавить вариант ответа
       </button>
 
-      <button style={{ width: '100%', padding: '16px', background: '#52c41a', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
-        ЗАПУСТИТЬ ОПРОС
-      </button>
+      {/* Кнопки внизу */}
+      <div style={{ display: 'flex', gap: '12px' }}>
+        <button style={{ flex: 1, padding: '16px', background: '#666', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
+          ⚙️ Свойства опроса
+        </button>
+        <button style={{ flex: 1, padding: '16px', background: '#52c41a', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
+          ЗАПУСТИТЬ ОПРОС
+        </button>
+      </div>
     </div>
   )
 }
