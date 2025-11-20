@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.029
+// src/CreatePollScreen.jsx — v2.031
 
 import React, { useState, useEffect } from 'react'
 
@@ -26,7 +26,7 @@ export default function CreatePollScreen({ onBack, draft }) {
     const currentData = {
       theme,
       question,
-      options: options.filter(o => o.trim()),
+      options: options.filter(o => o.trim() !== ''),
       attachments,
       timestamp: Date.now(),
       id: draftId || Date.now().toString()
@@ -44,7 +44,7 @@ export default function CreatePollScreen({ onBack, draft }) {
   }
 
   const handleBack = () => {
-    const hasData = theme.trim() || question.trim() || options.some(o => o.trim()) || attachments.length > 0
+    const hasData = theme.trim() !== '' || question.trim() !== '' || options.some(o => o.trim() !== '') || attachments.length > 0
     if (hasData) saveDraft()
     onBack()
   }
@@ -79,7 +79,7 @@ export default function CreatePollScreen({ onBack, draft }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.029
+        v2.031
       </div>
 
       <button onClick={handleBack} style={{ marginBottom: '20px' }}>← Назад</button>
@@ -108,7 +108,6 @@ export default function CreatePollScreen({ onBack, draft }) {
         }}
       />
 
-      {/* Скрепка + превью */}
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
         <label>
           <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
@@ -141,7 +140,6 @@ export default function CreatePollScreen({ onBack, draft }) {
 
       {error && <div style={{ color: '#ff4d4d', marginBottom: '12px', fontSize: '14px' }}>{error}</div>}
 
-      {/* Просмотрщик */}
       {viewerFile && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', zIndex: 1000, display: 'flex', flexDirection: 'column' }}>
           <button onClick={() => setViewerFile(null)} style={{ alignSelf: 'flex-end', background: 'none', border: 'none', color: 'white', fontSize: '32px', padding: '16px' }}>×</button>
@@ -157,7 +155,6 @@ export default function CreatePollScreen({ onBack, draft }) {
         </div>
       )}
 
-      {/* Варианты */}
       <div style={{ flex: 1, overflowY: 'auto', maxHeight: '190px', marginBottom: '20px', paddingRight: '8px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
