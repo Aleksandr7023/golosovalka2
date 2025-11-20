@@ -1,4 +1,4 @@
-// src/App.jsx — v1.026
+// src/App.jsx — v1.027 (поддержка множественных черновиков)
 
 import React, { useState, useEffect } from 'react'
 import CreatePollScreen from './CreatePollScreen.jsx'
@@ -7,12 +7,17 @@ export default function App() {
   const [screen, setScreen] = useState('main')
   const [activeOpen, setActiveOpen] = useState(true)
   const [myOpen, setMyOpen] = useState(false)
-  const [draft, setDraft] = useState(null)
-  const [editDraft, setEditDraft] = useState(null) // для редактирования
+  const [drafts, setDrafts] = useState([]) // массив черновиков
+  const [editDraft, setEditDraft] = useState(null)
 
+  // Загружаем все черновики
   useEffect(() => {
-    const saved = localStorage.getItem('draftPoll')
-    if (saved) setDraft(JSON.parse(saved))
+    const ids = JSON.parse(localStorage.getItem('draftIds') || '[]')
+    const loaded = ids.map(id => {
+      const data = localStorage.getItem(`draft_${id}`)
+      return data ? JSON.parse(data) : null
+    }).filter(Boolean)
+    setDrafts(loaded)
   }, [])
 
   const toggleActive = () => {
@@ -25,15 +30,17 @@ export default function App() {
     setActiveOpen(false)
   }
 
-  const openDraft = () => {
+  const openDraft = (draft) => {
     setEditDraft(draft)
     setScreen('create')
   }
 
-  const deleteDraft = () => {
+  const deleteDraft = (id) => {
     if (confirm('Удалить черновик?')) {
-      localStorage.removeItem('draftPoll')
-      setDraft(null)
+      localStorage.removeItem(`draft_${id}`)
+      const ids = JSON.parse(localStorage.getItem('draftIds') || '[]')
+      localStorage.setItem('draftIds', JSON.stringify(ids.filter(d => d !== id)))
+      setDrafts(drafts.filter(d => d.id !== id))
     }
   }
 
@@ -43,12 +50,10 @@ export default function App() {
     "Цены на продукты", "Экология города", "Транспортные пробки", "Безопасность на улицах"
   ]
 
-  const myTopics = draft ? [{ ...draft, isDraft: true }] : []
-
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v1.026
+        v1.027
       </div>
 
       {screen === 'main' ? (
@@ -92,19 +97,17 @@ export default function App() {
             {myOpen && (
               <div style={{ height: '240px', overflowY: 'auto', paddingRight: '8px' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {myTopics.length === 0 ? (
+                  {drafts.length === 0 ? (
                     <div style={{ color: '#888' }}>(пока пусто)</div>
                   ) : (
-                    myTopics.map((t, i) => (
-                      <div key={i} style={{ background: t.isDraft ? '#fffbe6' : 'white', padding: '16px', borderRadius: '14px', boxShadow: '0 4px 10px rgba(0,0,0,0.08)', fontSize: '17px', position: 'relative' }}>
-                        <div onClick={t.isDraft ? openDraft : undefined} style={{ cursor: t.isDraft ? 'pointer' : 'default' }}>
-                          {t.theme} {t.isDraft && '(черновик)'}
+                    drafts.map((draft, i) => (
+                      <div key={i} style={{ background: '#fffbe6', padding: '16px', borderRadius: '14px', boxShadow: '0 4px 10px rgba(0,0,0,0.08)', fontSize: '17px', position: 'relative' }}>
+                        <div onClick={() => openDraft(draft)} style={{ cursor: 'pointer' }}>
+                          {draft.theme || 'Без темы'} (черновик)
                         </div>
-                        {t.isDraft && (
-                          <button onClick={(e) => { e.stopPropagation(); deleteDraft() }} style={{ position: 'absolute', top: '8px', right: '8px', background: '#ff4d4d', color: 'white', border: 'none', borderRadius: '50%', width: '24px', height: '24px', fontSize: '12px' }}>
-                            ×
-                          </button>
-                        )}
+                        <button onClick={(e) => { e.stopPropagation(); deleteDraft(draft.id) }} style={{ position: 'absolute', top: '8px', right: '8px', background: '#ff4d4d', color: 'white', border: 'none', borderRadius: '50%', width: '24px', height: '24px', fontSize: '12px' }}>
+                          ×
+                        </button>
                       </div>
                     ))
                   )}
