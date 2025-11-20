@@ -1,32 +1,24 @@
-// src/CreatePollScreen.jsx — v2.026
+// src/CreatePollScreen.jsx — v2.027
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
-export default function CreatePollScreen({ onBack }) {
+export default function CreatePollScreen({ onBack, draft }) {
+  const [theme, setTheme] = useState('')
   const [question, setQuestion] = useState('')
   const [options, setOptions] = useState([])
   const [attachments, setAttachments] = useState([])
   const [error, setError] = useState('')
   const [viewerFile, setViewerFile] = useState(null)
 
-  const hasData = question.trim() !== '' || options.some(o => o.trim() !== '') || attachments.length > 0
-
-  const handleBack = () => {
-    if (hasData && confirm('Сохранить черновик опроса?')) {
-      const theme = document.querySelector('input[placeholder="Тема опроса"]')?.value.trim() || 'Без темы'
-      const draft = {
-        theme,
-        question,
-        options: options.filter(o => o.trim() !== ''),
-        attachments,
-        status: 'в процессе',
-        timestamp: Date.now()
-      }
-      localStorage.setItem('draftPoll', JSON.stringify(draft))
-      alert('Черновик сохранён!')
+  // Загрузка черновика
+  useEffect(() => {
+    if (draft) {
+      setTheme(draft.theme || '')
+      setQuestion(draft.question || '')
+      setOptions(draft.options || [])
+      setAttachments(draft.attachments || [])
     }
-    onBack()
-  }
+  }, [draft])
 
   const handleFiles = (e) => {
     const files = Array.from(e.target.files)
@@ -58,14 +50,19 @@ export default function CreatePollScreen({ onBack }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.026
+        v2.027
       </div>
 
-      <button onClick={handleBack} style={{ marginBottom: '20px' }}>← Назад</button>
+      <button onClick={onBack} style={{ marginBottom: '20px' }}>← Назад</button>
 
       <h2 style={{ fontSize: '22px', marginBottom: '20px' }}>НОВЫЙ ОПРОС</h2>
 
-      <input placeholder="Тема опроса" style={{ width: '100%', padding: '12px', fontSize: '18px', marginBottom: '20px', borderRadius: '12px', border: '1px solid #ccc' }} />
+      <input
+        placeholder="Тема опроса"
+        value={theme}
+        onChange={e => setTheme(e.target.value)}
+        style={{ width: '100%', padding: '12px', fontSize: '18px', marginBottom: '20px', borderRadius: '12px', border: '1px solid #ccc' }}
+      />
 
       <textarea
         placeholder="Вопрос"
@@ -87,6 +84,7 @@ export default function CreatePollScreen({ onBack }) {
         }}
       />
 
+      {/* Скрепка + превью */}
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
         <label>
           <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
@@ -119,7 +117,7 @@ export default function CreatePollScreen({ onBack }) {
 
       {error && <div style={{ color: '#ff4d4d', marginBottom: '12px', fontSize: '14px' }}>{error}</div>}
 
-      {/* Универсальный просмотрщик */}
+      {/* Просмотрщик */}
       {viewerFile && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', zIndex: 1000, display: 'flex', flexDirection: 'column' }}>
           <button onClick={() => setViewerFile(null)} style={{ alignSelf: 'flex-end', background: 'none', border: 'none', color: 'white', fontSize: '32px', padding: '16px' }}>×</button>
@@ -135,6 +133,7 @@ export default function CreatePollScreen({ onBack }) {
         </div>
       )}
 
+      {/* Варианты */}
       <div style={{ flex: 1, overflowY: 'auto', maxHeight: '190px', marginBottom: '20px', paddingRight: '8px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
