@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.028 (множественные черновики с ID)
+// src/CreatePollScreen.jsx — v2.029
 
 import React, { useState, useEffect } from 'react'
 
@@ -11,7 +11,7 @@ export default function CreatePollScreen({ onBack, draft }) {
   const [viewerFile, setViewerFile] = useState(null)
   const [draftId, setDraftId] = useState(null)
 
-  // Загрузка черновика (если редактирование)
+  // Загрузка черновика
   useEffect(() => {
     if (draft) {
       setTheme(draft.theme || '')
@@ -23,16 +23,24 @@ export default function CreatePollScreen({ onBack, draft }) {
   }, [draft])
 
   const saveDraft = () => {
-    const currentData = { theme, question, options: options.filter(o => o.trim()), attachments, timestamp: Date.now() }
+    const currentData = {
+      theme,
+      question,
+      options: options.filter(o => o.trim()),
+      attachments,
+      timestamp: Date.now(),
+      id: draftId || Date.now().toString()
+    }
 
-    const id = draftId || Date.now().toString()
-    setDraftId(id)
+    if (!draftId) setDraftId(currentData.id)
 
-    localStorage.setItem(`draft_${id}`, JSON.stringify({ ...currentData, id }))
-    localStorage.setItem('draftIds', JSON.stringify([
-      ...(JSON.parse(localStorage.getItem('draftIds') || '[]').filter(d => d !== id)),
-      id
-    ]))
+    localStorage.setItem(`draft_${currentData.id}`, JSON.stringify(currentData))
+
+    const ids = JSON.parse(localStorage.getItem('draftIds') || '[]')
+    if (!ids.includes(currentData.id)) {
+      ids.push(currentData.id)
+      localStorage.setItem('draftIds', JSON.stringify(ids))
+    }
   }
 
   const handleBack = () => {
@@ -71,7 +79,7 @@ export default function CreatePollScreen({ onBack, draft }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.028
+        v2.029
       </div>
 
       <button onClick={handleBack} style={{ marginBottom: '20px' }}>← Назад</button>
