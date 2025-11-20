@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.003
+// src/CreatePollScreen.jsx — v2.004
 
 import React, { useState } from 'react'
 
@@ -15,9 +15,9 @@ export default function CreatePollScreen({ onBack }) {
   }
 
   return (
-    <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100vh' }}>
+    <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.003
+        v2.004
       </div>
 
       <button onClick={onBack} style={{ marginBottom: '20px' }}>← Назад</button>
@@ -33,8 +33,8 @@ export default function CreatePollScreen({ onBack }) {
         style={{ width: '100%', padding: '12px', fontSize: '18px', marginBottom: '20px', borderRadius: '12px', border: '1px solid #ccc' }}
       />
 
-      {/* Прокручиваемые варианты */}
-      <div style={{ flex: 1, overflowY: 'auto', maxHeight: 'calc(100vh - 380px)', marginBottom: '20px', paddingRight: '8px' }}>
+      {/* ПРОКРУЧИВАЕМЫЕ ВАРИАНТЫ */}
+      <div style={{ flex: 1, overflowY: 'auto', marginBottom: '20px', paddingRight: '8px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
             <input
