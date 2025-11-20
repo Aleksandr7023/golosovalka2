@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.019
+// src/CreatePollScreen.jsx — v2.020
 
 import React, { useState } from 'react'
 
@@ -13,12 +13,17 @@ export default function CreatePollScreen({ onBack }) {
     const valid = files.filter(f => f.size <= 50 * 1024 * 1024)
     const invalid = files.filter(f => f.size > 50 * 1024 * 1024)
 
-    if (invalid.length > 0) setError('Файлы > 50 МБ запрещены')
-    else setError('')
+    if (invalid.length > 0) {
+      setError('Файлы > 50 МБ запрещены')
+    } else {
+      setError('')
+    }
 
-    if (attachments.length + valid.length > 3) setError('Максимум 3 вложения')
-    else setAttachments([...attachments, ...valid].slice(0, 3))
- 3))
+    if (attachments.length + valid.length > 3) {
+      setError('Максимум 3 вложения')
+    } else {
+      setAttachments([...attachments, ...valid].slice(0, 3))
+    }
   }
 
   const removeAttachment = (i) => setAttachments(attachments.filter((_, idx) => idx !== i))
@@ -27,7 +32,7 @@ export default function CreatePollScreen({ onBack }) {
     const url = URL.createObjectURL(file)
     const a = document.createElement('a')
     a.href = url
-    a.download = file.name  // <-- сохраняет оригинальное имя + расширение
+    a.download = file.name
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -43,7 +48,7 @@ export default function CreatePollScreen({ onBack }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.019
+        v2.020
       </div>
 
       <button onClick={onBack} style={{ marginBottom: '20px' }}>← Назад</button>
@@ -72,7 +77,6 @@ export default function CreatePollScreen({ onBack }) {
         }}
       />
 
-      {/* Скрепка + превью */}
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
         <label>
           <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
@@ -105,7 +109,6 @@ export default function CreatePollScreen({ onBack }) {
 
       {error && <div style={{ color: '#ff4d4d', marginBottom: '12px', fontSize: '14px' }}>{error}</div>}
 
-      {/* Варианты */}
       <div style={{ flex: 1, overflowY: 'auto', maxHeight: '190px', marginBottom: '20px', paddingRight: '8px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
@@ -116,7 +119,7 @@ export default function CreatePollScreen({ onBack }) {
               style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '1px solid #ccc' }}
             />
             <button onClick={() => removeOption(i)} style={{ marginLeft: '8px', background: '#ff4d4d', color: 'white', borderRadius: '8px', padding: '0 12px' }}>
-              ✕
+              ✗
             </button>
           </div>
         ))}
