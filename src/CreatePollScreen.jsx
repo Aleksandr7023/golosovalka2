@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.038 (кнопки не перекрывают ввод)
+// src/CreatePollScreen.jsx — v2.039 (кнопки не перекрывают при клавиатуре)
 
 import React, { useState, useEffect } from 'react'
 
@@ -10,6 +10,7 @@ export default function CreatePollScreen({ onBack, draft }) {
   const [error, setError] = useState('')
   const [viewerFile, setViewerFile] = useState(null)
   const [draftId, setDraftId] = useState(null)
+  const [keyboardVisible, setKeyboardVisible] = useState(false)
 
   useEffect(() => {
     if (draft) {
@@ -19,6 +20,15 @@ export default function CreatePollScreen({ onBack, draft }) {
       setDraftId(draft.id)
     }
   }, [draft])
+
+  // Определяем появление клавиатуры (для мобильных)
+  useEffect(() => {
+    const handleResize = () => {
+      setKeyboardVisible(window.innerHeight < window.outerHeight * 0.75)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const saveDraft = () => {
     const currentData = {
@@ -74,7 +84,7 @@ export default function CreatePollScreen({ onBack, draft }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.038
+        v2.039
       </div>
 
       <button onClick={handleBack} style={{ marginBottom: '20px' }}>← Назад</button>
@@ -102,7 +112,6 @@ export default function CreatePollScreen({ onBack, draft }) {
         }}
       />
 
-      {/* Скрепка + превью */}
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
         <label>
           <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
@@ -151,8 +160,8 @@ export default function CreatePollScreen({ onBack, draft }) {
         </div>
       )}
 
-      {/* Варианты — flex: 1 + padding-bottom */}
-      <div style={{ flex: 1, overflowY: 'auto', paddingRight: '8px', paddingBottom: '120px', marginBottom: '-100px' }}>
+      {/* Варианты — flex: 1 */}
+      <div style={{ flex: 1, overflowY: 'auto', paddingRight: '8px', paddingBottom: keyboardVisible ? '200px' : '20px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
             <input
@@ -168,8 +177,17 @@ export default function CreatePollScreen({ onBack, draft }) {
         ))}
       </div>
 
-      {/* Фиксированные кнопки внизу */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: '#f8f9fa', padding: '12px 16px', borderTop: '1px solid #ddd' }}>
+      {/* Кнопки — фиксированные, скрываются при клавиатуре */}
+      <div style={{ 
+        position: 'fixed', 
+        bottom: keyboardVisible ? '-200px' : 0, 
+        left: 0, 
+        right: 0, 
+        background: '#f8f9fa', 
+        padding: '12px 16px', 
+        borderTop: '1px solid #ddd',
+        transition: 'bottom 0.3s'
+      }}>
         <button onClick={addOption} style={{ width: '100%', padding: '12px', background: '#4a90e2', color: 'white', borderRadius: '12px', marginBottom: '12px' }}>
           + Добавить вариант ответа
         </button>
