@@ -1,4 +1,4 @@
-// src/App.jsx — v1.025
+// src/App.jsx — v1.026
 
 import React, { useState, useEffect } from 'react'
 import CreatePollScreen from './CreatePollScreen.jsx'
@@ -8,6 +8,7 @@ export default function App() {
   const [activeOpen, setActiveOpen] = useState(true)
   const [myOpen, setMyOpen] = useState(false)
   const [draft, setDraft] = useState(null)
+  const [editDraft, setEditDraft] = useState(null) // для редактирования
 
   useEffect(() => {
     const saved = localStorage.getItem('draftPoll')
@@ -24,6 +25,18 @@ export default function App() {
     setActiveOpen(false)
   }
 
+  const openDraft = () => {
+    setEditDraft(draft)
+    setScreen('create')
+  }
+
+  const deleteDraft = () => {
+    if (confirm('Удалить черновик?')) {
+      localStorage.removeItem('draftPoll')
+      setDraft(null)
+    }
+  }
+
   const hotTopics = [
     "Ремонт в подъезде #47", "Арта в 'Мир Танков'", "Кофе без пластика",
     "Новый парк в районе", "Шум от соседей", "Бесплатный Wi-Fi в метро",
@@ -35,7 +48,7 @@ export default function App() {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v1.025
+        v1.026
       </div>
 
       {screen === 'main' ? (
@@ -83,8 +96,15 @@ export default function App() {
                     <div style={{ color: '#888' }}>(пока пусто)</div>
                   ) : (
                     myTopics.map((t, i) => (
-                      <div key={i} style={{ background: t.isDraft ? '#fffbe6' : 'white', padding: '16px', borderRadius: '14px', boxShadow: '0 4px 10px rgba(0,0,0,0.08)', fontSize: '17px' }}>
-                        {t.theme} {t.isDraft && '(черновик)'}
+                      <div key={i} style={{ background: t.isDraft ? '#fffbe6' : 'white', padding: '16px', borderRadius: '14px', boxShadow: '0 4px 10px rgba(0,0,0,0.08)', fontSize: '17px', position: 'relative' }}>
+                        <div onClick={t.isDraft ? openDraft : undefined} style={{ cursor: t.isDraft ? 'pointer' : 'default' }}>
+                          {t.theme} {t.isDraft && '(черновик)'}
+                        </div>
+                        {t.isDraft && (
+                          <button onClick={(e) => { e.stopPropagation(); deleteDraft() }} style={{ position: 'absolute', top: '8px', right: '8px', background: '#ff4d4d', color: 'white', border: 'none', borderRadius: '50%', width: '24px', height: '24px', fontSize: '12px' }}>
+                            ×
+                          </button>
+                        )}
                       </div>
                     ))
                   )}
@@ -94,7 +114,7 @@ export default function App() {
           </div>
         </>
       ) : (
-        <CreatePollScreen onBack={() => setScreen('main')} />
+        <CreatePollScreen draft={editDraft} onBack={() => setScreen('main')} />
       )}
     </div>
   )
