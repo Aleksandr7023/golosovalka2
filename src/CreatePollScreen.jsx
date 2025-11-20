@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.021
+// src/CreatePollScreen.jsx — v2.022
 
 import React, { useState } from 'react'
 
@@ -7,7 +7,7 @@ export default function CreatePollScreen({ onBack }) {
   const [options, setOptions] = useState([])
   const [attachments, setAttachments] = useState([])
   const [error, setError] = useState('')
-  const [viewerFile, setViewerFile] = useState(null) // файл для просмотра
+  const [viewerFile, setViewerFile] = useState(null)
 
   const handleFiles = (e) => {
     const files = Array.from(e.target.files)
@@ -23,22 +23,27 @@ export default function CreatePollScreen({ onBack }) {
 
   const removeAttachment = (i) => setAttachments(attachments.filter((_, idx) => idx !== i))
 
-  const addOption = () => setOptions([...options, ''])
-  const removeOption = (i) => setOptions(options.filter((_, idx) => idx !== i))
-  const updateOption = (i, value) => {
-    const newOpts = [...options]
-    newOpts[i] = value
-    setOptions(newOpts)
+  const openFile = (file) => {
+    const url = URL.createObjectURL(file)
+    if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
+      setViewerFile({ url, type: file.type, name: file.name })
+    } else {
+      // Для PDF, TXT и других — скачивание
+      const a = document.createElement('a')
+      a.href = url
+      a.download = file.name
+      a.click()
+      URL.revokeObjectURL(url)
+    }
   }
 
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.021
+        v2.022
       </div>
 
       <button onClick={onBack} style={{ marginBottom: '20px' }}>← Назад</button>
-
       <h2 style={{ fontSize: '22px', marginBottom: '20px' }}>НОВЫЙ ОПРОС</h2>
 
       <input placeholder="Тема опроса" style={{ width: '100%', padding: '12px', fontSize: '18px', marginBottom: '20px', borderRadius: '12px', border: '1px solid #ccc' }} />
@@ -63,7 +68,6 @@ export default function CreatePollScreen({ onBack }) {
         }}
       />
 
-      {/* Скрепка + превью */}
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
         <label>
           <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
@@ -74,7 +78,7 @@ export default function CreatePollScreen({ onBack }) {
           <div style={{ display: 'flex', gap: '8px', marginLeft: '12px' }}>
             {attachments.map((file, i) => (
               <div key={i} style={{ position: 'relative' }}>
-                <div onClick={() => setViewerFile(file)} style={{ cursor: 'pointer' }}>
+                <div onClick={() => openFile(file)} style={{ cursor: 'pointer' }}>
                   {file.type.startsWith('image/') ? (
                     <img src={URL.createObjectURL(file)} alt="" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '8px' }} />
                   ) : file.type.startsWith('video/') ? (
@@ -96,17 +100,15 @@ export default function CreatePollScreen({ onBack }) {
 
       {error && <div style={{ color: '#ff4d4d', marginBottom: '12px', fontSize: '14px' }}>{error}</div>}
 
-      {/* Просмотрщик файла */}
+      {/* Просмотрщик только для фото/видео */}
       {viewerFile && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', zIndex: 1000, display: 'flex', flexDirection: 'column' }}>
           <button onClick={() => setViewerFile(null)} style={{ alignSelf: 'flex-end', background: 'none', border: 'none', color: 'white', fontSize: '32px', padding: '16px' }}>×</button>
           <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
             {viewerFile.type.startsWith('image/') ? (
-              <img src={URL.createObjectURL(viewerFile)} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-            ) : viewerFile.type.startsWith('video/') ? (
-              <video src={URL.createObjectURL(viewerFile)} controls autoPlay style={{ maxWidth: '100%', maxHeight: '100%' }} />
+              <img src={viewerFile.url} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
             ) : (
-              <div style={{ color: 'white', fontSize: '20px' }}>Файл: {viewerFile.name} (скачать)</div>
+              <video src={viewerFile.url} controls autoPlay style={{ maxWidth: '100%', maxHeight: '100%' }} />
             )}
           </div>
         </div>
