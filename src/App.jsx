@@ -1,4 +1,4 @@
-// src/App.jsx — v1.028
+// src/App.jsx — v1.029 (обновление черновиков + чистый второй экран)
 
 import React, { useState, useEffect } from 'react'
 import CreatePollScreen from './CreatePollScreen.jsx'
@@ -10,13 +10,17 @@ export default function App() {
   const [drafts, setDrafts] = useState([])
   const [editDraft, setEditDraft] = useState(null)
 
-  useEffect(() => {
+  const loadDrafts = () => {
     const ids = JSON.parse(localStorage.getItem('draftIds') || '[]')
     const loaded = ids.map(id => {
       const data = localStorage.getItem(`draft_${id}`)
       return data ? JSON.parse(data) : null
     }).filter(Boolean)
     setDrafts(loaded)
+  }
+
+  useEffect(() => {
+    loadDrafts()
   }, [])
 
   const toggleActive = () => {
@@ -39,7 +43,7 @@ export default function App() {
       localStorage.removeItem(`draft_${id}`)
       const ids = JSON.parse(localStorage.getItem('draftIds') || '[]')
       localStorage.setItem('draftIds', JSON.stringify(ids.filter(d => d !== id)))
-      setDrafts(drafts.filter(d => d.id !== id))
+      loadDrafts()
     }
   }
 
@@ -51,12 +55,12 @@ export default function App() {
 
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v1.028
-      </div>
-
       {screen === 'main' ? (
         <>
+          <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
+            v1.029
+          </div>
+
           <div style={{ textAlign: 'right', fontSize: '14px', color: '#555', marginBottom: '20px' }}>
             🔷 78   🔶 135   ⭐ 7   ⚡ 53   💬 50
           </div>
@@ -67,18 +71,14 @@ export default function App() {
               <span style={{ marginRight: '10px', fontSize: '20px' }}>🔍</span>
               <input type="text" placeholder="Поиск по обсуждениям" style={{ border: 'none', outline: 'none', width: '100%', background: 'transparent' }} />
             </div>
-            <button 
-              onClick={() => {
-                setEditDraft(null)  // <-- чистый новый опрос
-                setScreen('create')
-              }} 
-              style={{ width: '100%', padding: '16px', background: '#4a90e2', color: 'white', border: 'none', borderRadius: '16px', fontSize: '18px', fontWeight: 'bold', boxShadow: '0 6px 16px rgba(74,144,226,0.3)' }}
-            >
+            <button onClick={() => {
+              setEditDraft(null)
+              setScreen('create')
+            }} style={{ width: '100%', padding: '16px', background: '#4a90e2', color: 'white', border: 'none', borderRadius: '16px', fontSize: '18px', fontWeight: 'bold' }}>
               ЗАДАТЬ НОВЫЙ ОПРОС
             </button>
           </div>
 
-          {/* Активные темы */}
           <div style={{ marginBottom: '30px' }}>
             <h2 onClick={toggleActive} style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}>
               АКТИВНЫЕ ТЕМЫ: {activeOpen ? '▲' : '▼'}
@@ -96,7 +96,6 @@ export default function App() {
             )}
           </div>
 
-          {/* Мои темы */}
           <div>
             <h2 onClick={toggleMy} style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}>
               МОИ ТЕМЫ: {myOpen ? '▲' : '▼'}
@@ -124,7 +123,13 @@ export default function App() {
           </div>
         </>
       ) : (
-        <CreatePollScreen draft={editDraft} onBack={() => setScreen('main')} />
+        <CreatePollScreen 
+          draft={editDraft} 
+          onBack={() => {
+            setScreen('main')
+            loadDrafts()  // <-- обновляем список черновиков
+          }} 
+        />
       )}
     </div>
   )
