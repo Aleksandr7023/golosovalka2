@@ -1,11 +1,11 @@
-// src/CreatePollScreen.jsx — v2.014
+// src/CreatePollScreen.jsx — v2.015
 
 import React, { useState } from 'react'
 
 export default function CreatePollScreen({ onBack }) {
   const [question, setQuestion] = useState('')
   const [options, setOptions] = useState([])
-  const [attachments, setAttachments] = useState([])  // массив файлов
+  const [attachments, setAttachments] = useState([])
 
   const addOption = () => setOptions([...options, ''])
   const removeOption = (i) => setOptions(options.filter((_, idx) => idx !== i))
@@ -23,7 +23,7 @@ export default function CreatePollScreen({ onBack }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.014
+        v2.015
       </div>
 
       <button onClick={onBack} style={{ marginBottom: '20px' }}>← Назад</button>
@@ -32,7 +32,6 @@ export default function CreatePollScreen({ onBack }) {
 
       <input placeholder="Тема опроса" style={{ width: '100%', padding: '12px', fontSize: '18px', marginBottom: '20px', borderRadius: '12px', border: '1px solid #ccc' }} />
 
-      {/* Вопрос + вложения */}
       <textarea
         placeholder="Вопрос"
         value={question}
@@ -55,7 +54,13 @@ export default function CreatePollScreen({ onBack }) {
 
       {/* Кнопка вложения */}
       <label style={{ display: 'block', marginBottom: '20px' }}>
-        <input type="file"" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
+        <input
+          type="file"
+          multiple
+          accept="image/*,video/*,.pdf,.doc,.docx,.txt"
+          onChange={handleFiles}
+          style={{ display: 'none' }}
+        />
         <div style={{ padding: '12px', background: '#e0e0e0', borderRadius: '12px', textAlign: 'center', cursor: 'pointer' }}>
           📎 Прикрепить фото, видео, документ...
         </div>
