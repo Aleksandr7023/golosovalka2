@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.017
+// src/CreatePollScreen.jsx — v2.018
 
 import React, { useState } from 'react'
 
@@ -25,6 +25,11 @@ export default function CreatePollScreen({ onBack }) {
 
   const removeAttachment = (i) => setAttachments(attachments.filter((_, idx) => idx !== i))
 
+  const openFile = (file) => {
+    const url = URL.createObjectURL(file)
+    window.open(url, '_blank')
+  }
+
   const addOption = () => setOptions([...options, ''])
   const removeOption = (i) => setOptions(options.filter((_, idx) => idx !== i))
   const updateOption = (i, value) => {
@@ -36,7 +41,7 @@ export default function CreatePollScreen({ onBack }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.017
+        v2.018
       </div>
 
       <button onClick={onBack} style={{ marginBottom: '20px' }}>← Назад</button>
@@ -76,16 +81,18 @@ export default function CreatePollScreen({ onBack }) {
           <div style={{ display: 'flex', gap: '8px', marginLeft: '12px' }}>
             {attachments.map((file, i) => (
               <div key={i} style={{ position: 'relative' }}>
-                {file.type.startsWith('image/') ? (
-                  <img src={URL.createObjectURL(file)} alt="" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '8px' }} />
-                ) : file.type.startsWith('video/') ? (
-                  <div style={{ width: '40px', height: '40px', background: '#000', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>▶</div>
-                ) : (
-                  <div style={{ width: '40px', height: '40px', background: '#ddd', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>
-                    DOC
-                  </div>
-                )}
-                <button onClick={() => removeAttachment(i)} style={{ position: 'absolute', top: '-6px', right: '-6px', background: '#ff4d4d', color: 'white', border: 'none', borderRadius: '50%', width: '16px', height: '16px', fontSize: '10px' }}>
+                <div onClick={() => openFile(file)} style={{ cursor: 'pointer' }}>
+                  {file.type.startsWith('image/') ? (
+                    <img src={URL.createObjectURL(file)} alt="" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '8px' }} />
+                  ) : file.type.startsWith('video/') ? (
+                    <div style={{ width: '40px', height: '40px', background: '#000', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>▶</div>
+                  ) : (
+                    <div style={{ width: '40px', height: '40px', background: '#ddd', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>
+                      DOC
+                    </div>
+                  )}
+                </div>
+                <button onClick={(e) => { e.stopPropagation(); removeAttachment(i) }} style={{ position: 'absolute', top: '-6px', right: '-6px', background: '#ff4d4d', color: 'white', border: 'none', borderRadius: '50%', width: '16px', height: '16px', fontSize: '10px' }}>
                   ×
                 </button>
               </div>
