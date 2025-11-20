@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.027
+// src/CreatePollScreen.jsx — v2.028 (множественные черновики с ID)
 
 import React, { useState, useEffect } from 'react'
 
@@ -9,16 +9,37 @@ export default function CreatePollScreen({ onBack, draft }) {
   const [attachments, setAttachments] = useState([])
   const [error, setError] = useState('')
   const [viewerFile, setViewerFile] = useState(null)
+  const [draftId, setDraftId] = useState(null)
 
-  // Загрузка черновика
+  // Загрузка черновика (если редактирование)
   useEffect(() => {
     if (draft) {
       setTheme(draft.theme || '')
       setQuestion(draft.question || '')
       setOptions(draft.options || [])
       setAttachments(draft.attachments || [])
+      setDraftId(draft.id)
     }
   }, [draft])
+
+  const saveDraft = () => {
+    const currentData = { theme, question, options: options.filter(o => o.trim()), attachments, timestamp: Date.now() }
+
+    const id = draftId || Date.now().toString()
+    setDraftId(id)
+
+    localStorage.setItem(`draft_${id}`, JSON.stringify({ ...currentData, id }))
+    localStorage.setItem('draftIds', JSON.stringify([
+      ...(JSON.parse(localStorage.getItem('draftIds') || '[]').filter(d => d !== id)),
+      id
+    ]))
+  }
+
+  const handleBack = () => {
+    const hasData = theme.trim() || question.trim() || options.some(o => o.trim()) || attachments.length > 0
+    if (hasData) saveDraft()
+    onBack()
+  }
 
   const handleFiles = (e) => {
     const files = Array.from(e.target.files)
@@ -50,19 +71,14 @@ export default function CreatePollScreen({ onBack, draft }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.027
+        v2.028
       </div>
 
-      <button onClick={onBack} style={{ marginBottom: '20px' }}>← Назад</button>
+      <button onClick={handleBack} style={{ marginBottom: '20px' }}>← Назад</button>
 
       <h2 style={{ fontSize: '22px', marginBottom: '20px' }}>НОВЫЙ ОПРОС</h2>
 
-      <input
-        placeholder="Тема опроса"
-        value={theme}
-        onChange={e => setTheme(e.target.value)}
-        style={{ width: '100%', padding: '12px', fontSize: '18px', marginBottom: '20px', borderRadius: '12px', border: '1px solid #ccc' }}
-      />
+      <input placeholder="Тема опроса" value={theme} onChange={e => setTheme(e.target.value)} style={{ width: '100%', padding: '12px', fontSize: '18px', marginBottom: '20px', borderRadius: '12px', border: '1px solid #ccc' }} />
 
       <textarea
         placeholder="Вопрос"
