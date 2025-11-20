@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.037 (клавиатура не перекрывает ввод)
+// src/CreatePollScreen.jsx — v2.038 (кнопки не перекрывают ввод)
 
 import React, { useState, useEffect } from 'react'
 
@@ -74,11 +74,10 @@ export default function CreatePollScreen({ onBack, draft }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.037
+        v2.038
       </div>
 
       <button onClick={handleBack} style={{ marginBottom: '20px' }}>← Назад</button>
-
       <h2 style={{ fontSize: '22px', marginBottom: '20px' }}>НОВЫЙ ОПРОС</h2>
 
       <input placeholder="Тема опроса" value={theme} onChange={e => setTheme(e.target.value)} style={{ width: '100%', padding: '12px', fontSize: '18px', marginBottom: '20px', borderRadius: '12px', border: '1px solid #ccc' }} />
@@ -103,6 +102,7 @@ export default function CreatePollScreen({ onBack, draft }) {
         }}
       />
 
+      {/* Скрепка + превью */}
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
         <label>
           <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
@@ -135,6 +135,7 @@ export default function CreatePollScreen({ onBack, draft }) {
 
       {error && <div style={{ color: '#ff4d4d', marginBottom: '12px', fontSize: '14px' }}>{error}</div>}
 
+      {/* Просмотрщик */}
       {viewerFile && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', zIndex: 1000, display: 'flex', flexDirection: 'column' }}>
           <button onClick={() => setViewerFile(null)} style={{ alignSelf: 'flex-end', background: 'none', border: 'none', color: 'white', fontSize: '32px', padding: '16px' }}>×</button>
@@ -150,8 +151,8 @@ export default function CreatePollScreen({ onBack, draft }) {
         </div>
       )}
 
-      {/* Варианты — теперь не перекрываются клавиатурой */}
-      <div style={{ flex: 1, overflowY: 'auto', paddingRight: '8px', marginBottom: '20px' }}>
+      {/* Варианты — flex: 1 + padding-bottom */}
+      <div style={{ flex: 1, overflowY: 'auto', paddingRight: '8px', paddingBottom: '120px', marginBottom: '-100px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
             <input
@@ -167,17 +168,20 @@ export default function CreatePollScreen({ onBack, draft }) {
         ))}
       </div>
 
-      <button onClick={addOption} style={{ width: '100%', padding: '12px', background: '#4a90e2', color: 'white', borderRadius: '12px', marginBottom: '12px' }}>
-        + Добавить вариант ответа
-      </button>
+      {/* Фиксированные кнопки внизу */}
+      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: '#f8f9fa', padding: '12px 16px', borderTop: '1px solid #ddd' }}>
+        <button onClick={addOption} style={{ width: '100%', padding: '12px', background: '#4a90e2', color: 'white', borderRadius: '12px', marginBottom: '12px' }}>
+          + Добавить вариант ответа
+        </button>
 
-      <div style={{ display: 'flex', gap: '12px' }}>
-        <button style={{ flex: 1, padding: '16px', background: '#666', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
-          ⚙️ Свойства опроса
-        </button>
-        <button style={{ flex: 1, padding: '16px', background: '#52c41a', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
-          ЗАПУСТИТЬ ОПРОС
-        </button>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button style={{ flex: 1, padding: '16px', background: '#666', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
+            ⚙️ Свойства опроса
+          </button>
+          <button style={{ flex: 1, padding: '16px', background: '#52c41a', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
+            ЗАПУСТИТЬ ОПРОС
+          </button>
+        </div>
       </div>
     </div>
   )
