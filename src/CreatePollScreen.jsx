@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.023 (работает 100%)
+// src/CreatePollScreen.jsx — v2.024
 
 import React, { useState } from 'react'
 
@@ -7,7 +7,7 @@ export default function CreatePollScreen({ onBack }) {
   const [options, setOptions] = useState([])
   const [attachments, setAttachments] = useState([])
   const [error, setError] = useState('')
-  const [viewerFile, setViewerFile] = useState(null)
+  const [viewerFile, setViewerFile] = useState(null) // { url, type, name }
 
   const handleFiles = (e) => {
     const files = Array.from(e.target.files)
@@ -25,16 +25,7 @@ export default function CreatePollScreen({ onBack }) {
 
   const openFile = (file) => {
     const url = URL.createObjectURL(file)
-    if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
-      setViewerFile({ url, type: file.type })
-    } else {
-      // PDF, TXT, DOC — скачивание
-      const a = document.createElement('a')
-      a.href = url
-      a.download = file.name
-      a.click()
-      URL.revokeObjectURL(url)
-    }
+    setViewerFile({ url, type: file.type, name: file.name })
   }
 
   const addOption = () => setOptions([...options, ''])
@@ -48,7 +39,7 @@ export default function CreatePollScreen({ onBack }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.023
+        v2.024
       </div>
 
       <button onClick={onBack} style={{ marginBottom: '20px' }}>← Назад</button>
@@ -76,6 +67,7 @@ export default function CreatePollScreen({ onBack }) {
         }}
       />
 
+      {/* Скрепка + превью */}
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
         <label>
           <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
@@ -108,20 +100,23 @@ export default function CreatePollScreen({ onBack }) {
 
       {error && <div style={{ color: '#ff4d4d', marginBottom: '12px', fontSize: '14px' }}>{error}</div>}
 
-      {/* Просмотрщик фото/видео */}
+      {/* Универсальный просмотрщик */}
       {viewerFile && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', zIndex: 1000, display: 'flex', flexDirection: 'column' }}>
           <button onClick={() => setViewerFile(null)} style={{ alignSelf: 'flex-end', background: 'none', border: 'none', color: 'white', fontSize: '32px', padding: '16px' }}>×</button>
           <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
             {viewerFile.type.startsWith('image/') ? (
               <img src={viewerFile.url} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-            ) : (
+            ) : viewerFile.type.startsWith('video/') ? (
               <video src={viewerFile.url} controls autoPlay style={{ maxWidth: '100%', maxHeight: '100%' }} />
+            ) : (
+              <iframe src={viewerFile.url} title={viewerFile.name} style={{ width: '90%', height: '90%', border: 'none' }} />
             )}
           </div>
         </div>
       )}
 
+      {/* Варианты */}
       <div style={{ flex: 1, overflowY: 'auto', maxHeight: '190px', marginBottom: '20px', paddingRight: '8px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
