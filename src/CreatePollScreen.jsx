@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.051
+// src/CreatePollScreen.jsx — v2.052 (окно вариантов — ровно 3 строки)
 
 import React, { useState, useEffect } from 'react'
 
@@ -92,7 +92,7 @@ export default function CreatePollScreen({ onBack, draft }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.051
+        v2.052
       </div>
 
       <button onClick={handleBack} style={{ background: 'none', border: 'none', fontSize: '32px', padding: '4px 8px', cursor: 'pointer', alignSelf: 'flex-start' }}>
@@ -171,8 +171,8 @@ export default function CreatePollScreen({ onBack, draft }) {
         </div>
       )}
 
-      {/* Варианты — максимум 4 строки без скролла */}
-      <div style={{ flex: 1, overflowY: 'auto', maxHeight: '240px', paddingRight: '8px', paddingBottom: keyboardHeight > 0 ? `${keyboardHeight + 20}px` : '20px' }}>
+      {/* Варианты — ровно 3 строки */}
+      <div style={{ flex: 1, overflowY: 'auto', maxHeight: '180px', paddingRight: '8px', paddingBottom: keyboardHeight > 0 ? `${keyboardHeight + 20}px` : '20px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
             <input
@@ -190,8 +190,8 @@ export default function CreatePollScreen({ onBack, draft }) {
         ))}
       </div>
 
-      {/* Кнопки — ещё выше (ещё на одну строку) */}
-      <div style={{ marginTop: '-90px' }}>
+      {/* Кнопки — под 3-м вариантом */}
+      <div style={{ marginTop: '-60px' }}>
         <button onClick={addOption} style={{ width: '100%', padding: '12px', background: '#4a90e2', color: 'white', borderRadius: '12px', marginBottom: '12px' }}>
           + Добавить вариант ответа
         </button>
