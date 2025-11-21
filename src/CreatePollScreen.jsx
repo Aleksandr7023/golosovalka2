@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.054 (кнопки опущены правильно)
+// src/CreatePollScreen.jsx — v2.055
 
 import React, { useState, useEffect } from 'react'
 
@@ -37,7 +37,6 @@ export default function CreatePollScreen({ onBack, draft }) {
     }
   }, [])
 
-  // Запрет масштабирования
   useEffect(() => {
     const meta = document.createElement('meta')
     meta.name = 'viewport'
@@ -101,7 +100,7 @@ export default function CreatePollScreen({ onBack, draft }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.054
+        v2.055
       </div>
 
       <button onClick={handleBack} style={{ background: 'none', border: 'none', fontSize: '32px', padding: '4px 8px', cursor: 'pointer', alignSelf: 'flex-start' }}>
@@ -199,8 +198,8 @@ export default function CreatePollScreen({ onBack, draft }) {
         ))}
       </div>
 
-      {/* Кнопки — опущены на высоту одной строки (~60px) */}
-      <div style={{ marginTop: '-30px' }}>
+      {/* Кнопки — опущены ещё на одну строку */}
+      <div style={{ marginTop: '-90px' }}>
         <button onClick={addOption} style={{ width: '100%', padding: '12px', background: '#4a90e2', color: 'white', borderRadius: '12px', marginBottom: '12px' }}>
           + Добавить вариант ответа
         </button>
