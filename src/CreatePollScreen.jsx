@@ -1,11 +1,11 @@
-// src/CreatePollScreen.jsx — v2.043 (идеально: кнопки под клавиатурой, минимум 2 варианта)
+// src/CreatePollScreen.jsx — v2.044 (окно вариантов уменьшено на одну строку)
 
 import React, { useState, useEffect } from 'react'
 
 export default function CreatePollScreen({ onBack, draft }) {
   const [theme, setTheme] = useState('')
   const [question, setQuestion] = useState('')
-  const [options, setOptions] = useState(['', '']) // минимум 2
+  const [options, setOptions] = useState(['', ''])
   const [attachments, setAttachments] = useState([])
   const [error, setError] = useState('')
   const [viewerFile, setViewerFile] = useState(null)
@@ -92,7 +92,7 @@ export default function CreatePollScreen({ onBack, draft }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.043
+        v2.044
       </div>
 
       <button onClick={handleBack} style={{ marginBottom: '20px' }}>← Назад</button>
@@ -169,8 +169,8 @@ export default function CreatePollScreen({ onBack, draft }) {
         </div>
       )}
 
-      {/* Варианты — занимают всё место */}
-      <div style={{ flex: 1, overflowY: 'auto', paddingRight: '8px', paddingBottom: keyboardHeight > 0 ? `${keyboardHeight + 140}px` : '140px' }}>
+      {/* Варианты — уменьшено на одну строку */}
+      <div style={{ flex: 1, overflowY: 'auto', paddingRight: '8px', paddingBottom: keyboardHeight > 0 ? `${keyboardHeight + 160}px` : '160px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
             <input
@@ -188,7 +188,7 @@ export default function CreatePollScreen({ onBack, draft }) {
         ))}
       </div>
 
-      {/* Кнопки — остаются под клавиатурой */}
+      {/* Кнопки — под клавиатурой */}
       <div style={{ background: '#f8f9fa', padding: '12px 0', borderTop: '1px solid #ddd' }}>
         <button onClick={addOption} style={{ width: '100%', padding: '12px', background: '#4a90e2', color: 'white', borderRadius: '12px', marginBottom: '12px' }}>
           + Добавить вариант ответа
