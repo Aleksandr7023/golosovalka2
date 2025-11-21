@@ -1,4 +1,4 @@
-// src/PollSettingsScreen.jsx — v3.003
+// src/PollSettingsScreen.jsx — v3.004
 
 import React, { useState } from 'react'
 
@@ -9,12 +9,16 @@ export default function PollSettingsScreen({ onBack }) {
   const [allowComments, setAllowComments] = useState(true)
   const [hasEndDate, setHasEndDate] = useState(false)
   const [endDate, setEndDate] = useState('')
-  const [nickType, setNickType] = useState('telegram') // telegram | custom
+  const [nickType, setNickType] = useState('telegram') // 'telegram' | 'custom'
+  const [customNickHint, setCustomNickHint] = useState('')
+
+  // Если анонимно — принудительно telegram (скрытый ник)
+  const effectiveNickType = anonymous ? 'telegram' : nickType
 
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v3.003
+        v3.004
       </div>
 
       <button onClick={onBack} style={{ background: 'none', border: 'none', fontSize: '32px', padding: '4px 8px', cursor: 'pointer', alignSelf: 'flex-start' }}>
@@ -33,6 +37,12 @@ export default function PollSettingsScreen({ onBack }) {
           <span style={{ fontSize: '18px' }}>Анонимный опрос</span>
           <input type="checkbox" checked={anonymous} onChange={e => setAnonymous(e.target.checked)} style={{ width: '24px', height: '24px' }} />
         </label>
+
+        {anonymous && (
+          <div style={{ padding: '12px', background: '#f0f0f0', borderRadius: '12px', marginBottom: '20px', fontSize: '16px', color: '#666' }}>
+            При анонимном опросе ник участника скрыт
+          </div>
+        )}
 
         <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <span style={{ fontSize: '18px' }}>Показывать результаты участникам</span>
@@ -56,17 +66,30 @@ export default function PollSettingsScreen({ onBack }) {
           </div>
         )}
 
-        <div style={{ marginTop: '10px' }}>
-          <span style={{ fontSize: '18px', display: 'block', marginBottom: '12px' }}>Отображать имя участника как:</span>
-          <label style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
-            <input type="radio" name="nick" checked={nickType === 'telegram'} onChange={() => setNickType('telegram')} style={{ marginRight: '12px' }} />
-            <span style={{ fontSize: '18px' }}>Ник из Telegram</span>
-          </label>
-          <label style={{ display: 'flex', alignItems: 'center' }}>
-            <input type="radio" name="nick" checked={nickType === 'custom'} onChange={() => setNickType('custom')} style={{ marginRight: '12px' }} />
-            <span style={{ fontSize: '18px' }}>Специальный (номер бокса, ник в игре и т.д.)</span>
-          </label>
-        </div>
+        {!anonymous && (
+          <>
+            <div style={{ fontSize: '18px', marginBottom: '12px' }}>Отображать имя участника как:</div>
+            <label style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
+              <input type="radio" name="nick" checked={effectiveNickType === 'telegram'} onChange={() => setNickType('telegram')} style={{ marginRight: '12px' }} />
+              <span style={{ fontSize: '18px' }}>Ник из Telegram</span>
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
+              <input type="radio" name="nick" checked={effectiveNickType === 'custom'} onChange={() => setNickType('custom')} style={{ marginRight: '12px' }} />
+              <span style={{ fontSize: '18px' }}>Специальный ник</span>
+            </label>
+
+            {effectiveNickType === 'custom' && (
+              <div style={{ marginTop: '8px' }}>
+                <input
+                  placeholder="Подсказка (например: номер бокса, ник в Танках)"
+                  value={customNickHint}
+                  onChange={e => setCustomNickHint(e.target.value)}
+                  style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '1px solid #ccc' }}
+                />
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       <button style={{ width: '100%', padding: '16px', background: '#52c41a', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
