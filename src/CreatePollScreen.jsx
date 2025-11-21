@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.052 (окно вариантов — ровно 3 строки)
+// src/CreatePollScreen.jsx — v2.053 (кнопки опущены на 1 см, масштаб запрещён)
 
 import React, { useState, useEffect } from 'react'
 
@@ -35,6 +35,15 @@ export default function CreatePollScreen({ onBack, draft }) {
       window.removeEventListener('focusin', handleResize)
       window.removeEventListener('focusout', handleResize)
     }
+  }, [])
+
+  // Запрет масштабирования
+  useEffect(() => {
+    const meta = document.createElement('meta')
+    meta.name = 'viewport'
+    meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
+    document.head.appendChild(meta)
+    return () => document.head.removeChild(meta)
   }, [])
 
   const saveDraft = () => {
@@ -92,7 +101,7 @@ export default function CreatePollScreen({ onBack, draft }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.052
+        v2.053
       </div>
 
       <button onClick={handleBack} style={{ background: 'none', border: 'none', fontSize: '32px', padding: '4px 8px', cursor: 'pointer', alignSelf: 'flex-start' }}>
@@ -190,8 +199,8 @@ export default function CreatePollScreen({ onBack, draft }) {
         ))}
       </div>
 
-      {/* Кнопки — под 3-м вариантом */}
-      <div style={{ marginTop: '-60px' }}>
+      {/* Кнопки — опущены на 1 см (10px) */}
+      <div style={{ marginTop: '-50px' }}>
         <button onClick={addOption} style={{ width: '100%', padding: '12px', background: '#4a90e2', color: 'white', borderRadius: '12px', marginBottom: '12px' }}>
           + Добавить вариант ответа
         </button>
