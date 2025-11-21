@@ -1,11 +1,11 @@
-// src/CreatePollScreen.jsx — v2.040 (идеальное поведение с клавиатурой)
+// src/CreatePollScreen.jsx — v2.041
 
 import React, { useState, useEffect } from 'react'
 
 export default function CreatePollScreen({ onBack, draft }) {
   const [theme, setTheme] = useState('')
   const [question, setQuestion] = useState('')
-  const [options, setOptions] = useState([])
+  const [options, setOptions] = useState(['', '']) // минимум 2 варианта всегда
   const [attachments, setAttachments] = useState([])
   const [error, setError] = useState('')
   const [viewerFile, setViewerFile] = useState(null)
@@ -16,25 +16,20 @@ export default function CreatePollScreen({ onBack, draft }) {
     if (draft) {
       setTheme(draft.theme || '')
       setQuestion(draft.question || '')
-      setOptions(draft.options || [])
+      setOptions(draft.options?.length >= 2 ? draft.options : ['', ''])
       setDraftId(draft.id)
     }
   }, [draft])
 
-  // Отслеживание клавиатуры (на мобильных)
   useEffect(() => {
     const originalHeight = window.innerHeight
-
     const handleResize = () => {
-      const currentHeight = window.innerHeight
-      const diff = originalHeight - currentHeight
+      const diff = originalHeight - window.innerHeight
       setKeyboardHeight(diff > 100 ? diff : 0)
     }
-
     window.addEventListener('resize', handleResize)
     window.addEventListener('focusin', handleResize)
     window.addEventListener('focusout', handleResize)
-
     return () => {
       window.removeEventListener('resize', handleResize)
       window.removeEventListener('focusin', handleResize)
@@ -84,7 +79,10 @@ export default function CreatePollScreen({ onBack, draft }) {
   }
 
   const addOption = () => setOptions([...options, ''])
-  const removeOption = (i) => setOptions(options.filter((_, idx) => idx !== i))
+  const removeOption = (i) => {
+    if (options.length <= 2) return // минимум 2
+    setOptions(options.filter((_, idx) => idx !== i))
+  }
   const updateOption = (i, value) => {
     const newOpts = [...options]
     newOpts[i] = value
@@ -94,7 +92,7 @@ export default function CreatePollScreen({ onBack, draft }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.040
+        v2.041
       </div>
 
       <button onClick={handleBack} style={{ marginBottom: '20px' }}>← Назад</button>
@@ -127,7 +125,6 @@ export default function CreatePollScreen({ onBack, draft }) {
           <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
           <div style={{ fontSize: '32px', cursor: 'pointer' }}>📎</div>
         </label>
-
         {attachments.length > 0 && (
           <div style={{ display: 'flex', gap: '8px', marginLeft: '12px' }}>
             {attachments.map((file, i) => (
@@ -169,8 +166,8 @@ export default function CreatePollScreen({ onBack, draft }) {
         </div>
       )}
 
-      {/* Варианты — занимают всё место, клавиатура поднимает содержимое */}
-      <div style={{ flex: 1, overflowY: 'auto', paddingRight: '8px', paddingBottom: keyboardHeight > 0 ? `${keyboardHeight + 20}px` : '20px' }}>
+      {/* Варианты — с отступом снизу */}
+      <div style={{ flex: 1, overflowY: 'auto', paddingRight: '8px', paddingBottom: keyboardHeight > 0 ? `${keyboardHeight + 140}px` : '140px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
             <input
@@ -179,16 +176,18 @@ export default function CreatePollScreen({ onBack, draft }) {
               onChange={e => updateOption(i, e.target.value)}
               style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '1px solid #ccc' }}
             />
-            <button onClick={() => removeOption(i)} style={{ marginLeft: '8px', background: '#ff4d4d', color: 'white', borderRadius: '8px', padding: '0 12px' }}>
-              ✕
-            </button>
+            {options.length > 2 && (
+              <button onClick={() => removeOption(i)} style={{ marginLeft: '8px', background: '#ff4d4d', color: 'white', borderRadius: '8px', padding: '0 12px' }}>
+                ✕
+              </button>
+            )}
           </div>
         ))}
       </div>
 
-      {/* Кнопки — приклеены к низу, но не перекрывают ввод */}
-      <div style={{ background: '#f8f9fa', padding: '12px 0', borderTop: '1px solid #ddd' }}>
-        <button onClick={addOption} style={{ width: '100%', padding: '12px', background: '#4a90e2', color: 'white', borderRadius: '12px', marginBottom: '12px' }}>
+      {/* Кнопки — приподняты, фиксированы */}
+      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: '#f8f9fa', padding: '16px', borderTop: '1px solid #ddd', boxShadow: '0 -2px 10px rgba(0,0,0,0.1)' }}>
+        <button onClick={addOption} style={{ width: '100%', padding: '14px', background: '#4a90e2', color: 'white', borderRadius: '12px', marginBottom: '12px', fontSize: '18px' }}>
           + Добавить вариант ответа
         </button>
         <div style={{ display: 'flex', gap: '12px' }}>
