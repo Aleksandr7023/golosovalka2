@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.055
+// src/CreatePollScreen.jsx — v2.056 (кнопки точно под 4-м вариантом)
 
 import React, { useState, useEffect } from 'react'
 
@@ -100,7 +100,7 @@ export default function CreatePollScreen({ onBack, draft }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.055
+        v2.056
       </div>
 
       <button onClick={handleBack} style={{ background: 'none', border: 'none', fontSize: '32px', padding: '4px 8px', cursor: 'pointer', alignSelf: 'flex-start' }}>
@@ -131,6 +131,7 @@ export default function CreatePollScreen({ onBack, draft }) {
         }}
       />
 
+      {/* Скрепка + превью */}
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
         <label>
           <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
@@ -171,7 +172,7 @@ export default function CreatePollScreen({ onBack, draft }) {
             {viewerFile.type.startsWith('image/') ? (
               <img src={viewerFile.url} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
             ) : viewerFile.type.startsWith('video/') ? (
-              <video src={viewerFile.url} controls autoPlay style={{ maxWidth: '100%', maxHeight: '100%' }} />
+              <video src={viewerFile.url} controls autoPlay style={{ maxWidth: '100%', maxHeight: '100% }} />
             ) : (
               <iframe src={viewerFile.url} title={viewerFile.name} style={{ width: '90%', height: '90%', border: 'none' }} />
             )}
@@ -179,8 +180,8 @@ export default function CreatePollScreen({ onBack, draft }) {
         </div>
       )}
 
-      {/* Варианты — ровно 3 строки */}
-      <div style={{ flex: 1, overflowY: 'auto', maxHeight: '180px', paddingRight: '8px', paddingBottom: keyboardHeight > 0 ? `${keyboardHeight + 20}px` : '20px' }}>
+      {/* Варианты — фиксированная высота для 3 строк */}
+      <div style={{ flex: 1, overflowY: 'auto', maxHeight: '180px', paddingRight: '8px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
             <input
@@ -198,8 +199,8 @@ export default function CreatePollScreen({ onBack, draft }) {
         ))}
       </div>
 
-      {/* Кнопки — опущены ещё на одну строку */}
-      <div style={{ marginTop: '-90px' }}>
+      {/* Кнопки — ровно под 4-м вариантом (высота строки ~60px) */}
+      <div style={{ marginTop: '20px' }}>
         <button onClick={addOption} style={{ width: '100%', padding: '12px', background: '#4a90e2', color: 'white', borderRadius: '12px', marginBottom: '12px' }}>
           + Добавить вариант ответа
         </button>
