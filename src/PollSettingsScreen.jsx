@@ -1,4 +1,4 @@
-// src/PollSettingsScreen.jsx — v3.004
+// src/PollSettingsScreen.jsx — v3.005
 
 import React, { useState } from 'react'
 
@@ -9,16 +9,17 @@ export default function PollSettingsScreen({ onBack }) {
   const [allowComments, setAllowComments] = useState(true)
   const [hasEndDate, setHasEndDate] = useState(false)
   const [endDate, setEndDate] = useState('')
-  const [nickType, setNickType] = useState('telegram') // 'telegram' | 'custom'
+  const [nickType, setNickType] = useState('telegram')
   const [customNickHint, setCustomNickHint] = useState('')
+  const [revoteDelay, setRevoteDelay] = useState('never') // never | 1h | 24h | 7d
 
-  // Если анонимно — принудительно telegram (скрытый ник)
   const effectiveNickType = anonymous ? 'telegram' : nickType
 
   return (
-    <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+      {/* Только версия этого экрана */}
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v3.004
+        v3.005
       </div>
 
       <button onClick={onBack} style={{ background: 'none', border: 'none', fontSize: '32px', padding: '4px 8px', cursor: 'pointer', alignSelf: 'flex-start' }}>
@@ -66,6 +67,16 @@ export default function PollSettingsScreen({ onBack }) {
           </div>
         )}
 
+        <div style={{ marginBottom: '20px' }}>
+          <span style={{ fontSize: '18px', display: 'block', marginBottom: '12px' }}>Через сколько можно переголосовать</span>
+          <select value={revoteDelay} onChange={e => setRevoteDelay(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '1px solid #ccc', fontSize: '18px' }}>
+            <option value="never">Никогда</option>
+            <option value="1h">Через 1 час</option>
+            <option value="24h">Через сутки</option>
+            <option value="7d">Через неделю</option>
+          </select>
+        </div>
+
         {!anonymous && (
           <>
             <div style={{ fontSize: '18px', marginBottom: '12px' }}>Отображать имя участника как:</div>
@@ -81,7 +92,7 @@ export default function PollSettingsScreen({ onBack }) {
             {effectiveNickType === 'custom' && (
               <div style={{ marginTop: '8px' }}>
                 <input
-                  placeholder="Подсказка (например: номер бокса, ник в Танках)"
+                  placeholder="Соответствует специфике опроса"
                   value={customNickHint}
                   onChange={e => setCustomNickHint(e.target.value)}
                   style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '1px solid #ccc' }}
