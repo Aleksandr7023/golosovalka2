@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.047
+// src/CreatePollScreen.jsx — v2.048
 
 import React, { useState, useEffect } from 'react'
 
@@ -75,10 +75,9 @@ export default function CreatePollScreen({ onBack, draft }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.047
+        v2.048
       </div>
 
-      {/* Красивая стрелка Назад */}
       <button onClick={handleBack} style={{ background: 'none', border: 'none', fontSize: '32px', padding: '4px 8px', cursor: 'pointer', alignSelf: 'flex-start' }}>
         ←
       </button>
@@ -107,7 +106,6 @@ export default function CreatePollScreen({ onBack, draft }) {
         }}
       />
 
-      {/* Скрепка + превью */}
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
         <label>
           <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
@@ -157,7 +155,7 @@ export default function CreatePollScreen({ onBack, draft }) {
       )}
 
       {/* Варианты — прокрутка только при 4+ */}
-      <div style={{ flex: 1, overflowY: options.length > 3 ? 'auto' : 'visible', paddingRight: '8px', marginBottom: '20px' }}>
+      <div style={{ overflowY: options.length > 3 ? 'auto' : 'visible', paddingRight: '8px', marginBottom: '20px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
             <input
@@ -175,17 +173,19 @@ export default function CreatePollScreen({ onBack, draft }) {
         ))}
       </div>
 
-      <button onClick={addOption} style={{ width: '100%', padding: '12px', background: '#4a90e2', color: 'white', borderRadius: '12px', marginBottom: '12px' }}>
-        + Добавить вариант ответа
-      </button>
-
-      <div style={{ display: 'flex', gap: '12px' }}>
-        <button style={{ flex: 1, padding: '16px', background: '#666', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
-          ⚙️ Свойства опроса
+      {/* Кнопки — под 4-м вариантом */}
+      <div style={{ paddingTop: '8px' }}>
+        <button onClick={addOption} style={{ width: '100%', padding: '12px', background: '#4a90e2', color: 'white', borderRadius: '12px', marginBottom: '12px' }}>
+          + Добавить вариант ответа
         </button>
-        <button style={{ flex: 1, padding: '16px', background: '#52c41a', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
-          ЗАПУСТИТЬ ОПРОС
-        </button>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button style={{ flex: 1, padding: '16px', background: '#666', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
+            ⚙️ Свойства опроса
+          </button>
+          <button style={{ flex: 1, padding: '16px', background: '#52c41a', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
+            ЗАПУСТИТЬ ОПРОС
+          </button>
+        </div>
       </div>
     </div>
   )
