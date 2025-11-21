@@ -1,4 +1,4 @@
-// src/PollSettingsScreen.jsx — v3.006
+// src/PollSettingsScreen.jsx — v3.007
 
 import React, { useState } from 'react'
 
@@ -17,9 +17,8 @@ export default function PollSettingsScreen({ onBack }) {
 
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
-      {/* Версия только этого экрана */}
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888', zIndex: 10 }}>
-        v3.006
+        v3.007
       </div>
 
       <button onClick={onBack} style={{ background: 'none', border: 'none', fontSize: '32px', padding: '4px 8px', cursor: 'pointer', alignSelf: 'flex-start' }}>
@@ -29,6 +28,12 @@ export default function PollSettingsScreen({ onBack }) {
       <h2 style={{ fontSize: '22px', margin: '4px 0 16px 0' }}>СВОЙСТВА ОПРОСА</h2>
 
       <div style={{ background: 'white', borderRadius: '16px', padding: '16px', marginBottom: '16px' }}>
+        {/* Самый верхний пункт — фиксированный */}
+        <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', opacity: 0.7 }}>
+          <span style={{ fontSize: '18px' }}>Запуск с одобрения администратора</span>
+          <input type="checkbox" checked={true} disabled style={{ width: '24px', height: '24px' }} />
+        </label>
+
         <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
           <span style={{ fontSize: '18px' }}>Можно выбрать несколько вариантов</span>
           <input type="checkbox" checked={multiple} onChange={e => setMultiple(e.target.checked)} style={{ width: '24px', height: '24px' }} />
