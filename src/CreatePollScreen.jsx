@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.045
+// src/CreatePollScreen.jsx — v2.046
 
 import React, { useState, useEffect } from 'react'
 
@@ -101,11 +101,10 @@ export default function CreatePollScreen({ onBack, draft }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.045
+        v2.046
       </div>
 
       <button onClick={handleBack} style={{ marginBottom: '20px' }}>← Назад</button>
-
       <h2 style={{ fontSize: '22px', marginBottom: '20px' }}>НОВЫЙ ОПРОС</h2>
 
       <input placeholder="Тема опроса" value={theme} onChange={e => setTheme(e.target.value)} style={{ width: '100%', padding: '12px', fontSize: '18px', marginBottom: '20px', borderRadius: '12px', border: '1px solid #ccc' }} />
@@ -177,8 +176,8 @@ export default function CreatePollScreen({ onBack, draft }) {
         </div>
       )}
 
-      {/* Варианты — ещё уменьшено */}
-      <div style={{ flex: 1, overflowY: 'auto', paddingRight: '8px', paddingBottom: keyboardHeight > 0 ? `${keyboardHeight + 180}px` : '180px' }}>
+      {/* Варианты — ещё меньше */}
+      <div style={{ flex: 1, overflowY: 'auto', paddingRight: '8px', paddingBottom: keyboardHeight > 0 ? `${keyboardHeight + 200}px` : '200px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
             <input
