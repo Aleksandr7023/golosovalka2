@@ -1,8 +1,8 @@
-// src/CreatePollScreen.jsx — v2.058 (автопрокрутка + правильный отступ снизу)
+// src/CreatePollScreen.jsx — v2.059
 
 import React, { useState, useEffect, useRef } from 'react'
 
-export default function CreatePollScreen({ onBack, draft }) {
+export default function CreatePollScreen({ onBack, draft, onOpenSettings }) {
   const [theme, setTheme] = useState('')
   const [question, setQuestion] = useState('')
   const [options, setOptions] = useState(['', ''])
@@ -89,7 +89,6 @@ export default function CreatePollScreen({ onBack, draft }) {
 
   const addOption = () => {
     setOptions([...options, ''])
-    // Автопрокрутка к последнему варианту
     setTimeout(() => {
       if (optionsRef.current) {
         optionsRef.current.scrollTop = optionsRef.current.scrollHeight
@@ -111,7 +110,7 @@ export default function CreatePollScreen({ onBack, draft }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.058
+        v2.059
       </div>
 
       <button onClick={handleBack} style={{ background: 'none', border: 'none', fontSize: '32px', padding: '4px 8px', cursor: 'pointer', alignSelf: 'flex-start' }}>
@@ -174,7 +173,6 @@ export default function CreatePollScreen({ onBack, draft }) {
 
       {error && <div style={{ color: '#ff4d4d', marginBottom: '12px', fontSize: '14px' }}>{error}</div>}
 
-      {/* Просмотрщик */}
       {viewerFile && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', zIndex: 1000, display: 'flex', flexDirection: 'column' }}>
           <button onClick={() => setViewerFile(null)} style={{ alignSelf: 'flex-end', background: 'none', border: 'none', color: 'white', fontSize: '32px', padding: '16px' }}>×</button>
@@ -190,7 +188,6 @@ export default function CreatePollScreen({ onBack, draft }) {
         </div>
       )}
 
-      {/* Варианты — ровно 3 строки */}
       <div ref={optionsRef} style={{ flex: 1, overflowY: 'auto', maxHeight: '180px', paddingRight: '8px', paddingBottom: keyboardHeight > 0 ? `${keyboardHeight + 20}px` : '20px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
@@ -209,13 +206,12 @@ export default function CreatePollScreen({ onBack, draft }) {
         ))}
       </div>
 
-      {/* Кнопки — маленький отступ снизу */}
       <div style={{ padding: '12px 0' }}>
         <button onClick={addOption} style={{ width: '100%', padding: '12px', background: '#4a90e2', color: 'white', borderRadius: '12px', marginBottom: '12px' }}>
           + Добавить вариант ответа
         </button>
         <div style={{ display: 'flex', gap: '12px' }}>
-          <button style={{ flex: 1, padding: '16px', background: '#666', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
+          <button onClick={onOpenSettings} style={{ flex: 1, padding: '16px', background: '#666', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
             ⚙️ Свойства опроса
           </button>
           <button style={{ flex: 1, padding: '16px', background: '#52c41a', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>

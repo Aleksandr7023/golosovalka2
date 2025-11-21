@@ -1,7 +1,7 @@
-// src/App.jsx — v1.029 (обновление черновиков + чистый второй экран)
-
+// src/App.jsx — v1.030
 import React, { useState, useEffect } from 'react'
 import CreatePollScreen from './CreatePollScreen.jsx'
+import PollSettingsScreen from './PollSettingsScreen.jsx'
 
 export default function App() {
   const [screen, setScreen] = useState('main')
@@ -19,9 +19,7 @@ export default function App() {
     setDrafts(loaded)
   }
 
-  useEffect(() => {
-    loadDrafts()
-  }, [])
+  useEffect(() => loadDrafts(), [])
 
   const toggleActive = () => {
     setActiveOpen(true)
@@ -55,14 +53,14 @@ export default function App() {
 
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
+        v1.030
+      </div>
+
       {screen === 'main' ? (
         <>
-          <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-            v1.029
-          </div>
-
           <div style={{ textAlign: 'right', fontSize: '14px', color: '#555', marginBottom: '20px' }}>
-            🔷 78   🔶 135   ⭐ 7   ⚡ 53   💬 50
+            🔷 78 🔶 135 ⭐ 7 ⚡ 53 💬 50
           </div>
 
           <div style={{ background: 'white', borderRadius: '20px', padding: '24px', textAlign: 'center', marginBottom: '30px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
@@ -71,10 +69,7 @@ export default function App() {
               <span style={{ marginRight: '10px', fontSize: '20px' }}>🔍</span>
               <input type="text" placeholder="Поиск по обсуждениям" style={{ border: 'none', outline: 'none', width: '100%', background: 'transparent' }} />
             </div>
-            <button onClick={() => {
-              setEditDraft(null)
-              setScreen('create')
-            }} style={{ width: '100%', padding: '16px', background: '#4a90e2', color: 'white', border: 'none', borderRadius: '16px', fontSize: '18px', fontWeight: 'bold' }}>
+            <button onClick={() => { setEditDraft(null); setScreen('create') }} style={{ width: '100%', padding: '16px', background: '#4a90e2', color: 'white', border: 'none', borderRadius: '16px', fontSize: '18px', fontWeight: 'bold' }}>
               ЗАДАТЬ НОВЫЙ ОПРОС
             </button>
           </div>
@@ -122,15 +117,15 @@ export default function App() {
             )}
           </div>
         </>
-      ) : (
-        <CreatePollScreen 
-          draft={editDraft} 
-          onBack={() => {
-            setScreen('main')
-            loadDrafts()  // <-- обновляем список черновиков
-          }} 
+      ) : screen === 'create' ? (
+        <CreatePollScreen
+          draft={editDraft}
+          onBack={() => { setScreen('main'); loadDrafts() }}
+          onOpenSettings={() => setScreen('settings')}
         />
-      )}
+      ) : screen === 'settings' ? (
+        <PollSettingsScreen onBack={() => setScreen('create')} />
+      ) : null}
     </div>
   )
 }
