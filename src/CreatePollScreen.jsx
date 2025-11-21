@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.042 (кнопки под клавиатурой, как было)
+// src/CreatePollScreen.jsx — v2.043 (идеально: кнопки под клавиатурой, минимум 2 варианта)
 
 import React, { useState, useEffect } from 'react'
 
@@ -10,6 +10,7 @@ export default function CreatePollScreen({ onBack, draft }) {
   const [error, setError] = useState('')
   const [viewerFile, setViewerFile] = useState(null)
   const [draftId, setDraftId] = useState(null)
+  const [keyboardHeight, setKeyboardHeight] = useState(0)
 
   useEffect(() => {
     if (draft) {
@@ -20,12 +21,27 @@ export default function CreatePollScreen({ onBack, draft }) {
     }
   }, [draft])
 
+  useEffect(() => {
+    const original = window.innerHeight
+    const handleResize = () => {
+      const diff = original - window.innerHeight
+      setKeyboardHeight(diff > 100 ? diff : 0)
+    }
+    window.addEventListener('resize', handleResize)
+    window.addEventListener('focusin', handleResize)
+    window.addEventListener('focusout', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('focusin', handleResize)
+      window.removeEventListener('focusout', handleResize)
+    }
+  }, [])
+
   const saveDraft = () => {
     const currentData = {
       theme,
       question,
       options: options.filter(o => o.trim() !== ''),
-      attachments,
       attachments,
       timestamp: Date.now(),
       id: draftId || Date.now().toString()
@@ -76,7 +92,7 @@ export default function CreatePollScreen({ onBack, draft }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.042
+        v2.043
       </div>
 
       <button onClick={handleBack} style={{ marginBottom: '20px' }}>← Назад</button>
@@ -153,8 +169,8 @@ export default function CreatePollScreen({ onBack, draft }) {
         </div>
       )}
 
-      {/* Варианты */}
-      <div style={{ flex: 1, overflowY: 'auto', paddingRight: '8px', marginBottom: '20px' }}>
+      {/* Варианты — занимают всё место */}
+      <div style={{ flex: 1, overflowY: 'auto', paddingRight: '8px', paddingBottom: keyboardHeight > 0 ? `${keyboardHeight + 140}px` : '140px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
             <input
@@ -172,12 +188,11 @@ export default function CreatePollScreen({ onBack, draft }) {
         ))}
       </div>
 
-      {/* Кнопки — обычные, под клавиатурой */}
-      <div style={{ background: '#f8f9fa', padding: '12px 0' }}>
+      {/* Кнопки — остаются под клавиатурой */}
+      <div style={{ background: '#f8f9fa', padding: '12px 0', borderTop: '1px solid #ddd' }}>
         <button onClick={addOption} style={{ width: '100%', padding: '12px', background: '#4a90e2', color: 'white', borderRadius: '12px', marginBottom: '12px' }}>
           + Добавить вариант ответа
         </button>
-
         <div style={{ display: 'flex', gap: '12px' }}>
           <button style={{ flex: 1, padding: '16px', background: '#666', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
             ⚙️ Свойства опроса
