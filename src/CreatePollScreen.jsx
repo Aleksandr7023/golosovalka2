@@ -1,6 +1,6 @@
-// src/CreatePollScreen.jsx — v2.057 (исправлена сборка)
+// src/CreatePollScreen.jsx — v2.058 (автопрокрутка + правильный отступ снизу)
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 export default function CreatePollScreen({ onBack, draft }) {
   const [theme, setTheme] = useState('')
@@ -11,6 +11,7 @@ export default function CreatePollScreen({ onBack, draft }) {
   const [viewerFile, setViewerFile] = useState(null)
   const [draftId, setDraftId] = useState(null)
   const [keyboardHeight, setKeyboardHeight] = useState(0)
+  const optionsRef = useRef(null)
 
   useEffect(() => {
     if (draft) {
@@ -86,11 +87,21 @@ export default function CreatePollScreen({ onBack, draft }) {
     setViewerFile({ url, type: file.type, name: file.name })
   }
 
-  const addOption = () => setOptions([...options, ''])
+  const addOption = () => {
+    setOptions([...options, ''])
+    // Автопрокрутка к последнему варианту
+    setTimeout(() => {
+      if (optionsRef.current) {
+        optionsRef.current.scrollTop = optionsRef.current.scrollHeight
+      }
+    }, 0)
+  }
+
   const removeOption = (i) => {
     if (options.length <= 2) return
     setOptions(options.filter((_, idx) => idx !== i))
   }
+
   const updateOption = (i, value) => {
     const newOpts = [...options]
     newOpts[i] = value
@@ -100,7 +111,7 @@ export default function CreatePollScreen({ onBack, draft }) {
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.057
+        v2.058
       </div>
 
       <button onClick={handleBack} style={{ background: 'none', border: 'none', fontSize: '32px', padding: '4px 8px', cursor: 'pointer', alignSelf: 'flex-start' }}>
@@ -173,14 +184,14 @@ export default function CreatePollScreen({ onBack, draft }) {
             ) : viewerFile.type.startsWith('video/') ? (
               <video src={viewerFile.url} controls autoPlay style={{ maxWidth: '100%', maxHeight: '100%' }} />
             ) : (
-              <iframe src={viewerFile.url} title={viewerFile.name} style={{ width: '90%', height: '90%', border: 'none' }}></iframe>
+              <iframe src={viewerFile.url} title={viewerFile.name} style={{ width: '90%', height: '90%', border: 'none' }} />
             )}
           </div>
         </div>
       )}
 
       {/* Варианты — ровно 3 строки */}
-      <div style={{ flex: 1, overflowY: 'auto', maxHeight: '180px', paddingRight: '8px', paddingBottom: keyboardHeight > 0 ? `${keyboardHeight + 20}px` : '20px' }}>
+      <div ref={optionsRef} style={{ flex: 1, overflowY: 'auto', maxHeight: '180px', paddingRight: '8px', paddingBottom: keyboardHeight > 0 ? `${keyboardHeight + 20}px` : '20px' }}>
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
             <input
@@ -198,8 +209,8 @@ export default function CreatePollScreen({ onBack, draft }) {
         ))}
       </div>
 
-      {/* Кнопки — под 3-м вариантом */}
-      <div style={{ marginTop: '20px' }}>
+      {/* Кнопки — маленький отступ снизу */}
+      <div style={{ padding: '12px 0' }}>
         <button onClick={addOption} style={{ width: '100%', padding: '12px', background: '#4a90e2', color: 'white', borderRadius: '12px', marginBottom: '12px' }}>
           + Добавить вариант ответа
         </button>
