@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.060 (передаёт draftId в настройки)
+// src/CreatePollScreen.jsx — v2.061 (сохранение черновика при открытии настроек)
 
 import React, { useState, useEffect, useRef } from 'react'
 
@@ -68,6 +68,12 @@ export default function CreatePollScreen({ onBack, draft, onOpenSettings }) {
     const hasData = theme.trim() !== '' || question.trim() !== '' || options.some(o => o.trim() !== '') || attachments.length > 0
     if (hasData) saveDraft()
     onBack()
+  }
+
+  const handleOpenSettings = () => {
+    const hasData = theme.trim() !== '' || question.trim() !== '' || options.some(o => o.trim() !== '') || attachments.length > 0
+    if (hasData) saveDraft()
+    onOpenSettings(draftId)
   }
 
   const handleFiles = (e) => {
@@ -151,7 +157,7 @@ export default function CreatePollScreen({ onBack, draft, onOpenSettings }) {
                   {file.type.startsWith('image/') ? (
                     <img src={URL.createObjectURL(file)} alt="" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '8px' }} />
                   ) : file.type.startsWith('video/') ? (
-                    <div style={{ width: '40px', height: '40px', background: '#000', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>Play</div>
+                    <div style={{ width: '40px', height: '40px', background: '#000', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>▶</div>
                   ) : (
                     <div style={{ width: '40px', height: '40px', background: '#ddd', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>
                       {file.name.split('.').pop().toUpperCase()}
@@ -207,8 +213,7 @@ export default function CreatePollScreen({ onBack, draft, onOpenSettings }) {
           + Добавить вариант ответа
         </button>
         <div style={{ display: 'flex', gap: '12px' }}>
-          {/* Передаём draftId в настройки */}
-          <button onClick={() => onOpenSettings(draftId)} style={{ flex: 1, padding: '16px', background: '#666', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
+          <button onClick={handleOpenSettings} style={{ flex: 1, padding: '16px', background: '#666', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
             ⚙️ Свойства опроса
           </button>
           <button style={{ flex: 1, padding: '16px', background: '#52c41a', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
