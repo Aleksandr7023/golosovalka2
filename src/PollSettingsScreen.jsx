@@ -1,4 +1,4 @@
-// src/PollSettingsScreen.jsx — v3.010 (настройки сохраняются в черновик)
+// src/PollSettingsScreen.jsx — v3.010 (настройки сохраняются и загружаются правильно)
 
 import React, { useState, useEffect } from 'react'
 
@@ -18,9 +18,25 @@ export default function PollSettingsScreen({ onBack, draftId: currentDraftId }) 
 
   const effectiveNickType = anonymous ? 'telegram' : nickType
 
-  // Загружаем настройки из черновика при открытии
+  // Загрузка настроек при изменении currentDraftId (включая первый рендер)
   useEffect(() => {
-    if (!currentDraftId) return
+    if (!currentDraftId) {
+      // Новый опрос — чистые настройки
+      setMultiple(false)
+      setAnonymous(false)
+      setShowResults(true)
+      setAllowComments(true)
+      setHasEndDate(false)
+      setEndDate('')
+      setClosedPoll(false)
+      setTiedToAddress(false)
+      setAddressHint('')
+      setNickType('telegram')
+      setCustomNickHint('')
+      setRevoteDelay('never')
+      return
+    }
+
     const saved = localStorage.getItem(`draft_${currentDraftId}`)
     if (saved) {
       const data = JSON.parse(saved)
@@ -43,7 +59,10 @@ export default function PollSettingsScreen({ onBack, draftId: currentDraftId }) 
   }, [currentDraftId])
 
   const saveSettings = () => {
-    if (!currentDraftId) return
+    if (!currentDraftId) {
+      alert('Ошибка: черновик не найден')
+      return
+    }
 
     const settings = {
       multiple,
@@ -72,6 +91,7 @@ export default function PollSettingsScreen({ onBack, draftId: currentDraftId }) 
 
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
+
       <button onClick={onBack} style={{ background: 'none', border: 'none', fontSize: '32px', padding: '4px 8px', cursor: 'pointer', alignSelf: 'flex-start' }}>
         ←
       </button>
@@ -79,7 +99,6 @@ export default function PollSettingsScreen({ onBack, draftId: currentDraftId }) 
       <h2 style={{ fontSize: '22px', margin: '4px 0 16px 0' }}>СВОЙСТВА ОПРОСА</h2>
 
       <div style={{ background: 'white', borderRadius: '16px', padding: '16px', marginBottom: '16px' }}>
-        {/* Фиксированный пункт */}
         <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', opacity: 0.7 }}>
           <span style={{ fontSize: '17px' }}>Запуск с одобрения администратора</span>
           <input type="checkbox" checked={true} disabled style={{ width: '22px', height: '22px' }} />
