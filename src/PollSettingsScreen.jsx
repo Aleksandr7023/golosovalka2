@@ -1,4 +1,4 @@
-// src/PollSettingsScreen.jsx — v3.008
+// src/PollSettingsScreen.jsx — v3.009 (финальная версия)
 
 import React, { useState } from 'react'
 
@@ -11,6 +11,7 @@ export default function PollSettingsScreen({ onBack }) {
   const [endDate, setEndDate] = useState('')
   const [closedPoll, setClosedPoll] = useState(false)
   const [tiedToAddress, setTiedToAddress] = useState(false)
+  const [addressHint, setAddressHint] = useState('')
   const [nickType, setNickType] = useState('telegram')
   const [customNickHint, setCustomNickHint] = useState('')
   const [revoteDelay, setRevoteDelay] = useState('never')
@@ -19,9 +20,9 @@ export default function PollSettingsScreen({ onBack }) {
 
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
-      {/* Только версия текущего экрана, без наложения */}
-      <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888', zIndex: 1000 }}>
-        v3.008
+      {/* Версия только этого экрана — выше всех */}
+      <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888', zIndex: 9999 }}>
+        v3.009
       </div>
 
       <button onClick={onBack} style={{ background: 'none', border: 'none', fontSize: '32px', padding: '4px 8px', cursor: 'pointer', alignSelf: 'flex-start' }}>
@@ -38,7 +39,7 @@ export default function PollSettingsScreen({ onBack }) {
         </label>
 
         <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-          <span style={{ fontSize: '17px' }}>Одновременно можно выбрать сразу несколько вариантов</span>
+          <span style={{ fontSize: '17px' }}>Одновременно можно выбрать сразу несколько вариантов ответа</span>
           <input type="checkbox" checked={multiple} onChange={e => setMultiple(e.target.checked)} style={{ width: '22px', height: '22px' }} />
         </label>
 
@@ -64,7 +65,7 @@ export default function PollSettingsScreen({ onBack }) {
         </label>
 
         <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-          <span style={{ fontSize: '17px' }}>Закрытый опрос, вход только по приглашению</span>
+          <span style={{ fontSize: '17px' }}>Закрытый опрос, вход только по приглашению (паролю)</span>
           <input type="checkbox" checked={closedPoll} onChange={e => setClosedPoll(e.target.checked)} style={{ width: '22px', height: '22px' }} />
         </label>
 
@@ -72,6 +73,18 @@ export default function PollSettingsScreen({ onBack }) {
           <span style={{ fontSize: '17px' }}>Привязать к конкретному адресу (объекту)</span>
           <input type="checkbox" checked={tiedToAddress} onChange={e => setTiedToAddress(e.target.checked)} style={{ width: '22px', height: '22px' }} />
         </label>
+
+        {tiedToAddress && (
+          <div style={{ marginBottom: '12px' }}>
+            <span style={{ fontSize: '17px', display: 'block', marginBottom: '6px' }}>Адрес или название объекта</span>
+            <input
+              placeholder="Например: ГК №47, ул. Ленина 15, Домоуправление «Солнечное»"
+              value={addressHint}
+              onChange={e => setAddressHint(e.target.value)}
+              style={{ width: '100%', padding: '10px', borderRadius: '12px', border: '1px solid #ccc' }}
+            />
+          </div>
+        )}
 
         <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
           <span style={{ fontSize: '17px' }}>Ограничить время опроса</span>
@@ -111,7 +124,7 @@ export default function PollSettingsScreen({ onBack }) {
             {effectiveNickType === 'custom' && (
               <div style={{ marginTop: '6px' }}>
                 <input
-                  placeholder="Соответствующий специфике опроса"
+                  placeholder="Указать, чему он должен соответствовать"
                   value={customNickHint}
                   onChange={e => setCustomNickHint(e.target.value)}
                   style={{ width: '100%', padding: '10px', borderRadius: '12px', border: '1px solid #ccc' }}
