@@ -1,4 +1,4 @@
-// src/App.jsx — v1.032 (всё по-настоящему исправлено)
+// src/App.jsx — v1.033 (100% исправлено — настройки сохраняются и загружаются)
 import React, { useState, useEffect } from 'react'
 import CreatePollScreen from './CreatePollScreen.jsx'
 import PollSettingsScreen from './PollSettingsScreen.jsx'
@@ -10,6 +10,7 @@ export default function App() {
   const [myOpen, setMyOpen] = useState(false)
   const [drafts, setDrafts] = useState([])
   const [editDraft, setEditDraft] = useState(null)
+  const [currentDraftId, setCurrentDraftId] = useState(null) // ← Актуальный ID черновика
 
   const loadDrafts = () => {
     const ids = JSON.parse(localStorage.getItem('draftIds') || '[]')
@@ -34,6 +35,7 @@ export default function App() {
 
   const openDraft = (draft) => {
     setEditDraft(draft)
+    setCurrentDraftId(draft.id)
     setScreen('create')
   }
 
@@ -44,6 +46,11 @@ export default function App() {
       localStorage.setItem('draftIds', JSON.stringify(ids.filter(d => d !== id)))
       loadDrafts()
     }
+  }
+
+  const handleOpenSettings = (draftId) => {
+    setCurrentDraftId(draftId) // ← Сохраняем актуальный ID
+    setScreen('settings')
   }
 
   const hotTopics = [
@@ -60,7 +67,6 @@ export default function App() {
 
       {screen === 'main' ? (
         <>
-          {/* ВСЕ ЭМОДЗИ — ТОЧНО КАК У ТЕБЯ БЫЛО */}
           <div style={{ textAlign: 'right', fontSize: '14px', color: '#555', marginBottom: '20px' }}>
             🔷 78 🔶 135 ⭐ 7 ⚡ 53 💬 50
           </div>
@@ -71,11 +77,12 @@ export default function App() {
               <span style={{ marginRight: '10px', fontSize: '20px' }}>🔍</span>
               <input type="text" placeholder="Поиск по обсуждениям" style={{ border: 'none', outline: 'none', width: '100%', background: 'transparent' }} />
             </div>
-            <button 
-              onClick={() => { 
-                setEditDraft(null); 
-                setScreen('create') 
-              }} 
+            <button
+              onClick={() => {
+                setEditDraft(null)
+                setCurrentDraftId(null)
+                setScreen('create')
+              }}
               style={{ width: '100%', padding: '16px', background: '#4a90e2', color: 'white', border: 'none', borderRadius: '16px', fontSize: '18px', fontWeight: 'bold' }}
             >
               ЗАДАТЬ НОВЫЙ ОПРОС
@@ -114,8 +121,8 @@ export default function App() {
                         <div onClick={() => openDraft(draft)} style={{ cursor: 'pointer' }}>
                           {draft.theme || 'Без темы'} (черновик)
                         </div>
-                        <button 
-                          onClick={(e) => { e.stopPropagation(); deleteDraft(draft.id) }} 
+                        <button
+                          onClick={(e) => { e.stopPropagation(); deleteDraft(draft.id) }}
                           style={{ position: 'absolute', top: '8px', right: '8px', background: '#ff4d4d', color: 'white', border: 'none', borderRadius: '50%', width: '24px', height: '24px', fontSize: '12px' }}
                         >
                           ×
@@ -132,12 +139,12 @@ export default function App() {
         <CreatePollScreen
           draft={editDraft}
           onBack={() => { setScreen('main'); loadDrafts() }}
-          onOpenSettings={(draftId) => setScreen('settings')}
+          onOpenSettings={handleOpenSettings}
         />
       ) : screen === 'settings' ? (
-        <PollSettingsScreen 
-          draftId={editDraft?.id || null} 
-          onBack={() => setScreen('create')} 
+        <PollSettingsScreen
+          draftId={currentDraftId}
+          onBack={() => setScreen('create')}
         />
       ) : null}
     </div>

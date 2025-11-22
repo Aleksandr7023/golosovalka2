@@ -82,10 +82,8 @@ export default function CreatePollScreen({ onBack, draft, onOpenSettings }) {
   }
 
   const handleOpenSettings = () => {
-    // ГАРАНТИРОВАННО получаем ID черновика
     const currentId = draftId || saveDraft()
-
-    // Теперь передаём валидный ID
+    // ← ВАЖНО: передаём актуальный ID в App
     onOpenSettings(currentId)
   }
 
