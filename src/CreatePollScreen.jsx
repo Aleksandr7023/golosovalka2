@@ -109,9 +109,6 @@ export default function CreatePollScreen({ onBack, draft, onOpenSettings }) {
 
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v2.059
-      </div>
 
       <button onClick={handleBack} style={{ background: 'none', border: 'none', fontSize: '32px', padding: '4px 8px', cursor: 'pointer', alignSelf: 'flex-start' }}>
         ←

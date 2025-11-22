@@ -1,7 +1,8 @@
-// src/App.jsx — v1.030
+// src/App.jsx — v1.030 (с единой версией и значками рейтинга)
 import React, { useState, useEffect } from 'react'
 import CreatePollScreen from './CreatePollScreen.jsx'
 import PollSettingsScreen from './PollSettingsScreen.jsx'
+import { APP_VERSION } from './version.js'
 
 export default function App() {
   const [screen, setScreen] = useState('main')
@@ -53,30 +54,38 @@ export default function App() {
 
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888' }}>
-        v1.030
+      {/* Единая версия приложения — только здесь */}
+      <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888', zIndex: 9999 }}>
+        {APP_VERSION}
       </div>
 
       {screen === 'main' ? (
         <>
+          {/* Значки рейтинга — возвращены */}
           <div style={{ textAlign: 'right', fontSize: '14px', color: '#555', marginBottom: '20px' }}>
-            🔷 78 🔶 135 ⭐ 7 ⚡ 53 💬 50
+            78 135 7 53 50
           </div>
 
           <div style={{ background: 'white', borderRadius: '20px', padding: '24px', textAlign: 'center', marginBottom: '30px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
             <img src="https://iili.io/fdku4vj.jpg" alt="Столкновение сил" style={{ width: '120px', marginBottom: '16px' }} />
             <div style={{ display: 'flex', alignItems: 'center', background: '#f0f0f0', borderRadius: '12px', padding: '10px 16px', marginBottom: '20px' }}>
-              <span style={{ marginRight: '10px', fontSize: '20px' }}>🔍</span>
+              <span style={{ marginRight: '10px', fontSize: '20px' }}>Search</span>
               <input type="text" placeholder="Поиск по обсуждениям" style={{ border: 'none', outline: 'none', width: '100%', background: 'transparent' }} />
             </div>
-            <button onClick={() => { setEditDraft(null); setScreen('create') }} style={{ width: '100%', padding: '16px', background: '#4a90e2', color: 'white', border: 'none', borderRadius: '16px', fontSize: '18px', fontWeight: 'bold' }}>
+            <button 
+              onClick={() => { 
+                setEditDraft(null); 
+                setScreen('create') 
+              }} 
+              style={{ width: '100%', padding: '16px', background: '#4a90e2', color: 'white', border: 'none', borderRadius: '16px', fontSize: '18px', fontWeight: 'bold' }}
+            >
               ЗАДАТЬ НОВЫЙ ОПРОС
             </button>
           </div>
 
           <div style={{ marginBottom: '30px' }}>
             <h2 onClick={toggleActive} style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}>
-              АКТИВНЫЕ ТЕМЫ: {activeOpen ? '▲' : '▼'}
+              АКТИВНЫЕ ТЕМЫ: {activeOpen ? 'Up' : 'Down'}
             </h2>
             {activeOpen && (
               <div style={{ height: '240px', overflowY: 'auto', paddingRight: '8px' }}>
@@ -93,7 +102,7 @@ export default function App() {
 
           <div>
             <h2 onClick={toggleMy} style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}>
-              МОИ ТЕМЫ: {myOpen ? '▲' : '▼'}
+              МОИ ТЕМЫ: {myOpen ? 'Up' : 'Down'}
             </h2>
             {myOpen && (
               <div style={{ height: '240px', overflowY: 'auto', paddingRight: '8px' }}>
@@ -106,7 +115,10 @@ export default function App() {
                         <div onClick={() => openDraft(draft)} style={{ cursor: 'pointer' }}>
                           {draft.theme || 'Без темы'} (черновик)
                         </div>
-                        <button onClick={(e) => { e.stopPropagation(); deleteDraft(draft.id) }} style={{ position: 'absolute', top: '8px', right: '8px', background: '#ff4d4d', color: 'white', border: 'none', borderRadius: '50%', width: '24px', height: '24px', fontSize: '12px' }}>
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); deleteDraft(draft.id) }} 
+                          style={{ position: 'absolute', top: '8px', right: '8px', background: '#ff4d4d', color: 'white', border: 'none', borderRadius: '50%', width: '24px', height: '24px', fontSize: '12px' }}
+                        >
                           ×
                         </button>
                       </div>
