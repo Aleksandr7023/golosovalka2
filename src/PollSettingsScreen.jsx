@@ -1,8 +1,8 @@
-// src/PollSettingsScreen.jsx — v3.009 (финальная версия)
+// src/PollSettingsScreen.jsx — v3.010 (настройки сохраняются в черновик)
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
-export default function PollSettingsScreen({ onBack }) {
+export default function PollSettingsScreen({ onBack, draftId: currentDraftId }) {
   const [multiple, setMultiple] = useState(false)
   const [anonymous, setAnonymous] = useState(false)
   const [showResults, setShowResults] = useState(true)
@@ -18,8 +18,63 @@ export default function PollSettingsScreen({ onBack }) {
 
   const effectiveNickType = anonymous ? 'telegram' : nickType
 
+  // Загружаем настройки из черновика при открытии
+  useEffect(() => {
+    if (!currentDraftId) return
+    const saved = localStorage.getItem(`draft_${currentDraftId}`)
+    if (saved) {
+      const data = JSON.parse(saved)
+      if (data.settings) {
+        const s = data.settings
+        setMultiple(!!s.multiple)
+        setAnonymous(!!s.anonymous)
+        setShowResults(s.showResults !== false)
+        setAllowComments(s.allowComments !== false)
+        setHasEndDate(!!s.hasEndDate)
+        setEndDate(s.endDate || '')
+        setClosedPoll(!!s.closedPoll)
+        setTiedToAddress(!!s.tiedToAddress)
+        setAddressHint(s.addressHint || '')
+        setNickType(s.nickType || 'telegram')
+        setCustomNickHint(s.customNickHint || '')
+        setRevoteDelay(s.revoteDelay || 'never')
+      }
+    }
+  }, [currentDraftId])
+
+  const saveSettings = () => {
+    if (!currentDraftId) return
+
+    const settings = {
+      multiple,
+      anonymous,
+      showResults,
+      allowComments,
+      hasEndDate,
+      endDate: hasEndDate ? endDate : null,
+      closedPoll,
+      tiedToAddress,
+      addressHint: tiedToAddress ? addressHint : '',
+      nickType: anonymous ? 'telegram' : nickType,
+      customNickHint: effectiveNickType === 'custom' ? customNickHint : '',
+      revoteDelay
+    }
+
+    const draftKey = `draft_${currentDraftId}`
+    const draftData = JSON.parse(localStorage.getItem(draftKey) || '{}')
+    draftData.settings = settings
+    draftData.timestamp = Date.now()
+    localStorage.setItem(draftKey, JSON.stringify(draftData))
+
+    alert('Настройки сохранены!')
+    onBack()
+  }
+
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888', zIndex: 9999 }}>
+        v3.010
+      </div>
 
       <button onClick={onBack} style={{ background: 'none', border: 'none', fontSize: '32px', padding: '4px 8px', cursor: 'pointer', alignSelf: 'flex-start' }}>
         ←
@@ -131,7 +186,7 @@ export default function PollSettingsScreen({ onBack }) {
         )}
       </div>
 
-      <button style={{ width: '100%', padding: '16px', background: '#52c41a', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
+      <button onClick={saveSettings} style={{ width: '100%', padding: '16px', background: '#52c41a', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
         СОХРАНИТЬ НАСТРОЙКИ
       </button>
     </div>

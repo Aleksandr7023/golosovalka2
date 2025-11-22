@@ -1,4 +1,4 @@
-// src/App.jsx — v1.031 (всё как было + единая версия)
+// src/App.jsx — v1.032 (всё по-настоящему исправлено)
 import React, { useState, useEffect } from 'react'
 import CreatePollScreen from './CreatePollScreen.jsx'
 import PollSettingsScreen from './PollSettingsScreen.jsx'
@@ -54,14 +54,13 @@ export default function App() {
 
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Единая версия — теперь из version.js */}
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888', zIndex: 9999 }}>
         {APP_VERSION}
       </div>
 
       {screen === 'main' ? (
         <>
-          {/* ВСЕ ЭМОДЗИ НА МЕСТЕ! */}
+          {/* ВСЕ ЭМОДЗИ — ТОЧНО КАК У ТЕБЯ БЫЛО */}
           <div style={{ textAlign: 'right', fontSize: '14px', color: '#555', marginBottom: '20px' }}>
             🔷 78 🔶 135 ⭐ 7 ⚡ 53 💬 50
           </div>
@@ -133,10 +132,13 @@ export default function App() {
         <CreatePollScreen
           draft={editDraft}
           onBack={() => { setScreen('main'); loadDrafts() }}
-          onOpenSettings={() => setScreen('settings')}
+          onOpenSettings={(draftId) => setScreen('settings')}
         />
       ) : screen === 'settings' ? (
-        <PollSettingsScreen onBack={() => setScreen('create')} />
+        <PollSettingsScreen 
+          draftId={editDraft?.id || null} 
+          onBack={() => setScreen('create')} 
+        />
       ) : null}
     </div>
   )

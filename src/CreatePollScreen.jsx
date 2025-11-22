@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.059
+// src/CreatePollScreen.jsx — v2.060 (передаёт draftId в настройки)
 
 import React, { useState, useEffect, useRef } from 'react'
 
@@ -109,7 +109,6 @@ export default function CreatePollScreen({ onBack, draft, onOpenSettings }) {
 
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
-
       <button onClick={handleBack} style={{ background: 'none', border: 'none', fontSize: '32px', padding: '4px 8px', cursor: 'pointer', alignSelf: 'flex-start' }}>
         ←
       </button>
@@ -141,7 +140,7 @@ export default function CreatePollScreen({ onBack, draft, onOpenSettings }) {
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
         <label>
           <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
-          <div style={{ fontSize: '32px', cursor: 'pointer' }}>📎</div>
+          <div style={{ fontSize: '32px', cursor: 'pointer' }}>Paperclip</div>
         </label>
 
         {attachments.length > 0 && (
@@ -152,7 +151,7 @@ export default function CreatePollScreen({ onBack, draft, onOpenSettings }) {
                   {file.type.startsWith('image/') ? (
                     <img src={URL.createObjectURL(file)} alt="" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '8px' }} />
                   ) : file.type.startsWith('video/') ? (
-                    <div style={{ width: '40px', height: '40px', background: '#000', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>▶</div>
+                    <div style={{ width: '40px', height: '40px', background: '#000', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>Play</div>
                   ) : (
                     <div style={{ width: '40px', height: '40px', background: '#ddd', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>
                       {file.name.split('.').pop().toUpperCase()}
@@ -208,8 +207,9 @@ export default function CreatePollScreen({ onBack, draft, onOpenSettings }) {
           + Добавить вариант ответа
         </button>
         <div style={{ display: 'flex', gap: '12px' }}>
-          <button onClick={onOpenSettings} style={{ flex: 1, padding: '16px', background: '#666', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
-            ⚙️ Свойства опроса
+          {/* Передаём draftId в настройки */}
+          <button onClick={() => onOpenSettings(draftId)} style={{ flex: 1, padding: '16px', background: '#666', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
+            Settings Свойства опроса
           </button>
           <button style={{ flex: 1, padding: '16px', background: '#52c41a', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
             ЗАПУСТИТЬ ОПРОС
