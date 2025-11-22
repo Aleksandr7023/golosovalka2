@@ -1,2 +1,1 @@
-// src/version.js
-export const APP_VERSION = 'v1.007'
+export const APP_VERSION = 'v1.11'
