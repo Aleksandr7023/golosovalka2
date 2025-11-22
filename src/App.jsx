@@ -1,4 +1,4 @@
-// src/App.jsx — v1.030 (с единой версией и значками рейтинга)
+// src/App.jsx — v1.031 (всё как было + единая версия)
 import React, { useState, useEffect } from 'react'
 import CreatePollScreen from './CreatePollScreen.jsx'
 import PollSettingsScreen from './PollSettingsScreen.jsx'
@@ -54,22 +54,22 @@ export default function App() {
 
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', height: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Единая версия приложения — только здесь */}
+      {/* Единая версия — теперь из version.js */}
       <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888', zIndex: 9999 }}>
         {APP_VERSION}
       </div>
 
       {screen === 'main' ? (
         <>
-          {/* Значки рейтинга — возвращены */}
+          {/* ВСЕ ЭМОДЗИ НА МЕСТЕ! */}
           <div style={{ textAlign: 'right', fontSize: '14px', color: '#555', marginBottom: '20px' }}>
-            78 135 7 53 50
+            🔷 78 🔶 135 ⭐ 7 ⚡ 53 💬 50
           </div>
 
           <div style={{ background: 'white', borderRadius: '20px', padding: '24px', textAlign: 'center', marginBottom: '30px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
             <img src="https://iili.io/fdku4vj.jpg" alt="Столкновение сил" style={{ width: '120px', marginBottom: '16px' }} />
             <div style={{ display: 'flex', alignItems: 'center', background: '#f0f0f0', borderRadius: '12px', padding: '10px 16px', marginBottom: '20px' }}>
-              <span style={{ marginRight: '10px', fontSize: '20px' }}>Search</span>
+              <span style={{ marginRight: '10px', fontSize: '20px' }}>🔍</span>
               <input type="text" placeholder="Поиск по обсуждениям" style={{ border: 'none', outline: 'none', width: '100%', background: 'transparent' }} />
             </div>
             <button 
@@ -85,7 +85,7 @@ export default function App() {
 
           <div style={{ marginBottom: '30px' }}>
             <h2 onClick={toggleActive} style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}>
-              АКТИВНЫЕ ТЕМЫ: {activeOpen ? 'Up' : 'Down'}
+              АКТИВНЫЕ ТЕМЫ: {activeOpen ? '▲' : '▼'}
             </h2>
             {activeOpen && (
               <div style={{ height: '240px', overflowY: 'auto', paddingRight: '8px' }}>
@@ -102,7 +102,7 @@ export default function App() {
 
           <div>
             <h2 onClick={toggleMy} style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: 'bold', cursor: 'pointer' }}>
-              МОИ ТЕМЫ: {myOpen ? 'Up' : 'Down'}
+              МОИ ТЕМЫ: {myOpen ? '▲' : '▼'}
             </h2>
             {myOpen && (
               <div style={{ height: '240px', overflowY: 'auto', paddingRight: '8px' }}>
