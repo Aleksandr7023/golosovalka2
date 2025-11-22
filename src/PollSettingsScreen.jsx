@@ -1,4 +1,4 @@
-// src/PollSettingsScreen.jsx — v3.010 (настройки сохраняются и загружаются правильно)
+// src/PollSettingsScreen.jsx — v3.011 (гарантированная загрузка настроек)
 
 import React, { useState, useEffect } from 'react'
 
@@ -18,10 +18,9 @@ export default function PollSettingsScreen({ onBack, draftId: currentDraftId }) 
 
   const effectiveNickType = anonymous ? 'telegram' : nickType
 
-  // Загрузка настроек при изменении currentDraftId (включая первый рендер)
+  // Гарантированная загрузка настроек при любом currentDraftId
   useEffect(() => {
     if (!currentDraftId) {
-      // Новый опрос — чистые настройки
       setMultiple(false)
       setAnonymous(false)
       setShowResults(true)
@@ -38,7 +37,9 @@ export default function PollSettingsScreen({ onBack, draftId: currentDraftId }) 
     }
 
     const saved = localStorage.getItem(`draft_${currentDraftId}`)
-    if (saved) {
+    if (!saved) return
+
+    try {
       const data = JSON.parse(saved)
       if (data.settings) {
         const s = data.settings
@@ -55,6 +56,8 @@ export default function PollSettingsScreen({ onBack, draftId: currentDraftId }) 
         setCustomNickHint(s.customNickHint || '')
         setRevoteDelay(s.revoteDelay || 'never')
       }
+    } catch (e) {
+      console.error('Ошибка загрузки настроек', e)
     }
   }, [currentDraftId])
 
