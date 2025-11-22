@@ -1,4 +1,4 @@
-// src/CreatePollScreen.jsx — v2.062 (гарантированное сохранение перед настройками)
+// src/CreatePollScreen.jsx — v2.063 (черновик гарантированно создаётся перед настройками)
 
 import React, { useState, useEffect, useRef } from 'react'
 
@@ -47,27 +47,32 @@ export default function CreatePollScreen({ onBack, draft, onOpenSettings }) {
   }, [])
 
   const saveDraft = () => {
+    const id = draftId || Date.now().toString()
     const currentData = {
       theme,
       question,
       options: options.filter(o => o.trim() !== ''),
       attachments,
       timestamp: Date.now(),
-      id: draftId || Date.now().toString()
+      id
     }
 
-    if (!draftId) {
-      setDraftId(currentData.id) // Важно: устанавливаем draftId сразу
-    }
+    // Сохраняем в localStorage
+    localStorage.setItem(`draft_${id}`, JSON.stringify(currentData))
 
-    localStorage.setItem(`draft_${currentData.id}`, JSON.stringify(currentData))
+    // Добавляем в список черновиков
     const ids = JSON.parse(localStorage.getItem('draftIds') || '[]')
-    if (!ids.includes(currentData.id)) {
-      ids.push(currentData.id)
+    if (!ids.includes(id)) {
+      ids.push(id)
       localStorage.setItem('draftIds', JSON.stringify(ids))
     }
 
-    return currentData.id // возвращаем ID
+    // Обновляем состояние
+    if (!draftId) {
+      setDraftId(id)
+    }
+
+    return id // ← ВОЗВРАЩАЕМ ID СРАЗУ
   }
 
   const handleBack = () => {
@@ -77,10 +82,10 @@ export default function CreatePollScreen({ onBack, draft, onOpenSettings }) {
   }
 
   const handleOpenSettings = () => {
-    // Сначала сохраняем черновик (если его ещё нет — создаём)
+    // ГАРАНТИРОВАННО получаем ID черновика
     const currentId = draftId || saveDraft()
 
-    // Теперь точно есть draftId
+    // Теперь передаём валидный ID
     onOpenSettings(currentId)
   }
 
