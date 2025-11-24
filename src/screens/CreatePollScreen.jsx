@@ -1,4 +1,4 @@
-// src/screens/CreatePollScreen.jsx — v2.064
+// src/screens/CreatePollScreen.jsx — v2.065 (все эмодзи на месте!)
 
 import React, { useState, useEffect, useRef } from 'react'
 import BackButton from '../components/BackButton.jsx'
@@ -17,14 +17,12 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
   // Загружаем черновик при монтировании
   useEffect(() => {
     if (!draftId) {
-      // Новый опрос — чистые поля
       setTheme('')
       setQuestion('')
       setOptions(['', ''])
       setAttachments([])
       return
     }
-
     const saved = localStorage.getItem(`draft_${draftId}`)
     if (saved) {
       const data = JSON.parse(saved)
@@ -67,9 +65,9 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
       question,
       options: options.filter(o => o.trim() !== ''),
       attachments,
-      id: draftId || undefined // сохраняем ID, если есть
+      id: draftId || undefined
     }
-    return saveDraft(data) // возвращает актуальный ID
+    return saveDraft(data)
   }
 
   const handleBack = () => {
@@ -157,7 +155,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
         <label>
           <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
-          <div style={{ fontSize: '32px', cursor: 'pointer' }}>Paperclip</div>
+          <div style={{ fontSize: '32px', cursor: 'pointer' }}>📎</div>
         </label>
 
         {attachments.length > 0 && (
@@ -168,7 +166,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
                   {file.type.startsWith('image/') ? (
                     <img src={URL.createObjectURL(file)} alt="" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '8px' }} />
                   ) : file.type.startsWith('video/') ? (
-                    <div style={{ width: '40px', height: '40px', background: '#000', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>Play</div>
+                    <div style={{ width: '40px', height: '40px', background: '#000', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>▶</div>
                   ) : (
                     <div style={{ width: '40px', height: '40px', background: '#ddd', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>
                       {file.name.split('.').pop().toUpperCase()}
@@ -250,7 +248,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
             onClick={handleOpenSettings}
             style={{ flex: 1, padding: '16px', background: '#666', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}
           >
-            Settings Свойства опроса
+            ⚙️ Свойства опроса
           </button>
           <button
             style={{ flex: 1, padding: '16px', background: '#52c41a', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}
