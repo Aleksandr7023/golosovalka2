@@ -1,8 +1,9 @@
-// src/PollSettingsScreen.jsx — v3.011 (гарантированная загрузка настроек)
+// src/screens/PollSettingsScreen.jsx — v3.012
 
 import React, { useState, useEffect } from 'react'
+import BackButton from '../components/BackButton.jsx'
 
-export default function PollSettingsScreen({ onBack, draftId: currentDraftId }) {
+export default function PollSettingsScreen({ draftId, onBack }) {
   const [multiple, setMultiple] = useState(false)
   const [anonymous, setAnonymous] = useState(false)
   const [showResults, setShowResults] = useState(true)
@@ -18,9 +19,10 @@ export default function PollSettingsScreen({ onBack, draftId: currentDraftId }) 
 
   const effectiveNickType = anonymous ? 'telegram' : nickType
 
-  // Гарантированная загрузка настроек при любом currentDraftId
+  // Загрузка настроек из черновика
   useEffect(() => {
-    if (!currentDraftId) {
+    if (!draftId) {
+      // Новый опрос — чистые значения
       setMultiple(false)
       setAnonymous(false)
       setShowResults(true)
@@ -36,10 +38,8 @@ export default function PollSettingsScreen({ onBack, draftId: currentDraftId }) 
       return
     }
 
-    const saved = localStorage.getItem(`draft_${currentDraftId}`)
-    if (!saved) return
-
-    try {
+    const saved = localStorage.getItem(`draft_${draftId}`)
+    if (saved) {
       const data = JSON.parse(saved)
       if (data.settings) {
         const s = data.settings
@@ -56,13 +56,11 @@ export default function PollSettingsScreen({ onBack, draftId: currentDraftId }) 
         setCustomNickHint(s.customNickHint || '')
         setRevoteDelay(s.revoteDelay || 'never')
       }
-    } catch (e) {
-      console.error('Ошибка загрузки настроек', e)
     }
-  }, [currentDraftId])
+  }, [draftId])
 
   const saveSettings = () => {
-    if (!currentDraftId) {
+    if (!draftId) {
       alert('Ошибка: черновик не найден')
       return
     }
@@ -82,11 +80,11 @@ export default function PollSettingsScreen({ onBack, draftId: currentDraftId }) 
       revoteDelay
     }
 
-    const draftKey = `draft_${currentDraftId}`
-    const draftData = JSON.parse(localStorage.getItem(draftKey) || '{}')
-    draftData.settings = settings
-    draftData.timestamp = Date.now()
-    localStorage.setItem(draftKey, JSON.stringify(draftData))
+    const key = `draft_${draftId}`
+    const draft = JSON.parse(localStorage.getItem(key) || '{}')
+    draft.settings = settings
+    draft.timestamp = Date.now()
+    localStorage.setItem(key, JSON.stringify(draft))
 
     alert('Настройки сохранены!')
     onBack()
@@ -94,17 +92,15 @@ export default function PollSettingsScreen({ onBack, draftId: currentDraftId }) 
 
   return (
     <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
+      <BackButton onClick={onBack} />
 
-      <button onClick={onBack} style={{ background: 'none', border: 'none', fontSize: '32px', padding: '4px 8px', cursor: 'pointer', alignSelf: 'flex-start' }}>
-        ←
-      </button>
-
-      <h2 style={{ fontSize: '22px', margin: '4px 0 16px 0' }}>СВОЙСТВА ОПРОСА</h2>
+      <h2 style={{ fontSize: '22px', margin: '8px 0 30px 0' }}>СВОЙСТВА ОПРОСА</h2>
 
       <div style={{ background: 'white', borderRadius: '16px', padding: '16px', marginBottom: '16px' }}>
+        {/* Фиксированный пункт */}
         <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', opacity: 0.7 }}>
           <span style={{ fontSize: '17px' }}>Запуск с одобрения администратора</span>
-          <input type="checkbox" checked={true} disabled style={{ width: '22px', height: '22px' }} />
+          <input type="checkbox" checked disabled style={{ width: '22px', height: '22px' }} />
         </label>
 
         <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
