@@ -204,9 +204,9 @@ export default function PollSettingsScreen({ draftId, onBack }) {
         )}
       </div>
 
-      <PrimaryButton onClick={saveSettings}>
+      <LaunchButton onClick={saveSettings}>
         СОХРАНИТЬ НАСТРОЙКИ
-      </PrimaryButton>
+      </LaunchButton>
     </div>
   )
 }
