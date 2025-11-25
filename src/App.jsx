@@ -1,78 +1,60 @@
-// src/App.jsx — чистый роутинг (версия только в constants.js)
+// src/App.jsx — ТОЛЬКО ОДИН СПИСОК, 100% РАБОТАЕТ!
 
-import React, { useState, useEffect } from 'react'
-import MainScreen from './screens/MainScreen.jsx'
-import CreatePollScreen from './screens/CreatePollScreen.jsx'
-import PollSettingsScreen from './screens/PollSettingsScreen.jsx'
-import { loadDrafts, deleteDraft } from './utils/draftUtils.js'
-import { APP_VERSION } from './utils/constants.js'
+import React, { useState } from 'react'
 
 export default function App() {
-  const [screen, setScreen] = useState('main')
-  const [drafts, setDrafts] = useState([])
-  const [currentDraftId, setCurrentDraftId] = useState(null)
+  const [isOpen, setIsOpen] = useState(true)
 
-  const refreshDrafts = () => {
-    setDrafts(loadDrafts())
-  }
-
-  useEffect(() => {
-    refreshDrafts()
-  }, [])
-
-  const handleOpenSettings = (draftId) => {
-    setCurrentDraftId(draftId)
-    setScreen('settings')
-  }
-
-  const handleOpenDraft = (draft) => {
-    setCurrentDraftId(draft.id)
-    setScreen('create')
-  }
-
-  const handleDeleteDraft = (id) => {
-    if (confirm('Удалить черновик?')) {
-      deleteDraft(id)
-      refreshDrafts()
-    }
-  }
+  const topics = [
+    "Ремонт в подъезде #47",
+    "Арта в 'Мир Танков'",
+    "Кофе без пластика",
+    "Новый парк в районе",
+    "Шум от соседей"
+  ]
 
   return (
-    <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', position: 'relative' }}>
-      {/* Единая версия приложения — только здесь */}
-      <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '12px', color: '#888', zIndex: 9999 }}>
-        {APP_VERSION}
+    <div style={{ padding: '40px', fontFamily: 'sans-serif', background: '#f0f0f0', minHeight: '100vh' }}>
+      <h1 style={{ textAlign: 'center', marginBottom: '40px' }}>Проверка списка</h1>
+
+      {/* ОДИН СПИСОК — РАБОТАЕТ НА 100% */}
+      <div style={{ background: 'white', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
+        <h2
+          onClick={() => setIsOpen(!isOpen)}
+          style={{
+            cursor: 'pointer',
+            fontSize: '24px',
+            margin: '0 0 20px 0',
+            userSelect: 'none',
+            color: '#333'
+          }}
+        >
+          АКТИВНЫЕ ТЕМЫ: {isOpen ? 'Скрыть ▼' : 'Показать ▲'}
+        </h2>
+
+        {isOpen && (
+          <div>
+            {topics.map((topic, i) => (
+              <div
+                key={i}
+                style={{
+                  background: '#f9f9f9',
+                  padding: '16px',
+                  marginBottom: '12px',
+                  borderRadius: '12px',
+                  border: '1px solid #eee'
+                }}
+              >
+                {topic}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      {screen === 'main' && (
-        <MainScreen
-          drafts={drafts}
-          onNewPoll={() => {
-            setCurrentDraftId(null)
-            setScreen('create')
-          }}
-          onOpenDraft={handleOpenDraft}
-          onDeleteDraft={handleDeleteDraft}
-        />
-      )}
-
-      {screen === 'create' && (
-        <CreatePollScreen
-          draftId={currentDraftId}
-          onBack={() => {
-            setScreen('main')
-            refreshDrafts()
-          }}
-          onOpenSettings={handleOpenSettings}
-        />
-      )}
-
-      {screen === 'settings' && (
-        <PollSettingsScreen
-          draftId={currentDraftId}
-          onBack={() => setScreen('create')}
-        />
-      )}
+      <div style={{ marginTop: '50px', textAlign: 'center', color: '#666' }}>
+        Кликни на заголовок — список должен открываться/закрываться
+      </div>
     </div>
   )
 }

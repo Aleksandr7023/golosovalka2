@@ -1,8 +1,11 @@
-// src/screens/CreatePollScreen.jsx — v2.065 (все эмодзи на месте!)
+// src/screens/CreatePollScreen.jsx — v2.067 (стили вынесены — чистый код!)
 
 import React, { useState, useEffect, useRef } from 'react'
 import BackButton from '../components/BackButton.jsx'
+import PrimaryButton from '../components/PrimaryButton.jsx'
+import SecondaryButton from '../components/SecondaryButton.jsx'
 import { saveDraft } from '../utils/draftUtils.js'
+import './styles/screens/CreatePollScreen.css'
 
 export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
   const [theme, setTheme] = useState('')
@@ -14,7 +17,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
   const [keyboardHeight, setKeyboardHeight] = useState(0)
   const optionsRef = useRef(null)
 
-  // Загружаем черновик при монтировании
+  // Загрузка черновика
   useEffect(() => {
     if (!draftId) {
       setTheme('')
@@ -33,7 +36,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     }
   }, [draftId])
 
-  // Обработка клавиатуры (для мобильных)
+  // Клавиатура (мобильные)
   useEffect(() => {
     const original = window.innerHeight
     const handleResize = () => {
@@ -50,7 +53,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     }
   }, [])
 
-  // Viewport фикс для мобильных
+  // Viewport фикс
   useEffect(() => {
     const meta = document.createElement('meta')
     meta.name = 'viewport'
@@ -101,9 +104,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
   const addOption = () => {
     setOptions([...options, ''])
     setTimeout(() => {
-      if (optionsRef.current) {
-        optionsRef.current.scrollTop = optionsRef.current.scrollHeight
-      }
+      if (optionsRef.current) optionsRef.current.scrollTop = optionsRef.current.scrollHeight
     }, 0)
   }
 
@@ -119,63 +120,49 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
   }
 
   return (
-    <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
+    <div className="create-poll-container">
       <BackButton onClick={handleBack} />
 
-      <h2 style={{ fontSize: '22px', margin: '8px 0 20px 0' }}>НОВЫЙ ОПРОС</h2>
+      <h2 className="poll-title">НОВЫЙ ОПРОС</h2>
 
       <input
+        className="theme-input"
         placeholder="Тема опроса"
         value={theme}
-        onChange={(e) => setTheme(e.target.value)}
-        style={{ width: '100%', padding: '12px', fontSize: '18px', marginBottom: '20px', borderRadius: '12px', border: '1px solid #ccc' }}
+        onChange={e => setTheme(e.target.value)}
       />
 
       <textarea
+        className="question-textarea"
         placeholder="Вопрос"
         value={question}
-        onChange={(e) => setQuestion(e.target.value)}
-        rows={3}
-        style={{
-          width: '100%',
-          padding: '12px',
-          fontSize: '18px',
-          marginBottom: '8px',
-          borderRadius: '12px',
-          border: '1px solid #ccc',
-          resize: 'none',
-          minHeight: '80px',
-          maxHeight: '200px',
-          overflowY: 'auto',
-          fieldSizing: 'content'
-        }}
+        onChange={e => setQuestion(e.target.value)}
       />
 
       {/* Вложения */}
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+      <div className="attachments-bar">
         <label>
           <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
-          <div style={{ fontSize: '32px', cursor: 'pointer' }}>📎</div>
+          <div>Paperclip</div>
         </label>
 
         {attachments.length > 0 && (
-          <div style={{ display: 'flex', gap: '8px', marginLeft: '12px' }}>
+          <div className="attachments-list">
             {attachments.map((file, i) => (
-              <div key={i} style={{ position: 'relative' }}>
-                <div onClick={() => openFile(file)} style={{ cursor: 'pointer' }}>
+              <div key={i} className="attachment-item">
+                <div onClick={() => openFile(file)} className="attachment-preview">
                   {file.type.startsWith('image/') ? (
-                    <img src={URL.createObjectURL(file)} alt="" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '8px' }} />
+                    <img src={URL.createObjectURL(file)} alt="" />
                   ) : file.type.startsWith('video/') ? (
-                    <div style={{ width: '40px', height: '40px', background: '#000', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>▶</div>
+                    <div className="video-preview">Play</div>
                   ) : (
-                    <div style={{ width: '40px', height: '40px', background: '#ddd', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>
-                      {file.name.split('.').pop().toUpperCase()}
-                    </div>
+                    file.name.split('.').pop().toUpperCase()
                   )}
                 </div>
                 <button
                   onClick={(e) => { e.stopPropagation(); removeAttachment(i) }}
-                  style={{ position: 'absolute', top: '-6px', right: '-6px', background: '#ff4d4d', color: 'white', border: 'none', borderRadius: '50%', width: '16px', height: '16px', fontSize: '10px' }}
+                  className="remove-attachment btn-base btn-small-danger shadow-danger"
+                  style={{ background: '#ff4d4d', color: 'white' }}
                 >
                   ×
                 </button>
@@ -187,7 +174,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
 
       {error && <div style={{ color: '#ff4d4d', marginBottom: '12px', fontSize: '14px' }}>{error}</div>}
 
-      {/* Просмотрщик файла */}
+      {/* Просмотрщик */}
       {viewerFile && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', zIndex: 1000, display: 'flex', flexDirection: 'column' }}>
           <button onClick={() => setViewerFile(null)} style={{ alignSelf: 'flex-end', background: 'none', border: 'none', color: 'white', fontSize: '32px', padding: '16px' }}>×</button>
@@ -203,29 +190,21 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
         </div>
       )}
 
-      {/* Варианты ответа */}
-      <div
-        ref={optionsRef}
-        style={{
-          flex: 1,
-          overflowY: 'auto',
-          maxHeight: '180px',
-          paddingRight: '8px',
-          paddingBottom: keyboardHeight > 0 ? `${keyboardHeight + 20}px` : '20px'
-        }}
-      >
+      {/* Варианты */}
+      <div ref={optionsRef} className="options-list" style={{ paddingBottom: keyboardHeight > 0 ? `${keyboardHeight + 20}px` : '20px' }}>
         {options.map((opt, i) => (
-          <div key={i} style={{ display: 'flex', marginBottom: '12px' }}>
+          <div key={i} className="option-item">
             <input
+              className="option-input"
               placeholder={`Вариант ответа ${i + 1}`}
               value={opt}
-              onChange={(e) => updateOption(i, e.target.value)}
-              style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '1px solid #ccc' }}
+              onChange={e => updateOption(i, e.target.value)}
             />
             {options.length > 2 && (
               <button
                 onClick={() => removeOption(i)}
-                style={{ marginLeft: '8px', background: '#ff4d4d', color: 'white', borderRadius: '8px', padding: '0 12px', cursor: 'pointer' }}
+                className="remove-option btn-base shadow-secondary"
+                style={{ background: '#ff4d4d', color: 'white', borderRadius: '8px', padding: '0 12px' }}
               >
                 ✕
               </button>
@@ -234,27 +213,19 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
         ))}
       </div>
 
-      {/* Нижние кнопки */}
-      <div style={{ padding: '12px 0' }}>
-        <button
-          onClick={addOption}
-          style={{ width: '100%', padding: '12px', background: '#4a90e2', color: 'white', borderRadius: '12px', marginBottom: '12px' }}
-        >
+      {/* Кнопки */}
+      <div className="bottom-buttons">
+        <PrimaryButton onClick={addOption} className="add-option-btn">
           + Добавить вариант ответа
-        </button>
+        </PrimaryButton>
 
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <button
-            onClick={handleOpenSettings}
-            style={{ flex: 1, padding: '16px', background: '#666', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}
-          >
-            ⚙️ Свойства опроса
-          </button>
-          <button
-            style={{ flex: 1, padding: '16px', background: '#52c41a', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}
-          >
+        <div className="action-buttons">
+          <SecondaryButton onClick={handleOpenSettings}>
+            Settings Свойства опроса
+          </SecondaryButton>
+          <PrimaryButton>
             ЗАПУСТИТЬ ОПРОС
-          </button>
+          </PrimaryButton>
         </div>
       </div>
     </div>

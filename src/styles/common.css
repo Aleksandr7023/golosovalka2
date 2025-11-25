@@ -1,0 +1,58 @@
+/* src/styles/common.css — ВСЁ общее для кнопок в ОДНОМ месте */
+
+.btn-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+  user-select: none;
+}
+
+/* Размеры */
+.btn-large {
+  width: 100%;
+  padding: 16px;
+  font-size: 18px;
+}
+
+.btn-small-danger {
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  border-radius: 50%;
+}
+
+/* ТЕНИ — ВСЁ В ОДНОМ МЕСТЕ! */
+.shadow-primary {
+  box-shadow: 0 4px 12px rgba(82, 196, 26, 0.3);
+}
+.shadow-primary:hover,
+.shadow-primary:focus-visible {
+  box-shadow: 0 6px 16px rgba(82, 196, 26, 0.4);
+}
+
+.shadow-secondary {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+.shadow-secondary:hover,
+.shadow-secondary:focus-visible {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.shadow-danger {
+  box-shadow: 0 2px 6px rgba(255, 77, 77, 0.4);
+}
+.shadow-danger:hover,
+.shadow-danger:focus-visible {
+  box-shadow: 0 4px 10px rgba(255, 77, 77, 0.6);
+}
+
+/* Карточки и блоки (используется в MainScreen) */
+.shadow-card {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}

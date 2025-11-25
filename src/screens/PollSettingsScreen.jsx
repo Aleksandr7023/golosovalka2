@@ -1,7 +1,9 @@
-// src/screens/PollSettingsScreen.jsx — v3.012
+// src/screens/PollSettingsScreen.jsx — v3.013 (стили вынесены, всё идеально)
 
 import React, { useState, useEffect } from 'react'
 import BackButton from '../components/BackButton.jsx'
+import PrimaryButton from '../components/PrimaryButton.jsx'
+import './styles/screens/PollSettingsScreen.css'
 
 export default function PollSettingsScreen({ draftId, onBack }) {
   const [multiple, setMultiple] = useState(false)
@@ -22,7 +24,7 @@ export default function PollSettingsScreen({ draftId, onBack }) {
   // Загрузка настроек из черновика
   useEffect(() => {
     if (!draftId) {
-      // Новый опрос — чистые значения
+      // Новый опрос — дефолтные значения
       setMultiple(false)
       setAnonymous(false)
       setShowResults(true)
@@ -91,81 +93,81 @@ export default function PollSettingsScreen({ draftId, onBack }) {
   }
 
   return (
-    <div style={{ padding: '16px', background: '#f8f9fa', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
+    <div className="settings-container">
       <BackButton onClick={onBack} />
 
-      <h2 style={{ fontSize: '22px', margin: '8px 0 30px 0' }}>СВОЙСТВА ОПРОСА</h2>
+      <h2 className="settings-title">СВОЙСТВА ОПРОСА</h2>
 
-      <div style={{ background: 'white', borderRadius: '16px', padding: '16px', marginBottom: '16px' }}>
+      <div className="settings-card shadow-card">
         {/* Фиксированный пункт */}
-        <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', opacity: 0.7 }}>
-          <span style={{ fontSize: '17px' }}>Запуск с одобрения администратора</span>
-          <input type="checkbox" checked disabled style={{ width: '22px', height: '22px' }} />
-        </label>
+        <div className="setting-item" style={{ opacity: 0.7 }}>
+          <span className="setting-label">Запуск с одобрения администратора</span>
+          <input type="checkbox" checked disabled className="checkbox" />
+        </div>
 
-        <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-          <span style={{ fontSize: '17px' }}>Одновременно можно выбрать сразу несколько вариантов ответа</span>
-          <input type="checkbox" checked={multiple} onChange={e => setMultiple(e.target.checked)} style={{ width: '22px', height: '22px' }} />
-        </label>
+        <div className="setting-item">
+          <span className="setting-label">Одновременно можно выбрать сразу несколько вариантов ответа</span>
+          <input type="checkbox" checked={multiple} onChange={e => setMultiple(e.target.checked)} className="checkbox" />
+        </div>
 
-        <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-          <span style={{ fontSize: '17px' }}>Анонимный опрос</span>
-          <input type="checkbox" checked={anonymous} onChange={e => setAnonymous(e.target.checked)} style={{ width: '22px', height: '22px' }} />
-        </label>
+        <div className="setting-item">
+          <span className="setting-label">Анонимный опрос</span>
+          <input type="checkbox" checked={anonymous} onChange={e => setAnonymous(e.target.checked)} className="checkbox" />
+        </div>
 
         {anonymous && (
-          <div style={{ padding: '10px', background: '#f0f0f0', borderRadius: '12px', marginBottom: '12px', fontSize: '15px', color: '#666' }}>
+          <div className="hint-box">
             При анонимном опросе ник участника скрыт
           </div>
         )}
 
-        <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-          <span style={{ fontSize: '17px' }}>Показывать результаты участникам</span>
-          <input type="checkbox" checked={showResults} onChange={e => setShowResults(e.target.checked)} style={{ width: '22px', height: '22px' }} />
-        </label>
+        <div className="setting-item">
+          <span className="setting-label">Показывать результаты участникам</span>
+          <input type="checkbox" checked={showResults} onChange={e => setShowResults(e.target.checked)} className="checkbox" />
+        </div>
 
-        <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-          <span style={{ fontSize: '17px' }}>Разрешить комментарии</span>
-          <input type="checkbox" checked={allowComments} onChange={e => setAllowComments(e.target.checked)} style={{ width: '22px', height: '22px' }} />
-        </label>
+        <div className="setting-item">
+          <span className="setting-label">Разрешить комментарии</span>
+          <input type="checkbox" checked={allowComments} onChange={e => setAllowComments(e.target.checked)} className="checkbox" />
+        </div>
 
-        <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-          <span style={{ fontSize: '17px' }}>Закрытый опрос, вход только по приглашению (паролю)</span>
-          <input type="checkbox" checked={closedPoll} onChange={e => setClosedPoll(e.target.checked)} style={{ width: '22px', height: '22px' }} />
-        </label>
+        <div className="setting-item">
+          <span className="setting-label">Закрытый опрос, вход только по приглашению (паролю)</span>
+          <input type="checkbox" checked={closedPoll} onChange={e => setClosedPoll(e.target.checked)} className="checkbox" />
+        </div>
 
-        <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-          <span style={{ fontSize: '17px' }}>Привязать к конкретному адресу (объекту)</span>
-          <input type="checkbox" checked={tiedToAddress} onChange={e => setTiedToAddress(e.target.checked)} style={{ width: '22px', height: '22px' }} />
-        </label>
+        <div className="setting-item">
+          <span className="setting-label">Привязать к конкретному адресу (объекту)</span>
+          <input type="checkbox" checked={tiedToAddress} onChange={e => setTiedToAddress(e.target.checked)} className="checkbox" />
+        </div>
 
         {tiedToAddress && (
-          <div style={{ marginBottom: '12px' }}>
-            <span style={{ fontSize: '17px', display: 'block', marginBottom: '6px' }}>Адрес или название объекта</span>
+          <div className="date-section">
+            <span>Адрес или название объекта</span>
             <input
               placeholder="Например: ГК №47, ул. Ленина 15, Домоуправление «Солнечное»"
               value={addressHint}
               onChange={e => setAddressHint(e.target.value)}
-              style={{ width: '100%', padding: '10px', borderRadius: '12px', border: '1px solid #ccc' }}
+              className="custom-nick-input"
             />
           </div>
         )}
 
-        <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-          <span style={{ fontSize: '17px' }}>Ограничить время опроса</span>
-          <input type="checkbox" checked={hasEndDate} onChange={e => setHasEndDate(e.target.checked)} style={{ width: '22px', height: '22px' }} />
-        </label>
+        <div className="setting-item">
+          <span className="setting-label">Ограничить время опроса</span>
+          <input type="checkbox" checked={hasEndDate} onChange={e => setHasEndDate(e.target.checked)} className="checkbox" />
+        </div>
 
         {hasEndDate && (
-          <div style={{ marginBottom: '12px' }}>
-            <span style={{ fontSize: '17px', display: 'block', marginBottom: '6px' }}>Дата окончания</span>
-            <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} style={{ width: '70%', padding: '10px', borderRadius: '12px', border: '1px solid #ccc' }} />
+          <div className="date-section">
+            <span>Дата окончания</span>
+            <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="date-input" />
           </div>
         )}
 
-        <div style={{ marginBottom: '12px' }}>
-          <span style={{ fontSize: '17px', display: 'block', marginBottom: '8px' }}>Через сколько можно переголосовать</span>
-          <select value={revoteDelay} onChange={e => setRevoteDelay(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '12px', border: '1px solid #ccc', fontSize: '17px' }}>
+        <div className="revote-section">
+          <span>Через сколько можно переголосовать</span>
+          <select value={revoteDelay} onChange={e => setRevoteDelay(e.target.value)} className="revote-select">
             <option value="never">Никогда</option>
             <option value="1h">Через 1 час</option>
             <option value="24h">Через сутки</option>
@@ -176,33 +178,35 @@ export default function PollSettingsScreen({ draftId, onBack }) {
 
         {!anonymous && (
           <>
-            <div style={{ fontSize: '17px', marginBottom: '8px' }}>Отображать имя участника как:</div>
-            <label style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-              <input type="radio" name="nick" checked={effectiveNickType === 'telegram'} onChange={() => setNickType('telegram')} style={{ marginRight: '12px' }} />
-              <span style={{ fontSize: '17px' }}>Ник из Telegram</span>
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-              <input type="radio" name="nick" checked={effectiveNickType === 'custom'} onChange={() => setNickType('custom')} style={{ marginRight: '12px' }} />
-              <span style={{ fontSize: '17px' }}>Специальный ник</span>
-            </label>
+            <div className="custom-nick-section">
+              <span>Отображать имя участника как:</span>
+              <div className="radio-group">
+                <label className="radio-label">
+                  <input type="radio" name="nick" checked={effectiveNickType === 'telegram'} onChange={() => setNickType('telegram')} />
+                  <span>Ник из Telegram</span>
+                </label>
+                <label className="radio-label">
+                  <input type="radio" name="nick" checked={effectiveNickType === 'custom'} onChange={() => setNickType('custom')} />
+                  <span>Специальный ник</span>
+                </label>
+              </div>
 
-            {effectiveNickType === 'custom' && (
-              <div style={{ marginTop: '6px' }}>
+              {effectiveNickType === 'custom' && (
                 <input
                   placeholder="Указать, чему он должен соответствовать"
                   value={customNickHint}
                   onChange={e => setCustomNickHint(e.target.value)}
-                  style={{ width: '100%', padding: '10px', borderRadius: '12px', border: '1px solid #ccc' }}
+                  className="custom-nick-input"
                 />
-              </div>
-            )}
+              )}
+            </div>
           </>
         )}
       </div>
 
-      <button onClick={saveSettings} style={{ width: '100%', padding: '16px', background: '#52c41a', color: 'white', fontSize: '18px', fontWeight: 'bold', borderRadius: '16px' }}>
+      <PrimaryButton onClick={saveSettings}>
         СОХРАНИТЬ НАСТРОЙКИ
-      </button>
+      </PrimaryButton>
     </div>
   )
 }
