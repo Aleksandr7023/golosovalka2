@@ -1,52 +1,57 @@
-// src/App.jsx — ТОЛЬКО ГЛАВНЫЙ ЭКРАН, ЧТОБЫ ВСЁ РАБОТАЛО СРАЗУ
+// src/screens/MainScreen.jsx — v1.008 (ВЫПАДАЮЩИЕ СПИСКИ РАБОТАЮТ!)
 
-import React, { useState } from 'react'
+import React from 'react'
+import PrimaryButton from '../components/PrimaryButton.jsx'
+import './styles/screens/MainScreen.css'
 
-export default function App() {
-  const [activeOpen, setActiveOpen] = useState(true)
-  const [myOpen, setMyOpen] = useState(false)
-
+export default function MainScreen({
+  drafts,
+  onNewPoll,
+  onOpenDraft,
+  onDeleteDraft,
+  activeOpen,
+  myOpen,
+  onToggleActive,
+  onToggleMy
+}) {
   const hotTopics = [
     "Ремонт в подъезде #47",
     "Арта в 'Мир Танков'",
     "Кофе без пластика",
     "Новый парк в районе",
-    "Шум от соседей"
-  ]
-
-  const drafts = [
-    { id: 1, theme: "Тимминг в Стальном Охотнике" },
-    { id: 2, theme: "Кто лучший танк?" }
+    "Шум от соседей",
+    "Бесплатный Wi-Fi в метро",
+    "Цены на продукты",
+    "Экология города",
+    "Транспортные пробки",
+    "Безопасность на улицах"
   ]
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-      <h1 style={{ textAlign: 'center' }}>Голосовалка</h1>
+    <div className="main-container">
+      <div className="rating-bar">
+        🔷 78 🔶 135 ⭐ 7 ⚡ 53 💬 50
+      </div>
 
-      <button style={{ width: '100%', padding: '16px', background: '#4a90e2', color: 'white', border: 'none', borderRadius: '12px', fontSize: '18px', marginBottom: '30px' }}>
-        ЗАДАТЬ НОВЫЙ ОПРОС
-      </button>
+      <div className="central-block shadow-card">
+        <img src="https://iili.io/fdku4vj.jpg" alt="Столкновение сил" />
+        <div className="search-input">
+          <span>🔍</span>
+          <input type="text" placeholder="Поиск по обсуждениям" />
+        </div>
+        <PrimaryButton onClick={onNewPoll}>
+          ЗАДАТЬ НОВЫЙ ОПРОС
+        </PrimaryButton>
+      </div>
 
-      {/* АКТИВНЫЕ ТЕМЫ */}
-      <div style={{ marginBottom: '30px' }}>
-        <h2 
-          onClick={() => setActiveOpen(!activeOpen)}
-          style={{ 
-            cursor: 'pointer', 
-            fontSize: '20px', 
-            margin: '0 0 10px 0', 
-            background: '#f0f0f0', 
-            padding: '10px', 
-            borderRadius: '8px',
-            userSelect: 'none'
-          }}
-        >
-          АКТИВНЫЕ ТЕМЫ: {activeOpen ? '▼' : '►'}
+      <div className="section">
+        <h2 onClick={onToggleActive} className="section-title">
+          АКТИВНЫЕ ТЕМЫ: {activeOpen ? '▼' : '▲'}
         </h2>
         {activeOpen && (
-          <div style={{ marginTop: '10px' }}>
+          <div className="topic-list">
             {hotTopics.map((topic, i) => (
-              <div key={i} style={{ background: 'white', padding: '15px', marginBottom: '8px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+              <div key={i} className="topic-item shadow-card">
                 {topic}
               </div>
             ))}
@@ -54,31 +59,24 @@ export default function App() {
         )}
       </div>
 
-      {/* МОИ ТЕМЫ */}
-      <div>
-        <h2 
-          onClick={() => setMyOpen(!myOpen)}
-          style={{ 
-            cursor: 'pointer', 
-            fontSize: '20px', 
-            margin: '0 0 10px 0', 
-            background: '#fff8e1', 
-            padding: '10px', 
-            borderRadius: '8px',
-            userSelect: 'none'
-          }}
-        >
-          МОИ ТЕМЫ: {myOpen ? '▼' : '►'}
+      <div className="section">
+        <h2 onClick={onToggleMy} className="section-title">
+          МОИ ТЕМЫ: {myOpen ? '▼' : '▲'}
         </h2>
         {myOpen && (
-          <div style={{ marginTop: '10px' }}>
+          <div className="topic-list">
             {drafts.length === 0 ? (
-              <p style={{ color: '#888' }}>(пока пусто)</p>
+              <div style={{ color: '#888' }}>(пока пусто)</div>
             ) : (
-              drafts.map((draft) => (
-                <div key={draft.id} style={{ background: '#fffbe6', padding: '15px', marginBottom: '8px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', position: 'relative' }}>
-                  {draft.theme} (черновик)
-                  <button style={{ position: 'absolute', top: '8px', right: '8px', background: '#ff4d4d', color: 'white', border: 'none', width: '20px', height: '20px', borderRadius: '50%' }}>
+              drafts.map((draft, i) => (
+                <div key={i} className="draft-item shadow-card">
+                  <div onClick={() => onOpenDraft(draft)} style={{ cursor: 'pointer' }}>
+                    {draft.theme || 'Без темы'} (черновик)
+                  </div>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onDeleteDraft(draft.id) }}
+                    className="delete-draft-btn"
+                  >
                     ×
                   </button>
                 </div>
