@@ -111,4 +111,17 @@
 .action-buttons {
   display: flex;
   gap: 12px;
+  margin“T: 12px 0 0;
+}
+
+.action-buttons button {
+  flex: 1;                    /* ← одинаковая ширина */
+  padding: 14px !important;   /* ← чуть ниже (было 16px → стало 14px) */
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
