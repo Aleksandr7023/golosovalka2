@@ -5,7 +5,7 @@ import BackButton from '../components/BackButton.jsx'
 import PrimaryButton from '../components/PrimaryButton.jsx'
 import SecondaryButton from '../components/SecondaryButton.jsx'
 import { saveDraft } from '../utils/draftUtils.js'
-import './styles/screens/CreatePollScreen.css'
+import '../styles/screens/CreatePollScreen.css'
 
 export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
   const [theme, setTheme] = useState('')

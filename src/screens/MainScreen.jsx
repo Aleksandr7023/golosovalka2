@@ -2,7 +2,7 @@
 
 import React from 'react'
 import PrimaryButton from '../components/PrimaryButton.jsx'
-import './styles/screens/MainScreen.css'
+import '../styles/screens/MainScreen.css'
 
 export default function MainScreen({
   drafts,

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import BackButton from '../components/BackButton.jsx'
 import PrimaryButton from '../components/PrimaryButton.jsx'
-import './styles/screens/PollSettingsScreen.css'
+import '../styles/screens/PollSettingsScreen.css'
 
 export default function PollSettingsScreen({ draftId, onBack }) {
   const [multiple, setMultiple] = useState(false)
