@@ -1,4 +1,4 @@
-// src/screens/CreatePollScreen.jsx — v2.067 (стили вынесены — чистый код!)
+// src/screens/CreatePollScreen.jsx — v2.068 (все эмодзи на месте!)
 
 import React, { useState, useEffect, useRef } from 'react'
 import BackButton from '../components/BackButton.jsx'
@@ -17,7 +17,6 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
   const [keyboardHeight, setKeyboardHeight] = useState(0)
   const optionsRef = useRef(null)
 
-  // Загрузка черновика
   useEffect(() => {
     if (!draftId) {
       setTheme('')
@@ -36,7 +35,6 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     }
   }, [draftId])
 
-  // Клавиатура (мобильные)
   useEffect(() => {
     const original = window.innerHeight
     const handleResize = () => {
@@ -53,7 +51,6 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     }
   }, [])
 
-  // Viewport фикс
   useEffect(() => {
     const meta = document.createElement('meta')
     meta.name = 'viewport'
@@ -143,7 +140,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
       <div className="attachments-bar">
         <label>
           <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
-          <div>Paperclip</div>
+          <div>📎</div>
         </label>
 
         {attachments.length > 0 && (
@@ -154,15 +151,14 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
                   {file.type.startsWith('image/') ? (
                     <img src={URL.createObjectURL(file)} alt="" />
                   ) : file.type.startsWith('video/') ? (
-                    <div className="video-preview">Play</div>
+                    <div className="video-preview">▶</div>
                   ) : (
                     file.name.split('.').pop().toUpperCase()
                   )}
                 </div>
                 <button
                   onClick={(e) => { e.stopPropagation(); removeAttachment(i) }}
-                  className="remove-attachment btn-base btn-small-danger shadow-danger"
-                  style={{ background: '#ff4d4d', color: 'white' }}
+                  className="remove-attachment"
                 >
                   ×
                 </button>
@@ -172,19 +168,19 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
         )}
       </div>
 
-      {error && <div style={{ color: '#ff4d4d', marginBottom: '12px', fontSize: '14px' }}>{error}</div>}
+      {error && <div className="error-text">{error}</div>}
 
       {/* Просмотрщик */}
       {viewerFile && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', zIndex: 1000, display: 'flex', flexDirection: 'column' }}>
-          <button onClick={() => setViewerFile(null)} style={{ alignSelf: 'flex-end', background: 'none', border: 'none', color: 'white', fontSize: '32px', padding: '16px' }}>×</button>
-          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+        <div className="viewer-overlay">
+          <button onClick={() => setViewerFile(null)} className="viewer-close">×</button>
+          <div className="viewer-content">
             {viewerFile.type.startsWith('image/') ? (
-              <img src={viewerFile.url} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+              <img src={viewerFile.url} alt="" />
             ) : viewerFile.type.startsWith('video/') ? (
-              <video src={viewerFile.url} controls autoPlay style={{ maxWidth: '100%', maxHeight: '100%' }} />
+              <video src={viewerFile.url} controls autoPlay />
             ) : (
-              <iframe src={viewerFile.url} title={viewerFile.name} style={{ width: '90%', height: '90%', border: 'none' }} />
+              <iframe src={viewerFile.url} title={viewerFile.name} />
             )}
           </div>
         </div>
@@ -201,11 +197,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
               onChange={e => updateOption(i, e.target.value)}
             />
             {options.length > 2 && (
-              <button
-                onClick={() => removeOption(i)}
-                className="remove-option btn-base shadow-secondary"
-                style={{ background: '#ff4d4d', color: 'white', borderRadius: '8px', padding: '0 12px' }}
-              >
+              <button onClick={() => removeOption(i)} className="remove-option">
                 ✕
               </button>
             )}
@@ -215,13 +207,13 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
 
       {/* Кнопки */}
       <div className="bottom-buttons">
-        <PrimaryButton onClick={addOption} className="add-option-btn">
+        <PrimaryButton onClick={addOption}>
           + Добавить вариант ответа
         </PrimaryButton>
 
         <div className="action-buttons">
           <SecondaryButton onClick={handleOpenSettings}>
-            Settings Свойства опроса
+            ⚙️ Свойства опроса
           </SecondaryButton>
           <PrimaryButton>
             ЗАПУСТИТЬ ОПРОС
