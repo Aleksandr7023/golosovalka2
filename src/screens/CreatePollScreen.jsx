@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import BackButton from '../components/BackButton.jsx'
 import PrimaryButton from '../components/PrimaryButton.jsx'
 import SecondaryButton from '../components/SecondaryButton.jsx'
+import LaunchButton from '../components/LaunchButton.jsx'
 import { saveDraft } from '../utils/draftUtils.js'
 import '../styles/screens/CreatePollScreen.css'
 
@@ -215,9 +216,9 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
           <SecondaryButton onClick={handleOpenSettings}>
             ⚙️ Свойства опроса
           </SecondaryButton>
-          <PrimaryButton>
+          <LaunchButton>
             ЗАПУСТИТЬ ОПРОС
-          </PrimaryButton>
+          </LaunchButton>
         </div>
       </div>
     </div>
