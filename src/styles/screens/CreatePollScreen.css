@@ -101,7 +101,10 @@
 }
 
 .bottom-buttons {
-  padding: 12px 0;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .add-option-btn {
