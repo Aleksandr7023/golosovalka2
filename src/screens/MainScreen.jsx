@@ -1,7 +1,8 @@
-// src/screens/MainScreen.jsx — v1.008 (ВЫПАДАЮЩИЕ СПИСКИ РАБОТАЮТ!)
+// src/screens/MainScreen.jsx — v1.009 (красная кнопка удаления работает!)
 
 import React from 'react'
 import PrimaryButton from '../components/PrimaryButton.jsx'
+import DangerButton from '../components/DangerButton.jsx'
 import '../styles/screens/MainScreen.css'
 
 export default function MainScreen({
@@ -73,12 +74,9 @@ export default function MainScreen({
                   <div onClick={() => onOpenDraft(draft)} style={{ cursor: 'pointer' }}>
                     {draft.theme || 'Без темы'} (черновик)
                   </div>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); onDeleteDraft(draft.id) }}
-                    className="delete-draft-btn"
-                  >
-                    ×
-                  </button>
+
+                  {/* ← ВОТ ОНО! Красная кнопка удаления */}
+                  <DangerButton onClick={(e) => { e.stopPropagation(); onDeleteDraft(draft.id) }} />
                 </div>
               ))
             )}
