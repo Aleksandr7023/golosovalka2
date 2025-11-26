@@ -1,4 +1,4 @@
-// src/screens/MainScreen.jsx — v1.009 (красная кнопка удаления работает!)
+// src/screens/MainScreen.jsx — v1.010 (красная кнопка в строке!)
 
 import React from 'react'
 import PrimaryButton from '../components/PrimaryButton.jsx'
@@ -71,11 +71,9 @@ export default function MainScreen({
             ) : (
               drafts.map((draft, i) => (
                 <div key={i} className="draft-item shadow-card">
-                  <div onClick={() => onOpenDraft(draft)} style={{ cursor: 'pointer' }}>
+                  <div onClick={() => onOpenDraft(draft)} className="draft-text">
                     {draft.theme || 'Без темы'} (черновик)
                   </div>
-
-                  {/* ← ВОТ ОНО! Красная кнопка удаления */}
                   <DangerButton onClick={(e) => { e.stopPropagation(); onDeleteDraft(draft.id) }} />
                 </div>
               ))

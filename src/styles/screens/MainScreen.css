@@ -1,4 +1,4 @@
-/* src/styles/screens/MainScreen.css — Главный экран: все стили с русскими пояснениями */
+/* src/styles/screens/MainScreen.css — Главный экран: всё работает, кнопка удаления в строке! */
 
 /* Строка с рейтингом (78 135 7 53 50) — справа вверху */
 .rating-bar {
@@ -80,23 +80,34 @@
 .topic-item,
 .draft-item {
   background: white;
-  padding: 14px 16px;           /* ← высота карточки (14px сверху/снизу) */
+  padding: 14px 16px;           /* ← высота карточки */
   margin-bottom: 10px;          /* ← расстояние между карточками */
   border-radius: 14px;
   box-shadow: var(--shadow-card, 0 4px 10px rgba(0,0,0,0.08));
   font-size: 17px;
-  line-height: 1.4;             /* ← плотность текста внутри карточки */
+  line-height: 1.4;
+  position: relative;           /* ← обязательно для позиционирования кнопки */
+  display: flex;                 /* ← главное! теперь в одной строке */
+  align-items: center;          /* ← по центру по вертикали */
+  justify-content: space-between; /* ← текст слева, кнопка справа */
 }
 
 /* Черновики — жёлтый фон */
 .draft-item {
   background: #fffbe6;
-  position: relative;           /* ← чтобы кнопка удаления позиционировалась */
 }
 
-/* Красная кнопка "×" для удаления черновика */
+/* Текст черновика — занимает всё место слева */
+.draft-item > div:first-child {
+  cursor: pointer;
+  flex: 1;
+  padding-right: 40px; /* ← отступ под кнопку */
+}
+
+/* Красная кнопка "×" для удаления черновика — в конце строки */
 .delete-draft-btn {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%); /* ← точно по центру по высоте */
 }
