@@ -1,4 +1,4 @@
-// src/screens/CreatePollScreen.jsx — v2.068 (все эмодзи на месте!)
+// src/screens/CreatePollScreen.jsx — v2.070 (текст переносится + красная кнопка в строке!)
 
 import React, { useState, useEffect, useRef } from 'react'
 import BackButton from '../components/BackButton.jsx'
@@ -120,7 +120,6 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
   return (
     <div className="create-poll-container">
       <BackButton onClick={handleBack} />
-
       <h2 className="poll-title">НОВЫЙ ОПРОС</h2>
 
       <input
@@ -191,11 +190,12 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
       <div ref={optionsRef} className="options-list" style={{ paddingBottom: keyboardHeight > 0 ? `${keyboardHeight + 20}px` : '20px' }}>
         {options.map((opt, i) => (
           <div key={i} className="option-item">
-            <input
+            <textarea
               className="option-input"
               placeholder={`Вариант ответа ${i + 1}`}
               value={opt}
               onChange={e => updateOption(i, e.target.value)}
+              rows={1}
             />
             {options.length > 2 && (
               <button onClick={() => removeOption(i)} className="remove-option">

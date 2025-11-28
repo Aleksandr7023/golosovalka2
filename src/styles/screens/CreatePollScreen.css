@@ -116,15 +116,17 @@
 /* Поле ввода — ТЕКСТ ПЕРЕНОСИТСЯ! */
 .option-input {
   flex: 1;
-  padding: 12px 50px 12px 12px;     /* Отступ под кнопку */
+  padding: 12px 50px 12px 12px;
   border-radius: 12px;
   border: 1px solid #ccc;
   font-size: 17px;
   line-height: 1.5;
-  word-break: break-word;           /* ← ГЛАВНОЕ ИСПРАВЛЕНИЕ! */
-  overflow-wrap: anywhere;           /* ← Современный стандарт */
-  white-space: normal;              /* ← Разрешаем перенос */
+  resize: none;                    /* ← запрещаем ручной ресайз */
+  overflow: hidden;                /* ← убираем скролл */
   min-height: 48px;
+  field-sizing: content;           /* ← теперь работает! */
+  word-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 /* Нижняя панель кнопок */
