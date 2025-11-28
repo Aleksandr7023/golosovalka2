@@ -1,4 +1,4 @@
-// src/screens/CreatePollScreen.jsx — v2.072 (фото НЕ открывается при прикреплении!)
+// src/screens/CreatePollScreen.jsx — v2.074 (фото НЕ открывается при прикреплении!)
 
 import React, { useState, useEffect, useRef } from 'react'
 import BackButton from '../components/BackButton.jsx'
@@ -85,20 +85,31 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     onOpenSettings(currentId)
   }
 
-  // ← ВОТ ГЛАВНОЕ ИСПРАВЛЕНИЕ! НИКАКОГО openFile() ПРИ ПРИКРЕПЛЕНИИ!
   const handleFiles = (e) => {
     const files = Array.from(e.target.files)
     const valid = files.filter(f => f.size <= 50 * 1024 * 1024)
     const invalid = files.filter(f => f.size > 50 * 1024 * 1024)
-    if (invalid.length > 0) setError('Файлы > 50 МБ запрещены')
-    else setError('')
-    if (attachments.length + valid.length > 3) setError('Максимум 3 вложения')
-    else {
+
+    if (invalid.length > 0) {
+      setError('Файлы > 50 МБ запрещены')
+    } else {
+      setError('')
+    }
+
+    if (attachments.length + valid.length > 3) {
+      setError('Максимум 3 вложения')
+    } else {
       setAttachments([...attachments, ...valid].slice(0, 3))
+      setViewerFile(null) // ← СБРАСЫВАЕМ ПРОСМОТРЩИК ПРИ НОВОМ ПРИКРЕПЛЕНИИ!
     }
   }
 
-  const removeAttachment = (i) => setAttachments(attachments.filter((_, idx) => idx !== i))
+  const removeAttachment = (i) => {
+    setAttachments(attachments.filter((_, idx) => idx !== i))
+    if (viewerFile && attachments[i] && viewerFile.name === attachments[i].name) {
+      setViewerFile(null) // ← закрываем просмотрщик, если удалили открытый файл
+    }
+  }
 
   const openFile = (file) => {
     const url = URL.createObjectURL(file)
@@ -165,7 +176,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
                 </div>
                 <button
                   onClick={(e) => {
-                    e.stopPropagation() // ← КРИТИЧНО!
+                    e.stopPropagation()
                     removeAttachment(i)
                   }}
                   className="remove-attachment"
