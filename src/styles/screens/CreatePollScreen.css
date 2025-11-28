@@ -1,4 +1,4 @@
-/* src/styles/screens/CreatePollScreen.css — КРАСНЫЕ КНОПКИ В СТРОКЕ + ПЕРЕНОС ТЕКСТА */
+/* src/styles/screens/CreatePollScreen.css — КРАСНЫЕ КНОПКИ РАЗНЫЕ + ПЕРЕНОС ТЕКСТА (ФИНАЛЬНО!) */
 
 .create-poll-container {
   padding: 16px;
@@ -51,6 +51,7 @@
 
 .attachment-item {
   position: relative;
+  display: inline-block;
 }
 
 .attachment-preview {
@@ -64,9 +65,20 @@
   justify-content: center;
   font-size: 10px;
   color: #333;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
 }
 
-/* Маленький крестик для вложений — аккуратный, в углу */
+.attachment-preview:hover {
+  opacity: 0.8;
+}
+
+.video-preview {
+  background: #000;
+  color: white;
+}
+
+/* МАЛЕНЬКИЙ КРЕСТИК ДЛЯ ВЛОЖЕНИЙ — аккуратный, в углу */
 .remove-attachment {
   position: absolute;
   top: -6px;
@@ -75,7 +87,7 @@
   color: white;
   border: none;
   border-radius: 50%;
-  width: 20px;           /* ← маленький! */
+  width: 20px;
   height: 20px;
   font-size: 12px;
   cursor: pointer;
@@ -87,37 +99,6 @@
 .remove-attachment:hover {
   background: #ff3333;
   box-shadow: 0 4px 10px rgba(255,77,77,0.6);
-}
-
-.video-preview {
-  background: #000;
-  color: white;
-}
-
-/* Красные кнопки удаления (вложения и варианты) */
-.remove-attachment,
-.remove-option {
-  position: absolute;
-  top: 50%;
-  right: 8px;
-  transform: translateY(-50%);
-  background: #ff4d4d;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  font-size: 16px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(255,77,77,0.4);
-  transition: all 0.2s ease;
-  z-index: 10;
-}
-
-.remove-attachment:hover,
-.remove-option:hover {
-  background: #ff3333;
-  box-shadow: 0 4px 12px rgba(255,77,77,0.6);
 }
 
 /* Список вариантов ответа */
@@ -136,7 +117,7 @@
   position: relative;
 }
 
-/* Поле ввода — ТЕКСТ ПЕРЕНОСИТСЯ! */
+/* Поле ввода варианта — ТЕКСТ ПЕРЕНОСИТСЯ! */
 .option-input {
   flex: 1;
   padding: 12px 50px 12px 12px;
@@ -144,12 +125,36 @@
   border: 1px solid #ccc;
   font-size: 17px;
   line-height: 1.5;
-  resize: none;                    /* ← запрещаем ручной ресайз */
-  overflow: hidden;                /* ← убираем скролл */
+  resize: none;
+  overflow: hidden;
   min-height: 48px;
-  field-sizing: content;           /* ← теперь работает! */
   word-wrap: break-word;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* БОЛЬШАЯ КРАСНАЯ КНОПКА ДЛЯ ВАРИАНТОВ ОТВЕТА */
+.remove-option {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(255,77,77,0.4);
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.remove-option:hover {
+  background: #ff3333;
+  box-shadow: 0 4px 12px rgba(255,77,77,0.6);
 }
 
 /* Нижняя панель кнопок */
