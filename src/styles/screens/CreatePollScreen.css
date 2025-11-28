@@ -92,8 +92,8 @@
   color: white;
   border: none;
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
   font-size: 12px;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(255,77,77,0.4);
@@ -190,4 +190,9 @@
 .action-buttons {
   display: flex;
   gap: 12px;
+}
+
+/* ← ГЛАВНОЕ — все кнопки внутри action-buttons теперь одинаковой ширины */
+.action-buttons button {
+  flex: 1;
 }
