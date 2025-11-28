@@ -1,4 +1,4 @@
-// src/App.jsx — v1.039 (взаимоисключающие списки — как ты просил!)
+// src/App.jsx — v1.040 (при закрытии одного — открывается другой!)
 
 import React, { useState, useEffect } from 'react'
 import MainScreen from './screens/MainScreen.jsx'
@@ -12,11 +12,9 @@ export default function App() {
   const [drafts, setDrafts] = useState([])
   const [currentDraftId, setCurrentDraftId] = useState(null)
 
-  // Состояние списков — взаимоисключающие
-  const [activeOpen, setActiveOpen] = useState(true)  // Активные темы
-  const [myOpen, setMyOpen] = useState(false)         // Мои темы
-
-  // Изначально закрыты
+  // Один из списков ВСЕГДА открыт
+  const [activeOpen, setActiveOpen] = useState(true)
+  const [myOpen, setMyOpen] = useState(false)
 
   const refreshDrafts = () => setDrafts(loadDrafts())
 
@@ -24,24 +22,16 @@ export default function App() {
     refreshDrafts()
   }, [])
 
-  // Клик по "АКТИВНЫЕ ТЕМЫ" — если открыт → закрыть, иначе открыть (и закрыть "Мои")
+  // Клик по "АКТИВНЫЕ ТЕМЫ" — переключаем: если был открыт → закрываем (и открываем "Мои")
   const toggleActive = () => {
-    if (activeOpen) {
-      setActiveOpen(false)
-    } else {
-      setActiveOpen(true)
-      setMyOpen(false)
-    }
+    setActiveOpen(prev => !prev)
+    setMyOpen(prev => !prev)  // ← автоматически переключаем другой
   }
 
-  // Клик по "МОИ ТЕМЫ" — если открыт → закрыть, иначе открыть (и закрыть "Активные")
+  // Клик по "МОИ ТЕМЫ" — то же самое
   const toggleMy = () => {
-    if (myOpen) {
-      setMyOpen(false)
-    } else {
-      setMyOpen(true)
-      setActiveOpen(false)
-    }
+    setMyOpen(prev => !prev)
+    setActiveOpen(prev => !prev)  // ← автоматически переключаем другой
   }
 
   const handleOpenSettings = (draftId) => {
