@@ -73,6 +73,20 @@
   opacity: 0.8;
 }
 
+.image-placeholder,
+.video-preview,
+.file-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #666;
+}
+
 .video-preview {
   background: #000;
   color: white;

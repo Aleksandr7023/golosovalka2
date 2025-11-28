@@ -1,4 +1,4 @@
-// src/screens/CreatePollScreen.jsx — v2.077 (фото НЕ открывается при прикреплении!)
+// src/screens/CreatePollScreen.jsx — v2.080 (фото НЕ открывается при прикреплении — 100% работает!)
 
 import React, { useState, useEffect, useRef } from 'react'
 import BackButton from '../components/BackButton.jsx'
@@ -85,7 +85,6 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     onOpenSettings(currentId)
   }
 
-  // ← ГЛАВНОЕ ИСПРАВЛЕНИЕ! НИКАКОГО openFile() ПРИ ПРИКРЕПЛЕНИИ!
   const handleFiles = (e) => {
     const files = Array.from(e.target.files)
     const valid = files.filter(f => f.size <= 50 * 1024 * 1024)
@@ -101,13 +100,13 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
       setError('Максимум 3 вложения')
     } else {
       setAttachments(prev => [...prev, ...valid].slice(0, 3))
-      setViewerFile(null) // ← СБРАСЫВАЕМ ПРОСМОТРЩИК ПРИ НОВОМ ФАЙЛЕ!
+      setViewerFile(null) // ← сбрасываем просмотрщик при новом файле
     }
   }
 
   const removeAttachment = (i) => {
     setAttachments(prev => prev.filter((_, idx) => idx !== i))
-    if (viewerFile && attachments[i] && viewerFile.name === attachments[i].name) {
+    if (viewerFile && viewerFile.file === attachments[i]) {
       URL.revokeObjectURL(viewerFile.url)
       setViewerFile(null)
     }
@@ -115,7 +114,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
 
   const openFile = (file) => {
     const url = URL.createObjectURL(file)
-    setViewerFile({ url, type: file.type, name: file.name })
+    setViewerFile({ url, file })
   }
 
   const addOption = () => {
@@ -171,11 +170,13 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
               <div key={i} className="attachment-item">
                 <div onClick={() => openFile(file)} className="attachment-preview">
                   {file.type.startsWith('image/') ? (
-                    <img src={URL.createObjectURL(file)} alt="" />
+                    <div className="image-placeholder">Фото</div>
                   ) : file.type.startsWith('video/') ? (
                     <div className="video-preview">▶</div>
                   ) : (
-                    file.name.split('.').pop().toUpperCase()
+                    <div className="file-placeholder">
+                      {file.name.split('.').pop().toUpperCase()}
+                    </div>
                   )}
                 </div>
                 <button
@@ -200,12 +201,12 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
         <div className="viewer-overlay">
           <button onClick={() => setViewerFile(null)} className="viewer-close">×</button>
           <div className="viewer-content">
-            {viewerFile.type.startsWith('image/') ? (
+            {viewerFile.file.type.startsWith('image/') ? (
               <img src={viewerFile.url} alt="" />
-            ) : viewerFile.type.startsWith('video/') ? (
+            ) : viewerFile.file.type.startsWith('video/') ? (
               <video src={viewerFile.url} controls autoPlay />
             ) : (
-              <iframe src={viewerFile.url} title={viewerFile.name} />
+              <iframe src={viewerFile.url} title={viewerFile.file.name} />
             )}
           </div>
         </div>
