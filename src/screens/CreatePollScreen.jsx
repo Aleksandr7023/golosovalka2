@@ -1,4 +1,4 @@
-// src/screens/CreatePollScreen.jsx — v2.083 (финальная версия — всё идеально!)
+// src/screens/CreatePollScreen.jsx — v2.084 (надпись справа от вложений, в две строки)
 
 import React, { useState, useEffect, useRef } from 'react'
 import BackButton from '../components/BackButton.jsx'
@@ -17,7 +17,6 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
   const [keyboardHeight, setKeyboardHeight] = useState(0)
   const optionsRef = useRef(null)
 
-  // Загрузка черновика
   useEffect(() => {
     if (!draftId) {
       setTheme('')
@@ -36,7 +35,6 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     }
   }, [draftId])
 
-  // Клавиатура (мобильные)
   useEffect(() => {
     const original = window.innerHeight
     const handleResize = () => {
@@ -53,7 +51,6 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     }
   }, [])
 
-  // Viewport фикс
   useEffect(() => {
     const meta = document.createElement('meta')
     meta.name = 'viewport'
@@ -97,7 +94,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
       alert('Максимум 3 вложения')
     } else {
       setAttachments(prev => [...prev, ...valid].slice(0, 3))
-      setViewerFile(null) // ← не открываем при прикреплении
+      setViewerFile(null)
     }
   }
 
@@ -155,50 +152,50 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
       />
 
       {/* Вложения */}
-<div className="attachments-bar">
-  <div className="attachments-controls">
-    <label>
-      <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
-      <div>📎</div>
-    </label>
+      <div className="attachments-bar">
+        <div className="attachments-controls">
+          <label>
+            <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
+            <div>📎</div>
+          </label>
 
-    {attachments.length > 0 && (
-      <div className="attachments-list">
-        {attachments.map((file, i) => (
-          <div key={i} className="attachment-item">
-            <div onClick={() => openFile(file)} className="attachment-preview">
-              {file.type.startsWith('image/') ? (
-                <div className="image-placeholder">Фото</div>
-              ) : file.type.startsWith('video/') ? (
-                <div className="video-preview">▶</div>
-              ) : (
-                <div className="file-placeholder">
-                  {file.name.split('.').pop().toUpperCase()}
+          {attachments.length > 0 && (
+            <div className="attachments-list">
+              {attachments.map((file, i) => (
+                <div key={i} className="attachment-item">
+                  <div onClick={() => openFile(file)} className="attachment-preview">
+                    {file.type.startsWith('image/') ? (
+                      <div className="image-placeholder">Фото</div>
+                    ) : file.type.startsWith('video/') ? (
+                      <div className="video-preview">▶</div>
+                    ) : (
+                      <div className="file-placeholder">
+                        {file.name.split('.').pop().toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      removeAttachment(i)
+                    }}
+                    className="remove-attachment"
+                  >
+                    ×
+                  </button>
                 </div>
-              )}
+              ))}
             </div>
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                removeAttachment(i)
-              }}
-              className="remove-attachment"
-            >
-              ×
-            </button>
-          </div>
-        ))}
-      </div>
-    )}
-  </div>
+          )}
+        </div>
 
-  {/* Надпись — посередине, маленькая буква */}
-  {attachments.length > 0 && (
-    <div className="attachments-limit">
-      максимум 3 вложения
-    </div>
-  )}
-</div>
+        {/* Надпись справа от вложений */}
+        {attachments.length > 0 && (
+          <div className="attachments-limit">
+            максимум<br />3 вложения
+          </div>
+        )}
+      </div>
 
       {/* Просмотрщик */}
       {viewerFile && (
@@ -243,7 +240,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
         </PrimaryButton>
         <div className="action-buttons">
           <SecondaryButton onClick={handleOpenSettings}>
-           ⚙️ Свойства опроса
+            ⚙️ Свойства опроса
           </SecondaryButton>
           <LaunchButton>
             ЗАПУСТИТЬ ОПРОС
