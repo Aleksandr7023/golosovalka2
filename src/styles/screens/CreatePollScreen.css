@@ -1,18 +1,21 @@
-/* src/styles/screens/CreatePollScreen.css — только специфичные стили */
+/* src/styles/screens/CreatePollScreen.css — финальная версия с красными кнопками удаления */
 
+/* Основной контейнер экрана создания опроса */
 .create-poll-container {
-  padding: 16px;
-  background: #f8f9fa;
-  min-height: 100dvh;
+  padding: 16px;                     /* Отступы внутри экрана */
+  background: #f8f9fa;               /* Светло-серый фон */
+  min-height: 100dvh;                /* На всю высоту экрана */
   display: flex;
-  flex-direction: column;
+  flex-direction: column;           /* Вертикальное расположение элементов */
 }
 
+/* Заголовок "НОВЫЙ ОПРОС" */
 .poll-title {
   font-size: 22px;
-  margin: 8px 0 20px 0;
+  margin: 8px 0 20px 0;              /* Отступы сверху и снизу */
 }
 
+/* Поля ввода темы и вопроса */
 .theme-input,
 .question-textarea {
   width: 100%;
@@ -23,36 +26,42 @@
   margin-bottom: 20px;
 }
 
+/* Особенности текстового поля для вопроса */
 .question-textarea {
-  resize: none;
+  resize: none;                      /* Запрещаем изменение размера */
   min-height: 80px;
   max-height: 200px;
-  overflow-y: auto;
-  field-sizing: content;
+  overflow-y: auto;                  /* Скролл, если текст длинный */
+  field-sizing: content;             /* Адаптация высоты под содержимое */
   margin-bottom: 8px;
 }
 
+/* Панель прикрепления файлов */
 .attachments-bar {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
 }
 
+/* Иконка скрепки для загрузки файлов */
 .attachments-bar label {
   font-size: 32px;
   cursor: pointer;
 }
 
+/* Список прикреплённых файлов */
 .attachments-list {
   display: flex;
-  gap: 8px;
+  gap: 8px;                          /* Расстояние между превью */
   margin-left: 12px;
 }
 
+/* Один элемент вложения (фото/видео/файл) */
 .attachment-item {
-  position: relative;
+  position: relative;               /* Чтобы кнопка удаления позиционировалась */
 }
 
+/* Превью вложения (40×40 пикселей) */
 .attachment-preview {
   width: 40px;
   height: 40px;
@@ -66,17 +75,38 @@
   color: #333;
 }
 
+/* Превью видео — чёрный фон с плей */
 .video-preview {
   background: #000;
   color: white;
 }
 
-.remove-attachment {
+/* Красная кнопка удаления вложения и варианта ответа */
+.remove-attachment,
+.remove-option {
   position: absolute;
   top: -6px;
   right: -6px;
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(255,77,77,0.4);
+  transition: all 0.2s ease;
 }
 
+/* Эффект при наведении на красную кнопку */
+.remove-attachment:hover,
+.remove-option:hover {
+  background: #ff3333;
+  box-shadow: 0 4px 10px rgba(255,77,77,0.6);
+}
+
+/* Список вариантов ответа (скроллится) */
 .options-list {
   flex: 1;
   overflow-y: auto;
@@ -84,11 +114,14 @@
   padding-right: 8px;
 }
 
+/* Строка с вариантом ответа */
 .option-item {
   display: flex;
   margin-bottom: 12px;
+  position: relative;               /* Для позиционирования кнопки удаления */
 }
 
+/* Поле ввода варианта ответа */
 .option-input {
   flex: 1;
   padding: 12px;
@@ -96,35 +129,16 @@
   border: 1px solid #ccc;
 }
 
-.remove-option {
-  margin-left: 8px;
-}
-
+/* Нижняя панель с кнопками */
 .bottom-buttons {
   padding-top: 20px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 20px;                         /* Расстояние между блоками кнопок */
 }
 
-.add-option-btn {
-  margin-bottom: 12px;
-}
-
+/* Кнопки "Свойства опроса" и "Запустить опрос" */
 .action-buttons {
   display: flex;
-  gap: 12px;
-  margin“T: 12px 0 0;
-}
-
-.action-buttons button {
-  flex: 1;                    /* ← одинаковая ширина */
-  padding: 14px !important;   /* ← чуть ниже (было 16px → стало 14px) */
-  font-size: 18px;
-  font-weight: bold;
-  border-radius: 16px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  gap: 12px;                         /* Расстояние между двумя кнопками */
 }
