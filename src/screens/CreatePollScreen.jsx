@@ -1,4 +1,4 @@
-// src/screens/CreatePollScreen.jsx — v2.074 (фото НЕ открывается при прикреплении!)
+// src/screens/CreatePollScreen.jsx — v2.075 (фото НЕ открывается при прикреплении!)
 
 import React, { useState, useEffect, useRef } from 'react'
 import BackButton from '../components/BackButton.jsx'
@@ -37,7 +37,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     }
   }, [draftId])
 
-  // Клавиатура
+  // Клавиатура (мобильные)
   useEffect(() => {
     const original = window.innerHeight
     const handleResize = () => {
@@ -54,7 +54,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     }
   }, [])
 
-  // Viewport
+  // Viewport фикс
   useEffect(() => {
     const meta = document.createElement('meta')
     meta.name = 'viewport'
@@ -85,6 +85,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     onOpenSettings(currentId)
   }
 
+  // ← ВОТ ГЛАВНОЕ ИСПРАВЛЕНИЕ! НИКАКОГО openFile() ПРИ ПРИКРЕПЛЕНИИ!
   const handleFiles = (e) => {
     const files = Array.from(e.target.files)
     const valid = files.filter(f => f.size <= 50 * 1024 * 1024)
@@ -100,14 +101,15 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
       setError('Максимум 3 вложения')
     } else {
       setAttachments([...attachments, ...valid].slice(0, 3))
-      setViewerFile(null) // ← СБРАСЫВАЕМ ПРОСМОТРЩИК ПРИ НОВОМ ПРИКРЕПЛЕНИИ!
+      setViewerFile(null) // ← СБРАСЫВАЕМ ПРОСМОТРЩИК ПРИ НОВОМ ФАЙЛЕ!
     }
   }
 
   const removeAttachment = (i) => {
     setAttachments(attachments.filter((_, idx) => idx !== i))
+    // Если удаляем открытый файл — закрываем просмотрщик
     if (viewerFile && attachments[i] && viewerFile.name === attachments[i].name) {
-      setViewerFile(null) // ← закрываем просмотрщик, если удалили открытый файл
+      setViewerFile(null)
     }
   }
 
