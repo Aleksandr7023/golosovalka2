@@ -1,7 +1,7 @@
 ﻿// src/utils/constants.js — все константы в одном месте
 
 // Версия приложения (меняется только здесь!)
-export const APP_VERSION = 'v1.32'
+export const APP_VERSION = 'v1.33'
 
 // Максимальное количество вариантов ответа
 export const MAX_OPTIONS = 20
