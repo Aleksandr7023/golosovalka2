@@ -1,4 +1,4 @@
-// src/screens/CreatePollScreen.jsx — v2.071 (фото НЕ открывается при прикреплении!)
+// src/screens/CreatePollScreen.jsx — v2.072 (фото НЕ открывается при прикреплении!)
 
 import React, { useState, useEffect, useRef } from 'react'
 import BackButton from '../components/BackButton.jsx'
@@ -18,6 +18,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
   const [keyboardHeight, setKeyboardHeight] = useState(0)
   const optionsRef = useRef(null)
 
+  // Загрузка черновика
   useEffect(() => {
     if (!draftId) {
       setTheme('')
@@ -36,6 +37,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     }
   }, [draftId])
 
+  // Клавиатура
   useEffect(() => {
     const original = window.innerHeight
     const handleResize = () => {
@@ -52,6 +54,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     }
   }, [])
 
+  // Viewport
   useEffect(() => {
     const meta = document.createElement('meta')
     meta.name = 'viewport'
@@ -82,6 +85,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     onOpenSettings(currentId)
   }
 
+  // ← ВОТ ГЛАВНОЕ ИСПРАВЛЕНИЕ! НИКАКОГО openFile() ПРИ ПРИКРЕПЛЕНИИ!
   const handleFiles = (e) => {
     const files = Array.from(e.target.files)
     const valid = files.filter(f => f.size <= 50 * 1024 * 1024)
@@ -91,7 +95,6 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     if (attachments.length + valid.length > 3) setError('Максимум 3 вложения')
     else {
       setAttachments([...attachments, ...valid].slice(0, 3))
-      // ← УБРАЛ openFile() — теперь НЕ открывается автоматически!
     }
   }
 
@@ -123,6 +126,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
   return (
     <div className="create-poll-container">
       <BackButton onClick={handleBack} />
+
       <h2 className="poll-title">НОВЫЙ ОПРОС</h2>
 
       <input
@@ -161,7 +165,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
                 </div>
                 <button
                   onClick={(e) => {
-                    e.stopPropagation()
+                    e.stopPropagation() // ← КРИТИЧНО!
                     removeAttachment(i)
                   }}
                   className="remove-attachment"
