@@ -137,36 +137,42 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
       />
 
       {/* Вложения */}
-      <div className="attachments-bar">
-        <label>
-          <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
-          <div>📎</div>
-        </label>
+	<div className="attachments-bar">
+	  <label>
+	    <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} 	style={{ display: 'none' }} />
+	    <div>📎</div>
+	  </label>
 
-        {attachments.length > 0 && (
-          <div className="attachments-list">
-            {attachments.map((file, i) => (
-              <div key={i} className="attachment-item">
-                <div onClick={() => openFile(file)} className="attachment-preview">
-                  {file.type.startsWith('image/') ? (
-                    <img src={URL.createObjectURL(file)} alt="" />
-                  ) : file.type.startsWith('video/') ? (
-                    <div className="video-preview">▶</div>
-                  ) : (
-                    file.name.split('.').pop().toUpperCase()
-                  )}
-                </div>
-                <button
-                  onClick={(e) => { e.stopPropagation(); removeAttachment(i) }}
-                  className="remove-attachment"
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+	  {attachments.length > 0 && (
+	    <div className="attachments-list">
+	      {attachments.map((file, i) => (
+	        <div key={i} className="attachment-item">
+	          {/* ← Клик по превью — ОТКРЫВАЕТ просмотрщик */}
+	          <div onClick={() => openFile(file)} className="attachment-preview">
+	            {file.type.startsWith('image/') ? (
+	              <img src={URL.createObjectURL(file)} alt="" />
+	            ) : file.type.startsWith('video/') ? (
+	              <div className="video-preview">▶</div>
+	            ) : (
+	              file.name.split('.').pop().toUpperCase()
+	            )}
+	          </div>
+
+	          {/* ← Удаление — отдельно */}
+	          <button
+	            onClick={(e) => {
+	              e.stopPropagation()  // ← КРИТИЧНО! Без этого клик по крестику открывает просмотрщик
+	              removeAttachment(i)
+	            }}
+	            className="remove-attachment"
+	          >
+	            ×
+	          </button>
+	        </div>
+	      ))}
+	    </div>
+	  )}
+	</div>
 
       {error && <div className="error-text">{error}</div>}
 
