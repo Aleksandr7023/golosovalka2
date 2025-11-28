@@ -1,5 +1,6 @@
-/* src/styles/screens/CreatePollScreen.css — красные кнопки в строке + перенос текста */
+/* src/styles/screens/CreatePollScreen.css — текст переносится + красные кнопки в строке */
 
+/* Основной контейнер экрана создания опроса */
 .create-poll-container {
   padding: 16px;
   background: #f8f9fa;
@@ -8,11 +9,13 @@
   flex-direction: column;
 }
 
+/* Заголовок "НОВЫЙ ОПРОС" */
 .poll-title {
   font-size: 22px;
   margin: 8px 0 20px 0;
 }
 
+/* Поля ввода темы и вопроса */
 .theme-input,
 .question-textarea {
   width: 100%;
@@ -32,6 +35,7 @@
   margin-bottom: 8px;
 }
 
+/* Панель прикрепления файлов */
 .attachments-bar {
   display: flex;
   align-items: center;
@@ -71,7 +75,9 @@
   color: white;
 }
 
-.remove-attachment {
+/* Красные кнопки удаления (вложения и варианты) */
+.remove-attachment,
+.remove-option {
   position: absolute;
   top: -6px;
   right: -6px;
@@ -87,11 +93,13 @@
   transition: all 0.2s ease;
 }
 
-.remove-attachment:hover {
+.remove-attachment:hover,
+.remove-option:hover {
   background: #ff3333;
   box-shadow: 0 4px 10px rgba(255,77,77,0.6);
 }
 
+/* Список вариантов ответа */
 .options-list {
   flex: 1;
   overflow-y: auto;
@@ -102,44 +110,34 @@
 /* Строка с вариантом ответа — главное изменение! */
 .option-item {
   display: flex;
-  align-items: center;               /* ← выравнивание по центру */
+  align-items: center;
   margin-bottom: 12px;
   position: relative;
 }
 
-/* Поле ввода — растягивается, текст переносится */
+/* Поле ввода варианта — ТЕКСТ ПЕРЕНОСИТСЯ! */
 .option-input {
   flex: 1;
-  padding: 12px 40px 12px 12px;      /* ← отступ справа под кнопку */
+  padding: 12px 40px 12px 12px;     /* Отступ справа под кнопку */
   border-radius: 12px;
   border: 1px solid #ccc;
   font-size: 17px;
-  line-height: 1.4;                  /* ← перенос текста как в "Моих темах" */
-  word-wrap: break-word;             /* ← перенос длинных слов */
-  white-space: normal;               /* ← разрешаем перенос строк */
+  line-height: 1.4;
+  word-wrap: break-word;            /* ← перенос длинных слов */
+  white-space: pre-wrap;            /* ← перенос по пробелам и строкам */
+  overflow-wrap: break-word;        /* ← современный стандарт */
 }
 
-/* Красная кнопка удаления варианта — теперь в строке! */
+/* Красная кнопка удаления варианта — теперь в строке по центру */
 .remove-option {
   margin-left: 8px;
-  background: #ff4d4d;
-  color: white;
-  border: none;
-  border-radius: 50%;
+  flex-shrink: 0;
   width: 32px;
   height: 32px;
   font-size: 14px;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(255,77,77,0.4);
-  transition: all 0.2s ease;
-  flex-shrink: 0;                    /* ← не сжимается */
 }
 
-.remove-option:hover {
-  background: #ff3333;
-  box-shadow: 0 4px 10px rgba(255,77,77,0.6);
-}
-
+/* Нижняя панель кнопок */
 .bottom-buttons {
   padding-top: 20px;
   display: flex;
