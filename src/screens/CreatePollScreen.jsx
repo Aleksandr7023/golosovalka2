@@ -155,50 +155,50 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
       />
 
       {/* Вложения */}
-      <div className="attachments-bar">
-        <div className="attachments-controls">
-          <label>
-            <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
-            <div>📎</div>
-          </label>
+<div className="attachments-bar">
+  <div className="attachments-controls">
+    <label>
+      <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
+      <div>📎</div>
+    </label>
 
-          {attachments.length > 0 && (
-            <div className="attachments-list">
-              {attachments.map((file, i) => (
-                <div key={i} className="attachment-item">
-                  <div onClick={() => openFile(file)} className="attachment-preview">
-                    {file.type.startsWith('image/') ? (
-                      <div className="image-placeholder">Фото</div>
-                    ) : file.type.startsWith('video/') ? (
-                      <div className="video-preview">▶</div>
-                    ) : (
-                      <div className="file-placeholder">
-                        {file.name.split('.').pop().toUpperCase()}
-                      </div>
-                    )}
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      removeAttachment(i)
-                    }}
-                    className="remove-attachment"
-                  >
-                    ×
-                  </button>
+    {attachments.length > 0 && (
+      <div className="attachments-list">
+        {attachments.map((file, i) => (
+          <div key={i} className="attachment-item">
+            <div onClick={() => openFile(file)} className="attachment-preview">
+              {file.type.startsWith('image/') ? (
+                <div className="image-placeholder">Фото</div>
+              ) : file.type.startsWith('video/') ? (
+                <div className="video-preview">▶</div>
+              ) : (
+                <div className="file-placeholder">
+                  {file.name.split('.').pop().toUpperCase()}
                 </div>
-              ))}
+              )}
             </div>
-          )}
-        </div>
-
-        {/* Надпись справа — только при наличии вложений */}
-        {attachments.length > 0 && (
-          <div className="attachments-limit">
-            Максимум<br />3 вложения
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                removeAttachment(i)
+              }}
+              className="remove-attachment"
+            >
+              ×
+            </button>
           </div>
-        )}
+        ))}
       </div>
+    )}
+  </div>
+
+  {/* Надпись — посередине, маленькая буква */}
+  {attachments.length > 0 && (
+    <div className="attachments-limit">
+      максимум 3 вложения
+    </div>
+  )}
+</div>
 
       {/* Просмотрщик */}
       {viewerFile && (
