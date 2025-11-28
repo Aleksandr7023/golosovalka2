@@ -1,4 +1,4 @@
-// src/screens/CreatePollScreen.jsx — v2.070 (текст переносится + красная кнопка в строке!)
+// src/screens/CreatePollScreen.jsx — v2.071 (фото НЕ открывается при прикреплении!)
 
 import React, { useState, useEffect, useRef } from 'react'
 import BackButton from '../components/BackButton.jsx'
@@ -89,7 +89,10 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     if (invalid.length > 0) setError('Файлы > 50 МБ запрещены')
     else setError('')
     if (attachments.length + valid.length > 3) setError('Максимум 3 вложения')
-    else setAttachments([...attachments, ...valid].slice(0, 3))
+    else {
+      setAttachments([...attachments, ...valid].slice(0, 3))
+      // ← УБРАЛ openFile() — теперь НЕ открывается автоматически!
+    }
   }
 
   const removeAttachment = (i) => setAttachments(attachments.filter((_, idx) => idx !== i))
@@ -137,42 +140,39 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
       />
 
       {/* Вложения */}
-	<div className="attachments-bar">
-	  <label>
-	    <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} 	style={{ display: 'none' }} />
-	    <div>📎</div>
-	  </label>
+      <div className="attachments-bar">
+        <label>
+          <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
+          <div>📎</div>
+        </label>
 
-	  {attachments.length > 0 && (
-	    <div className="attachments-list">
-	      {attachments.map((file, i) => (
-	        <div key={i} className="attachment-item">
-	          {/* ← Клик по превью — ОТКРЫВАЕТ просмотрщик */}
-	          <div onClick={() => openFile(file)} className="attachment-preview">
-	            {file.type.startsWith('image/') ? (
-	              <img src={URL.createObjectURL(file)} alt="" />
-	            ) : file.type.startsWith('video/') ? (
-	              <div className="video-preview">▶</div>
-	            ) : (
-	              file.name.split('.').pop().toUpperCase()
-	            )}
-	          </div>
-
-	          {/* ← Удаление — отдельно */}
-	          <button
-	            onClick={(e) => {
-	              e.stopPropagation()  // ← КРИТИЧНО! Без этого клик по крестику открывает просмотрщик
-	              removeAttachment(i)
-	            }}
-	            className="remove-attachment"
-	          >
-	            ×
-	          </button>
-	        </div>
-	      ))}
-	    </div>
-	  )}
-	</div>
+        {attachments.length > 0 && (
+          <div className="attachments-list">
+            {attachments.map((file, i) => (
+              <div key={i} className="attachment-item">
+                <div onClick={() => openFile(file)} className="attachment-preview">
+                  {file.type.startsWith('image/') ? (
+                    <img src={URL.createObjectURL(file)} alt="" />
+                  ) : file.type.startsWith('video/') ? (
+                    <div className="video-preview">▶</div>
+                  ) : (
+                    file.name.split('.').pop().toUpperCase()
+                  )}
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    removeAttachment(i)
+                  }}
+                  className="remove-attachment"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {error && <div className="error-text">{error}</div>}
 
@@ -217,7 +217,6 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
         <PrimaryButton onClick={addOption}>
           + Добавить вариант ответа
         </PrimaryButton>
-
         <div className="action-buttons">
           <SecondaryButton onClick={handleOpenSettings}>
             ⚙️ Свойства опроса
