@@ -195,9 +195,9 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     )}
   </div>
 
-  {/* ← Надпись справа */}
+  {/* Надпись справа — в две строки */}
   <div className="attachments-limit">
-    Максимум 3 вложения
+    Максимум<br />3 вложения
   </div>
 </div>
 

@@ -1,4 +1,4 @@
-/* src/styles/screens/CreatePollScreen.css — финальная версия с надписью справа и маленькой кнопкой удаления */
+/* src/styles/screens/CreatePollScreen.css — финальная версия: надпись справа, в две строки, только при вложениях */
 
 .create-poll-container {
   padding: 16px;
@@ -32,19 +32,22 @@
   margin-bottom: 8px;
 }
 
-/* Панель вложений — надпись справа */
+/* Панель вложений — надпись уходит вправо */
 .attachments-bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;     /* ← надпись уходит вправо */
+  justify-content: space-between;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-/* Левая часть: скрепка + список вложений */
+/* Левая часть: скрепка + вложения */
 .attachments-controls {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .attachments-bar label {
@@ -55,15 +58,14 @@
 .attachments-list {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
-/* Элемент вложения */
 .attachment-item {
   position: relative;
   display: inline-block;
 }
 
-/* Превью вложения */
 .attachment-preview {
   width: 40px;
   height: 40px;
@@ -88,7 +90,7 @@
   color: white;
 }
 
-/* МАЛЕНЬКАЯ КНОПКА УДАЛЕНИЯ ВЛОЖЕНИЯ — уменьшена на 25% */
+/* Маленький крестик удаления вложения */
 .remove-attachment {
   position: absolute;
   top: -6px;
@@ -97,25 +99,35 @@
   color: white;
   border: none;
   border-radius: 50%;
-  width: 15px;              /* ← было 20px → стало 15px */
-  height: 15px;
-  font-size: 10px;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
   cursor: pointer;
-  box-shadow: 0 1px 4px rgba(255,77,77,0.4);
+  box-shadow: 0 2px 6px rgba(255,77,77,0.4);
   transition: all 0.2s ease;
   z-index: 10;
 }
 
 .remove-attachment:hover {
   background: #ff3333;
-  box-shadow: 0 3px 8px rgba(255,77,77,0.6);
+  box-shadow: 0 4px 10px rgba(255,77,77,0.6);
 }
 
-/* Надпись "Максимум 3 вложения" — справа */
+/* Надпись "Максимум 3 вложения" — справа, в две строки, только при вложениях */
 .attachments-limit {
-  font-size: 14px;
+  font-size: 13px;
   color: #888;
-  white-space: nowrap;
+  text-align: right;
+  line-height: 1.3;
+  margin-left: auto;
+  padding-left: 20px;           /* ← отступ от вложений (~3–4 буквы) */
+  display: none;                /* ← скрыта по умолчанию */
+}
+
+/* Показываем надпись только если есть вложения */
+.attachments-bar .attachments-list:not(:empty) ~ .attachments-limit,
+.attachments-bar:has(.attachments-list > *) .attachments-limit {
+  display: block;
 }
 
 /* Список вариантов ответа */
@@ -150,7 +162,7 @@
   overflow-wrap: anywhere;
 }
 
-/* Большая красная кнопка удаления варианта ответа */
+/* Большая красная кнопка удаления варианта */
 .remove-option {
   position: absolute;
   right: 8px;
