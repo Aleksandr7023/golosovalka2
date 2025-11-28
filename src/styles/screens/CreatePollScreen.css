@@ -110,20 +110,20 @@
   display: flex;
   align-items: center;
   margin-bottom: 12px;
-  position: relative; /* ← обязательно для кнопки */
+  position: relative;
 }
 
 /* Поле ввода — ТЕКСТ ПЕРЕНОСИТСЯ! */
 .option-input {
   flex: 1;
-  padding: 12px 50px 12px 12px;   /* ← отступ справа под кнопку */
+  padding: 12px 50px 12px 12px;     /* Отступ под кнопку */
   border-radius: 12px;
   border: 1px solid #ccc;
   font-size: 17px;
   line-height: 1.5;
-  word-wrap: break-word;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;       /* ← даже длинные слова без пробелов */
+  word-break: break-word;           /* ← ГЛАВНОЕ ИСПРАВЛЕНИЕ! */
+  overflow-wrap: anywhere;           /* ← Современный стандарт */
+  white-space: normal;              /* ← Разрешаем перенос */
   min-height: 48px;
 }
 
