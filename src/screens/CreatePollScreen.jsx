@@ -1,4 +1,4 @@
-// src/screens/CreatePollScreen.jsx — v2.075 (фото НЕ открывается при прикреплении!)
+// src/screens/CreatePollScreen.jsx — v2.077 (фото НЕ открывается при прикреплении!)
 
 import React, { useState, useEffect, useRef } from 'react'
 import BackButton from '../components/BackButton.jsx'
@@ -85,7 +85,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     onOpenSettings(currentId)
   }
 
-  // ← ВОТ ГЛАВНОЕ ИСПРАВЛЕНИЕ! НИКАКОГО openFile() ПРИ ПРИКРЕПЛЕНИИ!
+  // ← ГЛАВНОЕ ИСПРАВЛЕНИЕ! НИКАКОГО openFile() ПРИ ПРИКРЕПЛЕНИИ!
   const handleFiles = (e) => {
     const files = Array.from(e.target.files)
     const valid = files.filter(f => f.size <= 50 * 1024 * 1024)
@@ -100,15 +100,15 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     if (attachments.length + valid.length > 3) {
       setError('Максимум 3 вложения')
     } else {
-      setAttachments([...attachments, ...valid].slice(0, 3))
+      setAttachments(prev => [...prev, ...valid].slice(0, 3))
       setViewerFile(null) // ← СБРАСЫВАЕМ ПРОСМОТРЩИК ПРИ НОВОМ ФАЙЛЕ!
     }
   }
 
   const removeAttachment = (i) => {
-    setAttachments(attachments.filter((_, idx) => idx !== i))
-    // Если удаляем открытый файл — закрываем просмотрщик
+    setAttachments(prev => prev.filter((_, idx) => idx !== i))
     if (viewerFile && attachments[i] && viewerFile.name === attachments[i].name) {
+      URL.revokeObjectURL(viewerFile.url)
       setViewerFile(null)
     }
   }
@@ -119,7 +119,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
   }
 
   const addOption = () => {
-    setOptions([...options, ''])
+    setOptions(prev => [...prev, ''])
     setTimeout(() => {
       if (optionsRef.current) optionsRef.current.scrollTop = optionsRef.current.scrollHeight
     }, 0)
@@ -127,13 +127,15 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
 
   const removeOption = (i) => {
     if (options.length <= 2) return
-    setOptions(options.filter((_, idx) => idx !== i))
+    setOptions(prev => prev.filter((_, idx) => idx !== i))
   }
 
   const updateOption = (i, value) => {
-    const newOpts = [...options]
-    newOpts[i] = value
-    setOptions(newOpts)
+    setOptions(prev => {
+      const newOpts = [...prev]
+      newOpts[i] = value
+      return newOpts
+    })
   }
 
   return (
