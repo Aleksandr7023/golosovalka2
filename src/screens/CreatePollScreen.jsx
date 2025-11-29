@@ -106,9 +106,14 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     }
   }
 
-  const openFile = (file) => {
+  const openFile = async (file) => {
     const url = URL.createObjectURL(file)
-    setViewerFile({ url, file })
+    if (file.type === 'text/plain') {
+      const text = await file.text()
+      setViewerFile({ url, file, text })
+    } else {
+      setViewerFile({ url, file })
+    }
   }
 
   const addOption = () => {
@@ -198,20 +203,37 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
       </div>
 
       {/* Просмотрщик */}
-      {viewerFile && (
-        <div className="viewer-overlay">
-          <button onClick={() => setViewerFile(null)} className="viewer-close">×</button>
-          <div className="viewer-content">
-            {viewerFile.file.type.startsWith('image/') ? (
-              <img src={viewerFile.url} alt="" />
-            ) : viewerFile.file.type.startsWith('video/') ? (
-              <video src={viewerFile.url} controls autoPlay />
-            ) : (
-              <iframe src={viewerFile.url} title={viewerFile.file.name} />
-            )}
-          </div>
+{viewerFile && (
+  <div className="viewer-overlay">
+    <button onClick={() => setViewerFile(null)} className="viewer-close">×</button>
+    <div className="viewer-content">
+      {viewerFile.file.type.startsWith('image/') ? (
+        <img src={viewerFile.url} alt="" />
+      ) : viewerFile.file.type.startsWith('video/') ? (
+        <video src={viewerFile.url} controls autoPlay />
+      ) : viewerFile.file.type === 'text/plain' ? (
+        // ← НОВОЕ: показываем .txt как текст
+        <div style={{
+          background: 'white',
+          color: 'black',
+          padding: '20px',
+          borderRadius: '12px',
+          maxWidth: '90%',
+          maxHeight: '90%',
+          overflow: 'auto',
+          fontFamily: 'monospace',
+          fontSize: '16px',
+          lineHeight: '1.5',
+          whiteSpace: 'pre-wrap'
+        }}>
+          {viewerFile.text || 'Загрузка...'}
         </div>
+      ) : (
+        <iframe src={viewerFile.url} title={viewerFile.file.name} />
       )}
+    </div>
+  </div>
+)}
 
       {/* Варианты */}
       <div ref={optionsRef} className="options-list" style={{ paddingBottom: keyboardHeight > 0 ? `${keyboardHeight + 20}px` : '20px' }}>
