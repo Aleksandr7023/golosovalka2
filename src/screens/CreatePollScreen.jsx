@@ -44,10 +44,10 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     }
   }
 
-  const openFile = (file) => {
-    const url = URL.createObjectURL(file)
-    setViewerFile({ url, { url, file })
-  }
+const openFile = (file) => {
+  const url = URL.createObjectURL(file)
+  setViewerFile({ url, file })
+}
 
   const addOption = () => {
     setOptions(prev => [...prev, ''])
