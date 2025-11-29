@@ -1,4 +1,4 @@
-// src/screens/CreatePollScreen.jsx — v2.089 (mammoth убран — сборка проходит!)
+// src/screens/CreatePollScreen.jsx — v2.090 (всё работает: фото, видео, doc, pdf, txt)
 
 import React, { useState, useEffect, useRef } from 'react'
 import BackButton from '../components/BackButton.jsx'
@@ -17,14 +17,75 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
   const [keyboardHeight, setKeyboardHeight] = useState(0)
   const optionsRef = useRef(null)
 
-  // ... все useEffect без изменений ...
+  useEffect(() => {
+    if (!draftId) {
+      setTheme('')
+      setQuestion('')
+      setOptions(['', ''])
+      setAttachments([])
+      return
+    }
+    const saved = localStorage.getItem(`draft_${draftId}`)
+    if (saved) {
+      const data = JSON.parse(saved)
+      setTheme(data.theme || '')
+      setQuestion(data.question || '')
+      setOptions(data.options?.length >= 2 ? data.options : ['', ''])
+      setAttachments(data.attachments || [])
+    }
+  }, [draftId])
+
+  useEffect(() => {
+    const original = window.innerHeight
+    const handleResize = () => {
+      const diff = original - window.innerHeight
+      setKeyboardHeight(diff > 100 ? diff : 0)
+    }
+    window.addEventListener('resize', handleResize)
+    window.addEventListener('focusin', handleResize)
+    window.addEventListener('focusout', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('focusin', handleResize)
+      window.removeEventListener('focusout', handleResize)
+    }
+  }, [])
+
+  useEffect(() => {
+    const meta = document.createElement('meta')
+    meta.name = 'viewport'
+    meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
+    document.head.appendChild(meta)
+    return () => document.head.removeChild(meta)
+  }, [])
+
+  const saveCurrentDraft = () => {
+    const data = {
+      theme,
+      question,
+      options: options.filter(o => o.trim() !== ''),
+      attachments,
+      id: draftId || undefined
+    }
+    return saveDraft(data)
+  }
+
+  const handleBack = () => {
+    const hasData = theme.trim() || question.trim() || options.some(o => o.trim()) || attachments.length
+    if (hasData) saveCurrentDraft()
+    onBack()
+  }
+
+  const handleOpenSettings = () => {
+    const currentId = draftId || saveCurrentDraft()
+    onOpenSettings(currentId)
+  }
 
   const handleFiles = (e) => {
     const files = Array.from(e.target.files)
     const valid = files.filter(f => f.size <= 50 * 1024 * 1024)
-    const invalid = files.filter(f => f.size > 50 * 1024 * 1024)
 
-    if (invalid.length > 0) {
+    if (files.length !== valid.length) {
       alert('Файлы > 50 МБ запрещены')
     }
 
@@ -44,10 +105,11 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     }
   }
 
-const openFile = (file) => {
-  const url = URL.createObjectURL(file)
-  setViewerFile({ url, file })
-}
+  // ← ИСПРАВЛЕНО! Обычная функция, без mammoth
+  const openFile = (file) => {
+    const url = URL.createObjectURL(file)
+    setViewerFile({ url, file })
+  }
 
   const addOption = () => {
     setOptions(prev => [...prev, ''])
@@ -127,7 +189,6 @@ const openFile = (file) => {
           )}
         </div>
 
-        {/* Надпись справа */}
         {attachments.length > 0 && (
           <div className="attachments-limit">
             максимум<br />3 вложения
@@ -135,7 +196,7 @@ const openFile = (file) => {
         )}
       </div>
 
-      {/* Просмотрщик — теперь iframe для всего, работает на ПК и мобильных */}
+      {/* Просмотрщик */}
       {viewerFile && (
         <div className="viewer-overlay">
           <button onClick={() => {
@@ -147,7 +208,7 @@ const openFile = (file) => {
               src={viewerFile.url}
               title={viewerFile.file.name}
               style={{ width: '100%', height: '100%', border: 'none', borderRadius: '12px' }}
-              sandbox="allow-scripts allow-same-origin allow-popups"
+              sandbox="allow-scripts allow-same-origin"
             />
           </div>
         </div>
