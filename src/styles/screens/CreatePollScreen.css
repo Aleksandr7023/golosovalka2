@@ -1,4 +1,4 @@
-/* src/styles/screens/CreatePollScreen.css — финальная версия: надпись посередине, в две строки, только при вложениях */
+/* src/styles/screens/CreatePollScreen.css — финальная версия (с .document-viewer для .doc/.docx) */
 
 .create-poll-container {
   padding: 16px;
@@ -83,7 +83,7 @@
   color: white;
 }
 
-/* Маленький крестик удаления вложения */
+/* Кнопка удаления вложения */
 .remove-attachment {
   position: absolute;
   top: -6px;
@@ -92,8 +92,8 @@
   color: white;
   border: none;
   border-radius: 50%;
-  width: 15px;
-  height: 15px;
+  width: 20px;
+  height: 20px;
   font-size: 12px;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(255,77,77,0.4);
@@ -106,19 +106,18 @@
   box-shadow: 0 4px 10px rgba(255,77,77,0.6);
 }
 
-/* Надпись "максимум 3 вложения" — справа от вложений, в две строки, выравнивание слева */
+/* Надпись "максимум 3 вложения" — справа */
 .attachments-limit {
   font-size: 13px;
   color: #888;
   line-height: 1.3;
   text-align: left;
   white-space: normal;
-  margin-left: 48px;        /* ← ширина вложения (40px) + gap (8px) */
+  margin-left: 48px;
   max-width: 100px;
   display: none;
 }
 
-/* Показываем надпись только при наличии вложений */
 .attachments-bar .attachments-list:not(:empty) ~ .attachments-limit,
 .attachments-bar:has(.attachments-list > *) .attachments-limit {
   display: block;
@@ -192,12 +191,11 @@
   gap: 12px;
 }
 
-/* ← ГЛАВНОЕ — все кнопки внутри action-buttons теперь одинаковой ширины */
 .action-buttons button {
   flex: 1;
 }
 
-/* Просмотрщик — финальная версия (ещё чуть красивее) */
+/* Просмотрщик — красиво на смартфоне */
 .viewer-overlay {
   position: fixed;
   inset: 0;
@@ -229,6 +227,7 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
+  overflow: hidden;
 }
 
 .viewer-content img,
@@ -245,4 +244,17 @@
   height: 100%;
   border: none;
   border-radius: 12px;
+}
+
+/* ← САМОЕ ГЛАВНОЕ: .doc и .docx — на весь экран, читаемо! */
+.document-viewer {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  overflow-y: auto;
+  background: white;
+  color: black;
+  font-size: 16px;
+  line-height: 1.6;
+  box-sizing: border-box;
 }

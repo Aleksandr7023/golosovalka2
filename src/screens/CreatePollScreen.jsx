@@ -1,4 +1,4 @@
-// src/screens/CreatePollScreen.jsx — v2.086 (.doc/.docx открываются как текст!)
+// src/screens/CreatePollScreen.jsx — v2.088 (лучший вариант: .doc/.docx на весь экран, красиво!)
 
 import React, { useState, useEffect, useRef } from 'react'
 import BackButton from '../components/BackButton.jsx'
@@ -6,7 +6,7 @@ import PrimaryButton from '../components/PrimaryButton.jsx'
 import SecondaryButton from '../components/SecondaryButton.jsx'
 import LaunchButton from '../components/LaunchButton.jsx'
 import { saveDraft } from '../utils/draftUtils.js'
-import mammoth from 'mammoth' // ← для чтения .doc и .docx
+import mammoth from 'mammoth'
 import '../styles/screens/CreatePollScreen.css'
 
 export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
@@ -14,12 +14,10 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
   const [question, setQuestion] = useState('')
   const [options, setOptions] = useState(['', ''])
   const [attachments, setAttachments] = useState([])
-  const [error, setError] = useState('')
   const [viewerFile, setViewerFile] = useState(null)
   const [keyboardHeight, setKeyboardHeight] = useState(0)
   const optionsRef = useRef(null)
 
-  // Загрузка черновика
   useEffect(() => {
     if (!draftId) {
       setTheme('')
@@ -38,7 +36,6 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     }
   }, [draftId])
 
-  // Клавиатура (мобильные)
   useEffect(() => {
     const original = window.innerHeight
     const handleResize = () => {
@@ -55,7 +52,6 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     }
   }, [])
 
-  // Viewport фикс
   useEffect(() => {
     const meta = document.createElement('meta')
     meta.name = 'viewport'
@@ -99,7 +95,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
       alert('Максимум 3 вложения')
     } else {
       setAttachments(prev => [...prev, ...valid].slice(0, 3))
-      setViewerFile(null) // ← не открываем при прикреплении
+      setViewerFile(null)
     }
   }
 
@@ -216,7 +212,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
         )}
       </div>
 
-      {/* Просмотрщик */}
+      {/* Просмотрщик — .doc/.docx как текст, на весь экран */}
       {viewerFile && (
         <div className="viewer-overlay">
           <button onClick={() => setViewerFile(null)} className="viewer-close">×</button>
@@ -225,36 +221,13 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
               <img src={viewerFile.url} alt="" />
             ) : viewerFile.file.type.startsWith('video/') ? (
               <video src={viewerFile.url} controls autoPlay />
-            ) : viewerFile.html ? (
-              <div
-                style={{
-                  background: 'white',
-                  color: 'black',
-                  padding: '20px',
-                  borderRadius: '12px',
-                  maxWidth: '90%',
-                  maxHeight: '90%',
-                  overflow: 'auto',
-                  fontSize: '16px',
-                  lineHeight: '1.6'
-                }}
-                dangerouslySetInnerHTML={{ __html: viewerFile.html }}
-              />
-            ) : viewerFile.text ? (
-              <div style={{
-                background: 'white',
-                color: 'black',
-                padding: '20px',
-                borderRadius: '12px',
-                maxWidth: '90%',
-                maxHeight: '90%',
-                overflow: 'auto',
-                fontFamily: 'monospace',
-                fontSize: '16px',
-                lineHeight: '1.5',
-                whiteSpace: 'pre-wrap'
-              }}>
-                {viewerFile.text}
+            ) : viewerFile.html || viewerFile.text ? (
+              <div className="document-viewer">
+                {viewerFile.html ? (
+                  <div dangerouslySetInnerHTML={{ __html: viewerFile.html }} />
+                ) : (
+                  <pre>{viewerFile.text}</pre>
+                )}
               </div>
             ) : (
               <iframe src={viewerFile.url} title={viewerFile.file.name} />
