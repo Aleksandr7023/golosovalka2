@@ -107,24 +107,10 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     }
   }
 
-  const openFile = async (file) => {
-    const url = URL.createObjectURL(file)
-
-    if (file.name.endsWith('.doc') || file.name.endsWith('.docx')) {
-      try {
-        const arrayBuffer = await file.arrayBuffer()
-        const result = await mammoth.convertToHtml({ arrayBuffer })
-        setViewerFile({ url, file, html: result.value })
-      } catch (e) {
-        setViewerFile({ url, file, html: '<p>Не удалось прочитать документ</p>' })
-      }
-    } else if (file.type === 'text/plain') {
-      const text = await file.text()
-      setViewerFile({ url, file, text })
-    } else {
-      setViewerFile({ url, file })
-    }
-  }
+const openFile = (file) => {
+  const url = URL.createObjectURL(file)
+  setViewerFile({ url, file })
+}
 
   const addOption = () => {
     setOptions(prev => [...prev, ''])
@@ -212,29 +198,29 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
         )}
       </div>
 
-      {/* Просмотрщик — .doc/.docx как текст, на весь экран */}
-      {viewerFile && (
-        <div className="viewer-overlay">
-          <button onClick={() => setViewerFile(null)} className="viewer-close">×</button>
-          <div className="viewer-content">
-            {viewerFile.file.type.startsWith('image/') ? (
-              <img src={viewerFile.url} alt="" />
-            ) : viewerFile.file.type.startsWith('video/') ? (
-              <video src={viewerFile.url} controls autoPlay />
-            ) : viewerFile.html || viewerFile.text ? (
-              <div className="document-viewer">
-                {viewerFile.html ? (
-                  <div dangerouslySetInnerHTML={{ __html: viewerFile.html }} />
-                ) : (
-                  <pre>{viewerFile.text}</pre>
-                )}
-              </div>
-            ) : (
-              <iframe src={viewerFile.url} title={viewerFile.file.name} />
-            )}
-          </div>
-        </div>
-      )}
+{/* Просмотрщик — работает на ПК и смартфоне! */}
+{viewerFile && (
+  <div className="viewer-overlay">
+    <button onClick={() => {
+      URL.revokeObjectURL(viewerFile.url)
+      setViewerFile(null)
+    }} className="viewer-close">×</button>
+
+    <div className="viewer-content">
+      <iframe
+        src={viewerFile.url}
+        title={viewerFile.file.name}
+        style={{
+          width: '100%',
+          height: '100%',
+          border: 'none',
+          borderRadius: '12px'
+        }}
+        sandbox="allow-scripts allow-same-origin"
+      />
+    </div>
+  </div>
+)}
 
       {/* Варианты */}
       <div ref={optionsRef} className="options-list" style={{ paddingBottom: keyboardHeight > 0 ? `${keyboardHeight + 20}px` : '20px' }}>
