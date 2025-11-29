@@ -1,4 +1,4 @@
-// src/screens/CreatePollScreen.jsx — v2.084 (надпись справа от вложений, в две строки)
+// src/screens/CreatePollScreen.jsx — v2.086 (.doc/.docx открываются как текст!)
 
 import React, { useState, useEffect, useRef } from 'react'
 import BackButton from '../components/BackButton.jsx'
@@ -6,6 +6,7 @@ import PrimaryButton from '../components/PrimaryButton.jsx'
 import SecondaryButton from '../components/SecondaryButton.jsx'
 import LaunchButton from '../components/LaunchButton.jsx'
 import { saveDraft } from '../utils/draftUtils.js'
+import mammoth from 'mammoth' // ← для чтения .doc и .docx
 import '../styles/screens/CreatePollScreen.css'
 
 export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
@@ -13,10 +14,12 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
   const [question, setQuestion] = useState('')
   const [options, setOptions] = useState(['', ''])
   const [attachments, setAttachments] = useState([])
+  const [error, setError] = useState('')
   const [viewerFile, setViewerFile] = useState(null)
   const [keyboardHeight, setKeyboardHeight] = useState(0)
   const optionsRef = useRef(null)
 
+  // Загрузка черновика
   useEffect(() => {
     if (!draftId) {
       setTheme('')
@@ -35,6 +38,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     }
   }, [draftId])
 
+  // Клавиатура (мобильные)
   useEffect(() => {
     const original = window.innerHeight
     const handleResize = () => {
@@ -51,6 +55,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
     }
   }, [])
 
+  // Viewport фикс
   useEffect(() => {
     const meta = document.createElement('meta')
     meta.name = 'viewport'
@@ -94,21 +99,30 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
       alert('Максимум 3 вложения')
     } else {
       setAttachments(prev => [...prev, ...valid].slice(0, 3))
-      setViewerFile(null)
+      setViewerFile(null) // ← не открываем при прикреплении
     }
   }
 
   const removeAttachment = (i) => {
     setAttachments(prev => prev.filter((_, idx) => idx !== i))
     if (viewerFile && viewerFile.file === attachments[i]) {
-      URL.revokeObjectURL(viewerFile.url)
+      if (viewerFile.url) URL.revokeObjectURL(viewerFile.url)
       setViewerFile(null)
     }
   }
 
   const openFile = async (file) => {
     const url = URL.createObjectURL(file)
-    if (file.type === 'text/plain') {
+
+    if (file.name.endsWith('.doc') || file.name.endsWith('.docx')) {
+      try {
+        const arrayBuffer = await file.arrayBuffer()
+        const result = await mammoth.convertToHtml({ arrayBuffer })
+        setViewerFile({ url, file, html: result.value })
+      } catch (e) {
+        setViewerFile({ url, file, html: '<p>Не удалось прочитать документ</p>' })
+      }
+    } else if (file.type === 'text/plain') {
       const text = await file.text()
       setViewerFile({ url, file, text })
     } else {
@@ -194,7 +208,7 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
           )}
         </div>
 
-        {/* Надпись справа от вложений */}
+        {/* Надпись справа */}
         {attachments.length > 0 && (
           <div className="attachments-limit">
             максимум<br />3 вложения
@@ -203,37 +217,51 @@ export default function CreatePollScreen({ draftId, onBack, onOpenSettings }) {
       </div>
 
       {/* Просмотрщик */}
-{viewerFile && (
-  <div className="viewer-overlay">
-    <button onClick={() => setViewerFile(null)} className="viewer-close">×</button>
-    <div className="viewer-content">
-      {viewerFile.file.type.startsWith('image/') ? (
-        <img src={viewerFile.url} alt="" />
-      ) : viewerFile.file.type.startsWith('video/') ? (
-        <video src={viewerFile.url} controls autoPlay />
-      ) : viewerFile.file.type === 'text/plain' ? (
-        // ← НОВОЕ: показываем .txt как текст
-        <div style={{
-          background: 'white',
-          color: 'black',
-          padding: '20px',
-          borderRadius: '12px',
-          maxWidth: '90%',
-          maxHeight: '90%',
-          overflow: 'auto',
-          fontFamily: 'monospace',
-          fontSize: '16px',
-          lineHeight: '1.5',
-          whiteSpace: 'pre-wrap'
-        }}>
-          {viewerFile.text || 'Загрузка...'}
+      {viewerFile && (
+        <div className="viewer-overlay">
+          <button onClick={() => setViewerFile(null)} className="viewer-close">×</button>
+          <div className="viewer-content">
+            {viewerFile.file.type.startsWith('image/') ? (
+              <img src={viewerFile.url} alt="" />
+            ) : viewerFile.file.type.startsWith('video/') ? (
+              <video src={viewerFile.url} controls autoPlay />
+            ) : viewerFile.html ? (
+              <div
+                style={{
+                  background: 'white',
+                  color: 'black',
+                  padding: '20px',
+                  borderRadius: '12px',
+                  maxWidth: '90%',
+                  maxHeight: '90%',
+                  overflow: 'auto',
+                  fontSize: '16px',
+                  lineHeight: '1.6'
+                }}
+                dangerouslySetInnerHTML={{ __html: viewerFile.html }}
+              />
+            ) : viewerFile.text ? (
+              <div style={{
+                background: 'white',
+                color: 'black',
+                padding: '20px',
+                borderRadius: '12px',
+                maxWidth: '90%',
+                maxHeight: '90%',
+                overflow: 'auto',
+                fontFamily: 'monospace',
+                fontSize: '16px',
+                lineHeight: '1.5',
+                whiteSpace: 'pre-wrap'
+              }}>
+                {viewerFile.text}
+              </div>
+            ) : (
+              <iframe src={viewerFile.url} title={viewerFile.file.name} />
+            )}
+          </div>
         </div>
-      ) : (
-        <iframe src={viewerFile.url} title={viewerFile.file.name} />
       )}
-    </div>
-  </div>
-)}
 
       {/* Варианты */}
       <div ref={optionsRef} className="options-list" style={{ paddingBottom: keyboardHeight > 0 ? `${keyboardHeight + 20}px` : '20px' }}>
