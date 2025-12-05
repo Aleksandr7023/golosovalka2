@@ -1,0 +1,261 @@
+/* src/styles/screens/CreatePollScreen.css — финальная версия (с .document-viewer для .doc/.docx) */
+
+.create-poll-container {
+  padding: 16px;
+  background: #f8f9fa;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.poll-title {
+  font-size: 22px;
+  margin: 8px 0 20px 0;
+}
+
+.theme-input,
+.question-textarea {
+  width: 100%;
+  padding: 12px;
+  font-size: 18px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+}
+
+.question-textarea {
+  resize: none;
+  min-height: 80px;
+  max-height: 200px;
+  overflow-y: auto;
+  field-sizing: content;
+  margin-bottom: 8px;
+}
+
+/* Панель вложений */
+.attachments-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 12px;
+  position: relative;
+}
+
+.attachments-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.attachments-bar label {
+  font-size: 32px;
+  cursor: pointer;
+}
+
+.attachments-list {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.attachment-item {
+  position: relative;
+  display: inline-block;
+}
+
+.attachment-preview {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #333;
+  cursor: pointer;
+}
+
+.video-preview {
+  background: #000;
+  color: white;
+}
+
+/* Кнопка удаления вложения */
+.remove-attachment {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(255,77,77,0.4);
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.remove-attachment:hover {
+  background: #ff3333;
+  box-shadow: 0 4px 10px rgba(255,77,77,0.6);
+}
+
+/* Надпись "максимум 3 вложения" — справа */
+.attachments-limit {
+  font-size: 13px;
+  color: #888;
+  line-height: 1.3;
+  text-align: left;
+  white-space: normal;
+  margin-left: 48px;
+  max-width: 100px;
+  display: none;
+}
+
+.attachments-bar .attachments-list:not(:empty) ~ .attachments-limit,
+.attachments-bar:has(.attachments-list > *) .attachments-limit {
+  display: block;
+}
+
+/* Список вариантов ответа */
+.options-list {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 180px;
+  padding-right: 8px;
+}
+
+/* Строка с вариантом ответа */
+.option-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+/* Поле ввода варианта — текст переносится */
+.option-input {
+  flex: 1;
+  padding: 12px 50px 12px 12px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  font-size: 17px;
+  line-height: 1.5;
+  resize: none;
+  overflow: hidden;
+  min-height: 48px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Большая красная кнопка удаления варианта */
+.remove-option {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(255,77,77,0.4);
+  transition: all 0.2s ease;
+}
+
+.remove-option:hover {
+  background: #ff3333;
+  box-shadow: 0 4px 12px rgba(255,77,77,0.6);
+}
+
+/* Нижняя панель кнопок */
+.bottom-buttons {
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.action-buttons button {
+  flex: 1;
+}
+
+/* Просмотрщик — красиво на смартфоне */
+.viewer-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.viewer-close {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 36px;
+  padding: 16px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.viewer-close:hover {
+  opacity: 1;
+}
+
+.viewer-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.viewer-content img,
+.viewer-content video {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+}
+
+.viewer-content iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 12px;
+}
+
+.document-viewer {
+  background: white;
+  color: black;
+  padding: 30px;
+  border-radius: 16px;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  font-size: 16px;
+  line-height: 1.6;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  box-sizing: border-box;
+}
