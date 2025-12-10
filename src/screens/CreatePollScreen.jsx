@@ -1,4 +1,4 @@
-// src/screens/CreatePollScreen.jsx — v4.9 — draftId из context
+// src/screens/CreatePollScreen.jsx — v4.10 — загрузка на твой хостинг + ограничения
 
 import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
@@ -21,12 +21,14 @@ export default function CreatePollScreen() {
   const [theme, setTheme] = useState('')
   const [question, setQuestion] = useState('')
   const [options, setOptions] = useState(['', ''])
-  const [attachments, setAttachments] = useState([])
+  const [attachments, setAttachments] = useState([]) // теперь { url, name }
   const [viewerFile, setViewerFile] = useState(null)
   const [keyboardHeight, setKeyboardHeight] = useState(0)
+  const [isUploading, setIsUploading] = useState(false)
 
   const optionsRef = useRef(null)
 
+  // Загрузка черновика
   useEffect(() => {
     if (!draftId) {
       setTheme('')
@@ -46,7 +48,7 @@ export default function CreatePollScreen() {
     }
   }, [draftId])
 
-  // Клавиатура
+  // Клавиатура + viewport — как было
   useEffect(() => {
     const original = window.innerHeight
     const handleResize = () => {
@@ -63,7 +65,6 @@ export default function CreatePollScreen() {
     }
   }, [])
 
-  // Viewport фикс
   useEffect(() => {
     const meta = document.createElement('meta')
     meta.name = 'viewport'
@@ -94,45 +95,68 @@ export default function CreatePollScreen() {
     navigate('/settings')
   }
 
-  const handleFiles = (e) => {
-    const files = Array.from(e.target.files)
-    const valid = files.filter(f => f.size <= 50 * 1024 * 1024)
+  // === ЗАГРУЗКА ФАЙЛОВ НА ТВОЙ ХОСТИНГ ===
+  const handleFiles = async (e) => {
+    const newFiles = Array.from(e.target.files)
 
-    if (files.length !== valid.length) alert('Файлы > 50 МБ запрещены')
-    if (attachments.length + valid.length > 3) alert('Максимум 3 вложения')
-    else {
-      setAttachments(prev => [...prev, ...valid].slice(0, 3))
-      setViewerFile(null)
+    // 1. Проверка размера (50 МБ на файл)
+    const tooBig = newFiles.filter(f => f.size > 50 * 1024 * 1024)
+    if (tooBig.length > 0) {
+      alert('Файлы больше 50 МБ запрещены')
+      return
     }
+
+    // 2. Проверка количества (максимум 3)
+    if (attachments.length + newFiles.length > 3) {
+      alert('Максимум 3 вложения')
+      return
+    }
+
+    setIsUploading(true)
+
+    const uploaded = []
+
+    for (const file of newFiles) {
+      const formData = new FormData()
+      formData.append('file', file)
+
+      const initData = window.Telegram.WebApp.initData
+
+      try {
+        const res = await fetch('https://the8th.ru/api/upload.php', {
+          method: 'POST',
+          headers: {
+            'X-Telegram-InitData': initData
+          },
+          body: formData
+        })
+
+        const json = await res.json()
+
+        if (json.success) {
+          uploaded.push({ url: json.url, name: file.name })
+        } else {
+          alert(`Ошибка загрузки ${file.name}: ${json.error || 'неизвестно'}`)
+        }
+      } catch (err) {
+        alert(`Ошибка сети при загрузке ${file.name}`)
+      }
+    }
+
+    if (uploaded.length > 0) {
+      setAttachments(prev => [...prev, ...uploaded])
+    }
+
+    setIsUploading(false)
   }
 
   const removeAttachment = (i) => {
     setAttachments(prev => prev.filter((_, idx) => idx !== i))
-    if (viewerFile?.file === attachments[i]) {
-      URL.revokeObjectURL(viewerFile.url)
-      setViewerFile(null)
-    }
   }
 
-  const openFile = async (file) => {
-    if (!file) return
-
-    const url = URL.createObjectURL(file)
-
-    if (file.name.endsWith('.docx') || file.name.endsWith('.doc')) {
-      try {
-        const arrayBuffer = await file.arrayBuffer()
-        const result = await mammoth.convertToHtml({ arrayBuffer })
-        setViewerFile({ url, file, html: result.value })
-      } catch {
-        setViewerFile({ url, file, html: '<p>Не удалось прочитать документ</p>' })
-      }
-    } else if (file.type === 'text/plain') {
-      const text = await file.text()
-      setViewerFile({ url, file, text })
-    } else {
-      setViewerFile({ url, file })
-    }
+  const openFile = async (fileUrl) => {
+    // Для просмотра — просто открываем URL (файл уже на сервере)
+    window.open(fileUrl, '_blank')
   }
 
   const addOption = () => {
@@ -169,18 +193,23 @@ export default function CreatePollScreen() {
       <div className="attachments-bar">
         <div className="attachments-controls">
           <label>
-            <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" onChange={handleFiles} style={{ display: 'none' }} />
-            <div>📎</div>
+            <input
+              type="file"
+              multiple
+              accept="image/*,video/*,.pdf,.doc,.docx,.txt"
+              onChange={handleFiles}
+              disabled={isUploading}
+              style={{ display: 'none' }}
+            />
+            <div className={isUploading ? 'uploading' : ''}>📎 {isUploading ? 'Загрузка...' : ''}</div>
           </label>
 
           {attachments.length > 0 && (
             <div className="attachments-list">
               {attachments.map((file, i) => (
                 <div key={i} className="attachment-item">
-                  <div onClick={() => openFile(file)} className="attachment-preview">
-                    {file.type?.startsWith('image/') ? 'Фото' :
-                     file.type?.startsWith('video/') ? 'Видео' :
-                     file.name?.split('.').pop()?.toUpperCase() || 'FILE'}
+                  <div onClick={() => openFile(file.url)} className="attachment-preview">
+                    {file.name}
                   </div>
                   <button onClick={(e) => { e.stopPropagation(); removeAttachment(i) }} className="remove-attachment">×</button>
                 </div>
@@ -189,28 +218,6 @@ export default function CreatePollScreen() {
           )}
         </div>
       </div>
-
-      {/* Просмотрщик */}
-      {viewerFile && (
-        <div className="viewer-overlay">
-          <button onClick={() => { URL.revokeObjectURL(viewerFile.url); setViewerFile(null) }} className="viewer-close">×</button>
-          <div className="viewer-content">
-            {viewerFile.html ? (
-              <div className="document-viewer" dangerouslySetInnerHTML={{ __html: viewerFile.html }} />
-            ) : viewerFile.text ? (
-              <div className="document-viewer">
-                <pre style={{ margin: 0, whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>{viewerFile.text}</pre>
-              </div>
-            ) : viewerFile.file.type?.startsWith('image/') ? (
-              <img src={viewerFile.url} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-            ) : viewerFile.file.type?.startsWith('video/') ? (
-              <video src={viewerFile.url} controls autoPlay style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-            ) : (
-              <iframe src={viewerFile.url} title={viewerFile.file.name} style={{ width: '100%', height: '100%', border: 'none' }} />
-            )}
-          </div>
-        </div>
-      )}
 
       {/* Варианты */}
       <div ref={optionsRef} className="options-list" style={{ paddingBottom: keyboardHeight > 0 ? `${keyboardHeight + 20}px` : '20px' }}>
@@ -249,4 +256,3 @@ export default function CreatePollScreen() {
     </div>
   )
 }
-// FORCE_PUSH_TIMESTAMP: 2025-12-08 19:00:55
