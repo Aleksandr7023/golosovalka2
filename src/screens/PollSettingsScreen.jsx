@@ -1,4 +1,4 @@
-// src/screens/PollSettingsScreen.jsx — v3.029 — draftId из context
+// src/screens/PollSettingsScreen.jsx — v3.030 — сохранение настроек в currentDraft
 
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
@@ -8,9 +8,7 @@ import '../styles/screens/PollSettingsScreen.css'
 
 export default function PollSettingsScreen() {
   const navigate = useNavigate()
-  const { currentDraftId } = useOutletContext()
-
-  const draftId = currentDraftId
+  const { currentDraft, setCurrentDraft } = useOutletContext()
 
   const [multiple, setMultiple] = useState(false)
   const [anonymous, setAnonymous] = useState(false)
@@ -27,36 +25,26 @@ export default function PollSettingsScreen() {
 
   const effectiveNickType = anonymous ? 'telegram' : nickType
 
+  // Загрузка настроек из currentDraft
   useEffect(() => {
-    if (!draftId) return
-
-    const saved = localStorage.getItem(`draft_${draftId}`)
-    if (saved) {
-      const data = JSON.parse(saved)
-      if (data.settings) {
-        const s = data.settings
-        setMultiple(!!s.multiple)
-        setAnonymous(!!s.anonymous)
-        setShowResults(s.showResults !== false)
-        setAllowComments(s.allowComments !== false)
-        setHasEndDate(!!s.hasEndDate)
-        setEndDate(s.endDate || '')
-        setClosedPoll(!!s.closedPoll)
-        setTiedToAddress(!!s.tiedToAddress)
-        setAddressHint(s.addressHint || '')
-        setNickType(s.nickType || 'telegram')
-        setCustomNickHint(s.customNickHint || '')
-        setRevoteDelay(s.revoteDelay || 'never')
-      }
+    if (currentDraft?.settings) {
+      const s = currentDraft.settings
+      setMultiple(!!s.multiple)
+      setAnonymous(!!s.anonymous)
+      setShowResults(s.showResults !== false)
+      setAllowComments(s.allowComments !== false)
+      setHasEndDate(!!s.hasEndDate)
+      setEndDate(s.endDate || '')
+      setClosedPoll(!!s.closedPoll)
+      setTiedToAddress(!!s.tiedToAddress)
+      setAddressHint(s.addressHint || '')
+      setNickType(s.nickType || 'telegram')
+      setCustomNickHint(s.customNickHint || '')
+      setRevoteDelay(s.revoteDelay || 'never')
     }
-  }, [draftId])
+  }, [currentDraft])
 
   const saveSettings = () => {
-    if (!draftId) {
-      alert('Ошибка: черновик не найден')
-      return
-    }
-
     const settings = {
       multiple,
       anonymous,
@@ -72,11 +60,11 @@ export default function PollSettingsScreen() {
       revoteDelay
     }
 
-    const key = `draft_${draftId}`
-    const draft = JSON.parse(localStorage.getItem(key) || '{}')
-    draft.settings = settings
-    draft.timestamp = Date.now()
-    localStorage.setItem(key, JSON.stringify(draft))
+    // Сохраняем настройки в глобальный черновик
+    setCurrentDraft(prev => ({
+      ...prev,
+      settings
+    }))
 
     alert('Настройки сохранены!')
     navigate('/create')
@@ -198,4 +186,3 @@ export default function PollSettingsScreen() {
     </div>
   )
 }
-// FORCE_PUSH_TIMESTAMP: 2025-12-08 19:00:56

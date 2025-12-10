@@ -1,4 +1,4 @@
-// src/screens/CreatePollScreen.jsx — v4.10 — загрузка на твой хостинг + ограничения
+// src/screens/CreatePollScreen.jsx — v4.11 — сохранение настроек + URL вложений
 
 import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
@@ -14,41 +14,31 @@ import '../styles/screens/CreatePollScreen.css'
 
 export default function CreatePollScreen() {
   const navigate = useNavigate()
-  const { currentDraftId } = useOutletContext()
+  const { currentDraftId, currentDraft, setCurrentDraft } = useOutletContext()
 
   const draftId = currentDraftId
 
-  const [theme, setTheme] = useState('')
-  const [question, setQuestion] = useState('')
-  const [options, setOptions] = useState(['', ''])
-  const [attachments, setAttachments] = useState([]) // теперь { url, name }
+  const [theme, setTheme] = useState(currentDraft?.theme || '')
+  const [question, setQuestion] = useState(currentDraft?.question || '')
+  const [options, setOptions] = useState(currentDraft?.options || ['', ''])
+  const [attachments, setAttachments] = useState(currentDraft?.attachments || [])
   const [viewerFile, setViewerFile] = useState(null)
   const [keyboardHeight, setKeyboardHeight] = useState(0)
   const [isUploading, setIsUploading] = useState(false)
 
   const optionsRef = useRef(null)
 
-  // Загрузка черновика
+  // Загрузка черновика из контекста (настройки уже там)
   useEffect(() => {
-    if (!draftId) {
-      setTheme('')
-      setQuestion('')
-      setOptions(['', ''])
-      setAttachments([])
-      return
+    if (currentDraft) {
+      setTheme(currentDraft.theme || '')
+      setQuestion(currentDraft.question || '')
+      setOptions(currentDraft.options || ['', ''])
+      setAttachments(currentDraft.attachments || [])
     }
+  }, [currentDraft])
 
-    const saved = localStorage.getItem(`draft_${draftId}`)
-    if (saved) {
-      const data = JSON.parse(saved)
-      setTheme(data.theme || '')
-      setQuestion(data.question || '')
-      setOptions(data.options?.length >= 2 ? data.options : ['', ''])
-      setAttachments(data.attachments || [])
-    }
-  }, [draftId])
-
-  // Клавиатура + viewport — как было
+  // Клавиатура
   useEffect(() => {
     const original = window.innerHeight
     const handleResize = () => {
@@ -65,6 +55,7 @@ export default function CreatePollScreen() {
     }
   }, [])
 
+  // Viewport фикс
   useEffect(() => {
     const meta = document.createElement('meta')
     meta.name = 'viewport'
@@ -73,12 +64,14 @@ export default function CreatePollScreen() {
     return () => document.head.removeChild(meta)
   }, [])
 
+  // Сохранение черновика (включая настройки)
   const saveCurrentDraft = () => {
     const data = {
       theme,
       question,
       options: options.filter(o => o.trim() !== ''),
-      attachments,
+      attachments: attachments.map(a => ({ url: a.url, name: a.name })), // ← только URL
+      settings: currentDraft?.settings || {}, // ← сохраняем настройки
       id: draftId || undefined
     }
     saveDraft(data)
@@ -99,14 +92,14 @@ export default function CreatePollScreen() {
   const handleFiles = async (e) => {
     const newFiles = Array.from(e.target.files)
 
-    // 1. Проверка размера (50 МБ на файл)
+    // Проверка размера
     const tooBig = newFiles.filter(f => f.size > 50 * 1024 * 1024)
     if (tooBig.length > 0) {
       alert('Файлы больше 50 МБ запрещены')
       return
     }
 
-    // 2. Проверка количества (максимум 3)
+    // Проверка количества
     if (attachments.length + newFiles.length > 3) {
       alert('Максимум 3 вложения')
       return
@@ -154,8 +147,7 @@ export default function CreatePollScreen() {
     setAttachments(prev => prev.filter((_, idx) => idx !== i))
   }
 
-  const openFile = async (fileUrl) => {
-    // Для просмотра — просто открываем URL (файл уже на сервере)
+  const openFile = (fileUrl) => {
     window.open(fileUrl, '_blank')
   }
 
@@ -201,7 +193,9 @@ export default function CreatePollScreen() {
               disabled={isUploading}
               style={{ display: 'none' }}
             />
-            <div className={isUploading ? 'uploading' : ''}>📎 {isUploading ? 'Загрузка...' : ''}</div>
+            <div className={isUploading ? 'uploading' : ''}>
+              📎 {isUploading ? 'Загрузка...' : ''}
+            </div>
           </label>
 
           {attachments.length > 0 && (
@@ -211,7 +205,9 @@ export default function CreatePollScreen() {
                   <div onClick={() => openFile(file.url)} className="attachment-preview">
                     {file.name}
                   </div>
-                  <button onClick={(e) => { e.stopPropagation(); removeAttachment(i) }} className="remove-attachment">×</button>
+                  <button onClick={(e) => { e.stopPropagation(); removeAttachment(i) }} className="remove-attachment">
+                    ×
+                  </button>
                 </div>
               ))}
             </div>

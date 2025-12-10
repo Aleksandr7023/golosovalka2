@@ -1,8 +1,8 @@
-// src/utils/draftUtils.js — всё про черновики в одном месте
+// src/utils/draftUtils.js — v1.3 — идеальная работа с черновиками
 
 /**
  * Сохраняет черновик
- * @param {Object} draftData - данные черновика (theme, question, options, attachments и т.д.)
+ * @param {Object} draftData - данные черновика (theme, question, options, attachments, settings и т.д.)
  * @returns {string} ID черновика
  */
 export const saveDraft = (draftData) => {
@@ -13,7 +13,7 @@ export const saveDraft = (draftData) => {
     timestamp: Date.now()
   }
 
-  // Сохраняем сам черновик
+  // Сохраняем черновик
   localStorage.setItem(`draft_${id}`, JSON.stringify(draft))
 
   // Обновляем список ID
@@ -32,11 +32,16 @@ export const saveDraft = (draftData) => {
  */
 export const loadDrafts = () => {
   const ids = JSON.parse(localStorage.getItem('draftIds') || '[]')
-  
+
   const drafts = ids
     .map(id => {
       const data = localStorage.getItem(`draft_${id}`)
-      return data ? JSON.parse(data) : null
+      if (!data) return null
+      try {
+        return JSON.parse(data)
+      } catch {
+        return null
+      }
     })
     .filter(Boolean)
     .sort((a, b) => b.timestamp - a.timestamp) // новые сверху
@@ -50,18 +55,19 @@ export const loadDrafts = () => {
  */
 export const deleteDraft = (id) => {
   localStorage.removeItem(`draft_${id}`)
-  
+
   const ids = JSON.parse(localStorage.getItem('draftIds') || '[]')
   const filtered = ids.filter(d => d !== id)
   localStorage.setItem('draftIds', JSON.stringify(filtered))
 }
 
 /**
- * Полностью очищает все черновики (на будущее)
+ * Полностью очищает все черновики
  */
 export const clearAllDrafts = () => {
   const ids = JSON.parse(localStorage.getItem('draftIds') || '[]')
   ids.forEach(id => localStorage.removeItem(`draft_${id}`))
   localStorage.removeItem('draftIds')
 }
-// FORCE_PUSH_TIMESTAMP: 2025-12-08 19:00:57
+
+// FORCE_PUSH_TIMESTAMP: 2025-12-09 20:15:00
