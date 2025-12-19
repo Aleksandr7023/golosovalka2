@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import PollCard from '../components/PollCard.jsx';
 import LoadingSpinner from '../components/LoadingSpinner.jsx';
-import { fetchPolls } from '../utils/api.js';
 import '../styles/mainScreen.css';
 
 export default function MainScreen() {
@@ -9,10 +8,11 @@ export default function MainScreen() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchPolls().then(data => {
-      setPolls(data.polls || []);
-      setLoading(false);
-    });
+    setPolls([
+      { id: 1, title: 'Тестовый опрос', question: 'Как дела?', views_count: 42, votes_count: 10 },
+      { id: 2, title: 'Ещё один', question: 'Что думаете?', views_count: 15, votes_count: 5 }
+    ]);
+    setLoading(false);
   }, []);
 
   if (loading) return <LoadingSpinner />;
@@ -23,7 +23,6 @@ export default function MainScreen() {
         <h1>Голосовалка</h1>
         <button className="new-poll-btn">+ Новый опрос</button>
       </header>
-
       <section className="poll-list">
         {polls.length === 0 ? (
           <p>Опросов пока нет</p>
