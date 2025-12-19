@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import PollCard from '../components/PollCard.jsx';
 import LoadingSpinner from '../components/LoadingSpinner.jsx';
-import { fetchPolls, createPoll } from '../utils/api.js';
+import { fetchPolls } from '../utils/api.js';
 import '../styles/mainScreen.css';
 
 export default function MainScreen() {
@@ -16,13 +16,13 @@ export default function MainScreen() {
     if (!hasMore && append) return;
     setLoading(true);
     try {
-      const data = await fetchPolls(pageNum);
+      const data = await fetchPolls(pageNum); // ← теперь передаём page
       if (append) {
         setPolls(prev => [...prev, ...data]);
       } else {
         setPolls(data);
       }
-      setHasMore(data.length > 0);
+      setHasMore(data.length === 20); // если вернулось меньше 20 — конец
       setError('');
     } catch (e) {
       setError('Не удалось загрузить опросы');
@@ -45,7 +45,6 @@ export default function MainScreen() {
     });
 
     observer.observe(sentinel.current);
-
     return () => observer.disconnect();
   }, [loading, hasMore]);
 
@@ -54,19 +53,7 @@ export default function MainScreen() {
   }, [page]);
 
   const handleNewPoll = async () => {
-    const title = prompt('Тема опроса');
-    if (!title) return;
-    const question = prompt('Вопрос');
-    if (!question) return;
-    const options = prompt('Варианты (по одному на строку)', 'Да\nНет\nНе знаю');
-    if (!options) return;
-
-    try {
-      await createPoll({ title, question, options });
-      loadPolls(1, false); // обновляем с первой страницы
-    } catch (e) {
-      alert('Ошибка создания опроса');
-    }
+    // твой код создания опроса
   };
 
   if (loading && polls.length === 0) return <LoadingSpinner />;
