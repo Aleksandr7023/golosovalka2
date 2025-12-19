@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import PollCard from '../components/PollCard.jsx';
 import LoadingSpinner from '../components/LoadingSpinner.jsx';
 import { fetchPolls, createPoll } from '../utils/api.js';
@@ -8,24 +8,50 @@ export default function MainScreen() {
   const [polls, setPolls] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const sentinel = useRef(null);
 
-  useEffect(() => {
-    loadPolls();
-  }, []);
-
-  const loadPolls = async () => {
+  const loadPolls = async (pageNum = 1, append = false) => {
+    if (!hasMore && append) return;
+    setLoading(true);
     try {
-      const data = await fetchPolls();
-      console.log('Данные с сервера:', data);
-      setPolls(Array.isArray(data) ? data : data.polls || []);
+      const data = await fetchPolls(pageNum);
+      if (append) {
+        setPolls(prev => [...prev, ...data]);
+      } else {
+        setPolls(data);
+      }
+      setHasMore(data.length > 0);
       setError('');
     } catch (e) {
-      console.error('Ошибка загрузки:', e);
-      setError('Не удалось загрузить опросы: ' + e.message);
+      setError('Не удалось загрузить опросы');
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadPolls(1, false);
+  }, []);
+
+  useEffect(() => {
+    if (!sentinel.current || loading || !hasMore) return;
+
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        setPage(prev => prev + 1);
+      }
+    });
+
+    observer.observe(sentinel.current);
+
+    return () => observer.disconnect();
+  }, [loading, hasMore]);
+
+  useEffect(() => {
+    if (page > 1) loadPolls(page, true);
+  }, [page]);
 
   const handleNewPoll = async () => {
     const title = prompt('Тема опроса');
@@ -37,13 +63,13 @@ export default function MainScreen() {
 
     try {
       await createPoll({ title, question, options });
-      loadPolls();
+      loadPolls(1, false); // обновляем с первой страницы
     } catch (e) {
       alert('Ошибка создания опроса');
     }
   };
 
-  if (loading) return <LoadingSpinner />;
+  if (loading && polls.length === 0) return <LoadingSpinner />;
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
   return (
@@ -61,6 +87,8 @@ export default function MainScreen() {
         ) : (
           polls.map(poll => <PollCard key={poll.id} poll={poll} />)
         )}
+        {hasMore && <div ref={sentinel} style={{ height: 20 }} />}
+        {loading && polls.length > 0 && <p>Загрузка...</p>}
       </section>
     </div>
   );
