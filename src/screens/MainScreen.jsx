@@ -15,11 +15,23 @@ export default function MainScreen() {
 
   const loadPolls = async () => {
     try {
-      const data = await fetchPolls(); // data — массив опросов
-      setPolls(data || []);
+      const res = await fetch(`${API_BASE}/get_polls.php`);
+      console.log('Status:', res.status); // ← смотри в консоль браузера
+
+      if (!res.ok) {
+        const text = await res.text();
+        console.log('Error text:', text);
+        throw new Error(`HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+      console.log('Данные с сервера:', data);
+
+      setPolls(Array.isArray(data) ? data : data.polls || []);
       setError('');
     } catch (e) {
-      setError('Не удалось загрузить опросы');
+      console.error('Ошибка загрузки:', e);
+      setError('Не удалось загрузить опросы: ' + e.message);
     } finally {
       setLoading(false);
     }
