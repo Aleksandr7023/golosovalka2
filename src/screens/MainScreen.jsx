@@ -1,21 +1,31 @@
 import { useState, useEffect } from 'react';
 import PollCard from '../components/PollCard.jsx';
 import LoadingSpinner from '../components/LoadingSpinner.jsx';
+import { fetchPolls, createPoll } from '../utils/api.js';
 import '../styles/mainScreen.css';
 
 export default function MainScreen() {
   const [polls, setPolls] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    setPolls([
-      { id: 1, title: 'Тестовый опрос', question: 'Как дела?', views_count: 42, votes_count: 10 },
-      { id: 2, title: 'Ещё один', question: 'Что думаете?', views_count: 15, votes_count: 5 }
-    ]);
-    setLoading(false);
+    loadPolls();
   }, []);
 
-  const handleNewPoll = () => {
+  const loadPolls = async () => {
+    try {
+      const data = await fetchPolls();
+      setPolls(data.polls || []);
+      setError('');
+    } catch (e) {
+      setError('Не удалось загрузить опросы');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleNewPoll = async () => {
     const title = prompt('Тема опроса');
     if (!title) return;
     const question = prompt('Вопрос');
@@ -23,18 +33,16 @@ export default function MainScreen() {
     const options = prompt('Варианты (по одному на строку)', 'Да\nНет\nНе знаю');
     if (!options) return;
 
-    const newPoll = {
-      id: polls.length + 1,
-      title,
-      question,
-      views_count: 0,
-      votes_count: 0
-    };
-
-    setPolls([newPoll, ...polls]);
+    try {
+      await createPoll({ title, question, options });
+      loadPolls();
+    } catch (e) {
+      alert('Ошибка создания опроса');
+    }
   };
 
   if (loading) return <LoadingSpinner />;
+  if (error) return <p style={{color:'red'}}>{error}</p>;
 
   return (
     <div className="main-screen">
@@ -44,6 +52,7 @@ export default function MainScreen() {
           + Новый опрос
         </button>
       </header>
+
       <section className="poll-list">
         {polls.length === 0 ? (
           <p>Опросов пока нет</p>
