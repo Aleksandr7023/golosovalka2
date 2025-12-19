@@ -30,7 +30,8 @@ export default function PollScreen() {
   if (error) return <p style={{color:'red'}}>{error}</p>;
   if (!poll) return <p>Опрос не найден</p>;
 
-  const totalVotes = poll.options.reduce((sum, _, i) => sum + (poll.votes[i] || 0), 0);
+  const votesArray = poll.votes || Array(poll.options.length).fill(0);
+  const totalVotes = votesArray.reduce((sum, v) => sum + v, 0);
 
   return (
     <div style={{padding: '40px', maxWidth: '800px', margin: '0 auto'}}>
@@ -40,8 +41,8 @@ export default function PollScreen() {
       <h2 style={{margin: '30px 0 20px'}}>Варианты ответа:</h2>
       <div className="options">
         {poll.options.map((opt, index) => {
-          const votes = poll.votes[index] || 0;
-          const percent = totalVotes ? Math.round(votes / totalVotes * 100) : 0;
+          const votes = votesArray[index] || 0;
+          const percent = totalVotes ? Math.round((votes / totalVotes) * 100) : 0;
           return (
             <div key={index} className="option">
               <span>{opt}</span>
