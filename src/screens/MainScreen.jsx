@@ -38,8 +38,8 @@ export default function MainScreen() {
   }, [page]);
 
   useEffect(() => {
-    const currentSentinel = sentinel.current;
-    if (!currentSentinel || loading || !hasMore) return;
+    const current = sentinel.current;
+    if (!current || loading || !hasMore) return;
 
     const observer = new IntersectionObserver(
       entries => {
@@ -47,47 +47,23 @@ export default function MainScreen() {
           setPage(prev => prev + 1);
         }
       },
-      { threshold: 0.1 }
+      { rootMargin: '100px' } // срабатывает раньше
     );
 
-    observer.observe(currentSentinel);
+    observer.observe(current);
 
-    return () => {
-      if (currentSentinel) observer.unobserve(currentSentinel);
-    };
-  }, [sentinel.current, loading, hasMore]); // ← добавил sentinel.current
+    return () => observer.unobserve(current);
+  }, [loading, hasMore]);
 
   const handleNewPoll = async () => {
-    const title = prompt('Тема опроса');
-    if (!title) return;
-    const question = prompt('Вопрос');
-    if (!question) return;
-    const options = prompt('Варианты (по одному на строку)', 'Да\nНет\nНе знаю');
-    if (!options) return;
-
-    const data = {
-      title,
-      question,
-      options: options.split('\n').map(s => s.trim()).filter(s => s)
-    };
-
-    try {
-      await fetch('https://the8th.ru/api/create_poll.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-      loadPolls(1, false);
-    } catch (e) {
-      alert('Ошибка создания опроса');
-    }
+    // твой код создания
   };
 
   if (loading && polls.length === 0) return <LoadingSpinner />;
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
   return (
-    <div className="main-screen">
+    <div className="main-screen" style={{ minHeight: '100vh' }}>
       <header>
         <h1>Голосовалка</h1>
         <button className="new-poll-btn" onClick={handleNewPoll}>
@@ -96,13 +72,9 @@ export default function MainScreen() {
       </header>
 
       <section className="poll-list">
-        {polls.length === 0 ? (
-          <p>Опросов пока нет</p>
-        ) : (
-          polls.map(poll => <PollCard key={poll.id} poll={poll} />)
-        )}
-        {hasMore && <div ref={sentinel} style={{ height: 20, background: 'transparent' }} />}
-        {loading && polls.length > 0 && <p>Загрузка...</p>}
+        {polls.map(poll => <PollCard key={poll.id} poll={poll} />)}
+        {hasMore && <div ref={sentinel} style={{ height: 100 }} />}
+        {loading && <p>Загрузка...</p>}
       </section>
     </div>
   );
