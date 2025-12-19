@@ -1,56 +1,45 @@
-// src/App.jsx — v1.052 — currentDraftId + drafts + функции
-
-import React, { useState } from 'react'
-import { Outlet } from 'react-router-dom'
-import { APP_VERSION } from './utils/constants.js'
-import { loadDrafts, deleteDraft } from './utils/draftUtils.js'
+import { useState } from 'react';
+import MainScreen from './screens/MainScreen.jsx';
+import { APP_VERSION, APP_NAME } from './utils/constants.js';
 
 export default function App() {
-  const drafts = loadDrafts()
-
-  const [currentDraftId, setCurrentDraftId] = useState(null)
-
-  const handleOpenDraft = (draft) => {
-    setCurrentDraftId(draft.id)
-  }
-
-  const handleDeleteDraft = (id) => {
-    if (confirm('Удалить черновик?')) {
-      deleteDraft(id)
-      window.dispatchEvent(new Event('storage'))
-    }
-  }
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div style={{
-      padding: '16px',
-      background: '#f8f9fa',
-      minHeight: '100dvh',
-      position: 'relative',
-      fontFamily: 'system-ui, sans-serif'
-    }}>
-      <div style={{
-        position: 'absolute',
-        top: 10,
-        left: 10,
-        fontSize: '12px',
-        color: '#888',
-        zIndex: 9999,
-        background: 'rgba(255,255,255,0.7)',
-        padding: '4px 8px',
-        borderRadius: '6px'
-      }}>
-        {APP_VERSION}
-      </div>
+    <div className="app">
+      <header style={{ position: 'relative', padding: '20px', background: 'white', boxShadow: '0 2px 8px rgba(0,0,0,.1)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h1 style={{ margin: 0, fontSize: '24px', color: '#0969da' }}>{APP_NAME}</h1>
+          <button 
+            onClick={() => setMenuOpen(!menuOpen)} 
+            style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer' }}
+          >
+            ⋮
+          </button>
+        </div>
 
-      <Outlet context={{
-        currentDraftId,
-        setCurrentDraftId,
-        drafts,
-        onOpenDraft: handleOpenDraft,
-        onDeleteDraft: handleDeleteDraft
-      }} />
+        {menuOpen && (
+          <div style={{
+            position: 'absolute',
+            right: '20px',
+            top: '100%',
+            background: 'white',
+            border: '1px solid #d0d7de',
+            borderRadius: '8px',
+            padding: '10px',
+            boxShadow: '0 4px 12px rgba(0,0,0,.1)',
+            zIndex: 10,
+            minWidth: '160px'
+          }}>
+            <p style={{ margin: '8px 0', fontSize: '14px' }}>Версия: {APP_VERSION}</p>
+            {/* Другие пункты меню можно добавить здесь */}
+          </div>
+        )}
+      </header>
+
+      <main>
+        <MainScreen />
+      </main>
     </div>
-  )
+  );
 }
-// FORCE_PUSH_TIMESTAMP: 2025-12-08 19:00:54
