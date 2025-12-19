@@ -52,28 +52,40 @@ export default function PollScreen() {
   const totalVotes = votesArray.reduce((sum, v) => sum + v, 0);
 
   return (
-    <div style={{padding: '40px', maxWidth: '800px', margin: '0 auto'}}>
+    <div style={{padding: '20px', maxWidth: '800px', margin: '0 auto'}}>
       <h1 style={{fontSize: '28px', color: '#0969da'}}>{poll.title}</h1>
       <p style={{fontSize: '20px', margin: '30px 0'}}>{poll.question}</p>
 
       <h2 style={{margin: '30px 0 20px'}}>Варианты ответа:</h2>
-      <div className="options">
+      <div style={{display: 'flex', flexDirection: 'column', gap: '15px'}}>
         {poll.options.map((opt, index) => {
           const votes = votesArray[index] || 0;
           const percent = totalVotes ? Math.round((votes / totalVotes) * 100) : 0;
           return (
-            <div key={index} className="option" onClick={() => handleVote(index)} style={{cursor: 'pointer'}}>
-              <span>{opt}</span>
-              <div className="bar-container">
-                <div className="bar" style={{width: `${percent}%`}}></div>
+            <div 
+              key={index} 
+              onClick={() => handleVote(index)}
+              style={{
+                padding: '20px',
+                background: '#f6f8fa',
+                borderRadius: '12px',
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(0,0,0,.1)'
+              }}
+            >
+              <span style={{fontSize: '18px', display: 'block', marginBottom: '10px'}}>{opt}</span>
+              <div style={{height: '20px', background: '#e0e0e0', borderRadius: '10px', overflow: 'hidden'}}>
+                <div style={{height: '100%', width: `${percent}%`, background: '#2ea44f', transition: 'width 0.5s'}}></div>
               </div>
-              <span className="percent">{votes} голосов ({percent}%)</span>
+              <span style={{fontSize: '14px', color: '#666', marginTop: '8px', display: 'block'}}>
+                {votes} голосов ({percent}%)
+              </span>
             </div>
           );
         })}
       </div>
 
-      <p className="total">Всего голосов: {totalVotes}</p>
+      <p style={{marginTop: '30px', fontWeight: 'bold'}}>Всего голосов: {totalVotes}</p>
 
       <div style={{margin: '40px 0'}}>
         <textarea
@@ -82,23 +94,20 @@ export default function PollScreen() {
           placeholder="Ваш комментарий"
           style={{width: '100%', height: '100px', padding: '10px', borderRadius: '8px', border: '1px solid #d0d7de'}}
         />
-        <button onClick={handleComment} style={{marginTop: '10px', padding: '10px 20px', background: '#57606a', color: 'white', border: 'none', borderRadius: '8px'}}>
+        <button 
+          onClick={handleComment}
+          style={{
+            marginTop: '10px',
+            padding: '12px 24px',
+            background: '#57606a',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer'
+          }}
+        >
           Отправить комментарий
         </button>
-      </div>
-
-      <h2>Комментарии</h2>
-      <div className="comments">
-        {poll.comments?.length ? (
-          poll.comments.map(c => (
-            <div key={c.id} style={{padding: '15px', background: '#f6f8fa', borderRadius: '8px', marginBottom: '10px'}}>
-              <strong>{c.display_name || 'Аноним'}</strong>: {c.text}
-              <small style={{display: 'block', color: '#666'}}>{new Date(c.created_at).toLocaleString()}</small>
-            </div>
-          ))
-        ) : (
-          <p>Пока нет комментариев</p>
-        )}
       </div>
 
       <a href="/" style={{display: 'block', marginTop: '40px', color: '#0969da', fontSize: '18px'}}>← Назад</a>
