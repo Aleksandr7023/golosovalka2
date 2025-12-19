@@ -9,6 +9,7 @@ export default function PollScreen() {
   const [poll, setPoll] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [commentText, setCommentText] = useState('');
 
   const loadPoll = async () => {
     try {
@@ -28,18 +29,18 @@ export default function PollScreen() {
   }, [id]);
 
   const handleVote = async (index) => {
-    await fetch(`https://the8th.ru/api/vote.php?poll_id=${id}&option=${index}`);
+    await fetch(`${API_BASE}/vote.php?poll_id=${id}&option=${index}`);
     loadPoll();
   };
 
   const handleComment = async () => {
-    const text = prompt('Ваш комментарий');
-    if (!text) return;
-    await fetch('https://the8th.ru/api/add_comment.php', {
+    if (!commentText.trim()) return;
+    await fetch(`${API_BASE}/add_comment.php`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ poll_id: id, text })
+      body: JSON.stringify({ poll_id: id, text: commentText })
     });
+    setCommentText('');
     loadPoll();
   };
 
@@ -74,9 +75,31 @@ export default function PollScreen() {
 
       <p className="total">Всего голосов: {totalVotes}</p>
 
-      <button onClick={handleComment} style={{margin: '20px 0', padding: '12px 24px', background: '#57606a', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer'}}>
-        Комментировать
-      </button>
+      <div style={{margin: '40px 0'}}>
+        <textarea
+          value={commentText}
+          onChange={(e) => setCommentText(e.target.value)}
+          placeholder="Ваш комментарий"
+          style={{width: '100%', height: '100px', padding: '10px', borderRadius: '8px', border: '1px solid #d0d7de'}}
+        />
+        <button onClick={handleComment} style={{marginTop: '10px', padding: '10px 20px', background: '#57606a', color: 'white', border: 'none', borderRadius: '8px'}}>
+          Отправить комментарий
+        </button>
+      </div>
+
+      <h2>Комментарии</h2>
+      <div className="comments">
+        {poll.comments?.length ? (
+          poll.comments.map(c => (
+            <div key={c.id} style={{padding: '15px', background: '#f6f8fa', borderRadius: '8px', marginBottom: '10px'}}>
+              <strong>{c.display_name || 'Аноним'}</strong>: {c.text}
+              <small style={{display: 'block', color: '#666'}}>{new Date(c.created_at).toLocaleString()}</small>
+            </div>
+          ))
+        ) : (
+          <p>Пока нет комментариев</p>
+        )}
+      </div>
 
       <a href="/" style={{display: 'block', marginTop: '40px', color: '#0969da', fontSize: '18px'}}>← Назад</a>
     </div>
