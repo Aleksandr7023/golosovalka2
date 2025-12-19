@@ -1,0 +1,16 @@
+.poll-screen { padding: 20px; max-width: 800px; margin: 0 auto; }
+.poll-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.1); }
+h1 { font-size: 28px; margin-bottom: 20px; color: #0969da; }
+.question { font-size: 20px; margin-bottom: 30px; color: #24292f; }
+.options { margin-bottom: 30px; }
+.option-btn { width: 100%; padding: 16px; margin: 10px 0; background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 8px; text-align: left; position: relative; }
+.opt-text { font-size: 18px; }
+.progress { height: 8px; background: #e0e0e0; border-radius: 4px; margin: 8px 0; overflow: hidden; }
+.bar { height: 100%; background: #2ea44f; transition: width 0.5s; }
+.votes { font-size: 14px; color: #666; }
+.vote-btn { width: 100%; padding: 16px; background: #2ea44f; color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; }
+.stats { margin: 30px 0; font-size: 14px; color: #666; }
+.stats span { margin-right: 20px; }
+.evolve-btn { width: 100%; padding: 14px; background: #0969da; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin-bottom: 30px; }
+.comments { min-height: 200px; }
+.comment-btn { width: 100%; padding: 14px; background: #57606a; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }

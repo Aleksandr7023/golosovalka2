@@ -38,8 +38,7 @@ export default function MainScreen() {
   }, [page]);
 
   useEffect(() => {
-    const current = sentinel.current;
-    if (!current || loading || !hasMore) return;
+    if (!sentinel.current || loading || !hasMore) return;
 
     const observer = new IntersectionObserver(
       entries => {
@@ -47,23 +46,35 @@ export default function MainScreen() {
           setPage(prev => prev + 1);
         }
       },
-      { rootMargin: '100px' } // срабатывает раньше
+      { rootMargin: '200px' } // срабатывает раньше
     );
 
-    observer.observe(current);
+    observer.observe(sentinel.current);
 
-    return () => observer.unobserve(current);
-  }, [loading, hasMore]);
+    return () => observer.disconnect();
+  }, [loading, hasMore, sentinel]);
 
   const handleNewPoll = async () => {
-    // твой код создания
+    const title = prompt('Тема опроса');
+    if (!title) return;
+    const question = prompt('Вопрос');
+    if (!question) return;
+    const options = prompt('Варианты (по одному на строку)', 'Да\nНет\nНе знаю');
+    if (!options) return;
+
+    try {
+      await createPoll({ title, question, options });
+      loadPolls(1, false);
+    } catch (e) {
+      alert('Ошибка создания опроса');
+    }
   };
 
   if (loading && polls.length === 0) return <LoadingSpinner />;
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
   return (
-    <div className="main-screen" style={{ minHeight: '100vh' }}>
+    <div className="main-screen">
       <header>
         <h1>Опросы</h1>
         <button className="new-poll-btn" onClick={handleNewPoll}>
@@ -74,7 +85,7 @@ export default function MainScreen() {
       <section className="poll-list">
         {polls.map(poll => <PollCard key={poll.id} poll={poll} />)}
         {hasMore && <div ref={sentinel} style={{ height: 100 }} />}
-        {loading && <p>Загрузка...</p>}
+        {loading && polls.length > 0 && <p>Загрузка...</p>}
       </section>
     </div>
   );
