@@ -15,10 +15,14 @@ export default function PollScreen() {
     const fetchPoll = async () => {
       try {
         const res = await fetch(`${API_BASE}/get_poll.php?id=${id}`);
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(`HTTP ${res.status}: ${text}`);
+        }
         const data = await res.json();
         setPoll(data);
       } catch (e) {
-        setError('Ошибка загрузки опроса');
+        setError(`Ошибка загрузки опроса: ${e.message}`);
       } finally {
         setLoading(false);
       }
@@ -27,7 +31,7 @@ export default function PollScreen() {
   }, [id]);
 
   if (loading) return <LoadingSpinner />;
-  if (error) return <p style={{color:'red'}}>{error}</p>;
+  if (error) return <div style={{ color: 'red', padding: '20px' }}>{error}</div>;
   if (!poll) return <p>Опрос не найден</p>;
 
   const totalVotes = poll.votes.reduce((sum, v) => sum + v, 0);
@@ -46,7 +50,7 @@ export default function PollScreen() {
               <button key={index} className="option-btn">
                 <span className="opt-text">{opt}</span>
                 <div className="progress">
-                  <div className="bar" style={{width: `${percent}%`}}></div>
+                  <div className="bar" style={{ width: `${percent}%` }}></div>
                 </div>
                 <span className="votes">{votes} ({percent}%)</span>
               </button>
@@ -66,7 +70,6 @@ export default function PollScreen() {
 
         <h2>Комментарии</h2>
         <div className="comments">
-          {/* Здесь будут комментарии */}
           <p>Пока нет комментариев</p>
         </div>
 
