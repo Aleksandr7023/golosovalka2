@@ -65,9 +65,9 @@ export default function MainScreen() {
   return (
     <div className="main-screen" style={{ minHeight: '100vh' }}>
       <header>
-        <h1>Голосовалка</h1>
+        <h1>Опросы</h1>
         <button className="new-poll-btn" onClick={handleNewPoll}>
-          + Новый опрос
+          + Новый
         </button>
       </header>
 
