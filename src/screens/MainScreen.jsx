@@ -15,13 +15,34 @@ export default function MainScreen() {
     setLoading(false);
   }, []);
 
+  const handleNewPoll = () => {
+    const title = prompt('Тема опроса');
+    if (!title) return;
+    const question = prompt('Вопрос');
+    if (!question) return;
+    const options = prompt('Варианты (по одному на строку)', 'Да\nНет\nНе знаю');
+    if (!options) return;
+
+    const newPoll = {
+      id: polls.length + 1,
+      title,
+      question,
+      views_count: 0,
+      votes_count: 0
+    };
+
+    setPolls([newPoll, ...polls]);
+  };
+
   if (loading) return <LoadingSpinner />;
 
   return (
     <div className="main-screen">
       <header>
         <h1>Голосовалка</h1>
-        <button className="new-poll-btn">+ Новый опрос</button>
+        <button className="new-poll-btn" onClick={handleNewPoll}>
+          + Новый опрос
+        </button>
       </header>
       <section className="poll-list">
         {polls.length === 0 ? (
