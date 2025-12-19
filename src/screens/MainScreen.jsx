@@ -15,8 +15,8 @@ export default function MainScreen() {
 
   const loadPolls = async () => {
     try {
-      const data = await fetchPolls();
-      setPolls(data.polls || []);
+      const data = await fetchPolls(); // data — массив опросов
+      setPolls(data || []);
       setError('');
     } catch (e) {
       setError('Не удалось загрузить опросы');
