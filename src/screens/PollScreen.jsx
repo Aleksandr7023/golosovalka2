@@ -10,21 +10,38 @@ export default function PollScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const loadPoll = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/get_poll.php?id=${id}`);
+      if (!res.ok) throw new Error('Ошибка сервера');
+      const data = await res.json();
+      setPoll(data);
+    } catch (e) {
+      setError('Не удалось загрузить опрос');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchPoll = async () => {
-      try {
-        const res = await fetch(`${API_BASE}/get_poll.php?id=${id}`);
-        if (!res.ok) throw new Error('Ошибка сервера');
-        const data = await res.json();
-        setPoll(data);
-      } catch (e) {
-        setError('Не удалось загрузить опрос');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPoll();
+    loadPoll();
   }, [id]);
+
+  const handleVote = async (index) => {
+    await fetch(`https://the8th.ru/api/vote.php?poll_id=${id}&option=${index}`);
+    loadPoll();
+  };
+
+  const handleComment = async () => {
+    const text = prompt('Ваш комментарий');
+    if (!text) return;
+    await fetch('https://the8th.ru/api/add_comment.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ poll_id: id, text })
+    });
+    loadPoll();
+  };
 
   if (loading) return <LoadingSpinner />;
   if (error) return <p style={{color:'red'}}>{error}</p>;
@@ -44,7 +61,7 @@ export default function PollScreen() {
           const votes = votesArray[index] || 0;
           const percent = totalVotes ? Math.round((votes / totalVotes) * 100) : 0;
           return (
-            <div key={index} className="option">
+            <div key={index} className="option" onClick={() => handleVote(index)} style={{cursor: 'pointer'}}>
               <span>{opt}</span>
               <div className="bar-container">
                 <div className="bar" style={{width: `${percent}%`}}></div>
@@ -56,6 +73,10 @@ export default function PollScreen() {
       </div>
 
       <p className="total">Всего голосов: {totalVotes}</p>
+
+      <button onClick={handleComment} style={{margin: '20px 0', padding: '12px 24px', background: '#57606a', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer'}}>
+        Комментировать
+      </button>
 
       <a href="/" style={{display: 'block', marginTop: '40px', color: '#0969da', fontSize: '18px'}}>← Назад</a>
     </div>
