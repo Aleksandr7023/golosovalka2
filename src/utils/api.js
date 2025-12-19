@@ -2,9 +2,9 @@ const API_BASE = 'https://the8th.ru/api';
 
 export const fetchPolls = async () => {
   const res = await fetch(`${API_BASE}/get_polls.php`);
-  if (!res.ok) throw new Error('Ошибка сервера');
+  if (!res.ok) throw new Error('Сервер не отвечает');
   const data = await res.json();
-  return data.polls || [];
+  return Array.isArray(data) ? data : []; // ← ключевой фикс
 };
 
 export const createPoll = async ({ title, question, options }) => {
