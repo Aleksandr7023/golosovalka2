@@ -15,18 +15,8 @@ export default function MainScreen() {
 
   const loadPolls = async () => {
     try {
-      const res = await fetch(`${API_BASE}/get_polls.php`);
-      console.log('Status:', res.status); // ← смотри в консоль браузера
-
-      if (!res.ok) {
-        const text = await res.text();
-        console.log('Error text:', text);
-        throw new Error(`HTTP ${res.status}`);
-      }
-
-      const data = await res.json();
+      const data = await fetchPolls();
       console.log('Данные с сервера:', data);
-
       setPolls(Array.isArray(data) ? data : data.polls || []);
       setError('');
     } catch (e) {
@@ -54,7 +44,7 @@ export default function MainScreen() {
   };
 
   if (loading) return <LoadingSpinner />;
-  if (error) return <p style={{color:'red'}}>{error}</p>;
+  if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
   return (
     <div className="main-screen">
