@@ -13,17 +13,15 @@ export default function MainScreen() {
   const sentinel = useRef(null);
 
   const loadPolls = async (pageNum = 1, append = false) => {
-    if (!hasMore && append) return;
     setLoading(true);
     try {
-      const data = await fetchPolls(pageNum); // ← теперь передаём page
+      const data = await fetchPolls(pageNum);
       if (append) {
         setPolls(prev => [...prev, ...data]);
       } else {
         setPolls(data);
       }
-      setHasMore(data.length === 20); // если вернулось меньше 20 — конец
-      setError('');
+      setHasMore(data.length === 20);
     } catch (e) {
       setError('Не удалось загрузить опросы');
     } finally {
@@ -36,24 +34,53 @@ export default function MainScreen() {
   }, []);
 
   useEffect(() => {
-    if (!sentinel.current || loading || !hasMore) return;
-
-    const observer = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting) {
-        setPage(prev => prev + 1);
-      }
-    });
-
-    observer.observe(sentinel.current);
-    return () => observer.disconnect();
-  }, [loading, hasMore]);
-
-  useEffect(() => {
     if (page > 1) loadPolls(page, true);
   }, [page]);
 
+  useEffect(() => {
+    const currentSentinel = sentinel.current;
+    if (!currentSentinel || loading || !hasMore) return;
+
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries[0].isIntersecting) {
+          setPage(prev => prev + 1);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(currentSentinel);
+
+    return () => {
+      if (currentSentinel) observer.unobserve(currentSentinel);
+    };
+  }, [sentinel.current, loading, hasMore]); // ← добавил sentinel.current
+
   const handleNewPoll = async () => {
-    // твой код создания опроса
+    const title = prompt('Тема опроса');
+    if (!title) return;
+    const question = prompt('Вопрос');
+    if (!question) return;
+    const options = prompt('Варианты (по одному на строку)', 'Да\nНет\nНе знаю');
+    if (!options) return;
+
+    const data = {
+      title,
+      question,
+      options: options.split('\n').map(s => s.trim()).filter(s => s)
+    };
+
+    try {
+      await fetch('https://the8th.ru/api/create_poll.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      loadPolls(1, false);
+    } catch (e) {
+      alert('Ошибка создания опроса');
+    }
   };
 
   if (loading && polls.length === 0) return <LoadingSpinner />;
@@ -74,7 +101,7 @@ export default function MainScreen() {
         ) : (
           polls.map(poll => <PollCard key={poll.id} poll={poll} />)
         )}
-        {hasMore && <div ref={sentinel} style={{ height: 20 }} />}
+        {hasMore && <div ref={sentinel} style={{ height: 20, background: 'transparent' }} />}
         {loading && polls.length > 0 && <p>Загрузка...</p>}
       </section>
     </div>
