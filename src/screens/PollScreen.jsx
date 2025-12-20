@@ -9,7 +9,6 @@ export default function PollScreen() {
   const [poll, setPoll] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [commentText, setCommentText] = useState('');
 
   const loadPoll = async () => {
     try {
@@ -29,18 +28,15 @@ export default function PollScreen() {
   }, [id]);
 
   const handleVote = async (index) => {
+    const comment = prompt('Ваш комментарий (необязательно)');
     await fetch(`${API_BASE}/vote.php?poll_id=${id}&option=${index}`);
-    loadPoll();
-  };
-
-  const handleComment = async () => {
-    if (!commentText.trim()) return;
-    await fetch(`${API_BASE}/add_comment.php`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ poll_id: id, text: commentText })
-    });
-    setCommentText('');
+    if (comment?.trim()) {
+      await fetch(`${API_BASE}/add_comment.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ poll_id: id, text: comment })
+      });
+    }
     loadPoll();
   };
 
@@ -70,8 +66,11 @@ export default function PollScreen() {
                 background: '#f6f8fa',
                 borderRadius: '12px',
                 cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(0,0,0,.1)'
+                boxShadow: '0 2px 8px rgba(0,0,0,.1)',
+                transition: 'transform 0.2s'
               }}
+              onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
+              onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
             >
               <span style={{fontSize: '18px', display: 'block', marginBottom: '10px'}}>{opt}</span>
               <div style={{height: '20px', background: '#e0e0e0', borderRadius: '10px', overflow: 'hidden'}}>
@@ -86,29 +85,6 @@ export default function PollScreen() {
       </div>
 
       <p style={{marginTop: '30px', fontWeight: 'bold'}}>Всего голосов: {totalVotes}</p>
-
-      <div style={{margin: '40px 0'}}>
-        <textarea
-          value={commentText}
-          onChange={(e) => setCommentText(e.target.value)}
-          placeholder="Ваш комментарий"
-          style={{width: '100%', height: '100px', padding: '10px', borderRadius: '8px', border: '1px solid #d0d7de'}}
-        />
-        <button 
-          onClick={handleComment}
-          style={{
-            marginTop: '10px',
-            padding: '12px 24px',
-            background: '#57606a',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer'
-          }}
-        >
-          Отправить комментарий
-        </button>
-      </div>
 
       <a href="/" style={{display: 'block', marginTop: '40px', color: '#0969da', fontSize: '18px'}}>← Назад</a>
     </div>
