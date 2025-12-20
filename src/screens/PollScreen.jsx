@@ -36,15 +36,19 @@ export default function PollScreen() {
 
   const handleVote = async (index) => {
     const comment = prompt('Ваш комментарий (необязательно)');
-    await fetch(`${API_BASE}/vote.php?poll_id=${id}&option=${index}`);
-    if (comment?.trim()) {
-      await fetch(`${API_BASE}/add_comment.php`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ poll_id: id, text: comment })
-      });
+    try {
+      await fetch(`${API_BASE}/vote.php?poll_id=${id}&option=${index}`);
+      if (comment?.trim()) {
+        await fetch(`${API_BASE}/add_comment.php`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ poll_id: id, text: comment })
+        });
+      }
+    } catch (e) {
+      alert('Ошибка при голосовании');
     }
-    loadPoll();
+    loadPoll(); // ← обновление сразу после голоса
   };
 
   if (loading) return <LoadingSpinner />;
