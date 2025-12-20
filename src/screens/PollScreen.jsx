@@ -1,12 +1,13 @@
 // PollScreen.jsx
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner.jsx';
 
 const API_BASE = 'https://the8th.ru/api';
 
 export default function PollScreen() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [poll, setPoll] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -34,25 +35,8 @@ export default function PollScreen() {
     }
   }, [poll, id]);
 
-  const handleVote = async (index) => {
-    const comment = prompt('Ваш комментарий (необязательно)');
-    try {
-      const res = await fetch(`${API_BASE}/vote.php?poll_id=${id}&option=${index}`);
-      if (!res.ok) throw new Error('Голос не засчитан');
-
-      if (comment?.trim()) {
-        const commentRes = await fetch(`${API_BASE}/add_comment.php`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ poll_id: id, text: comment })
-        });
-        if (!commentRes.ok) console.error('Комментарий не добавлен');
-      }
-    } catch (e) {
-      alert('Ошибка при голосовании');
-      return;
-    }
-    loadPoll();
+  const handleVote = (index) => {
+    navigate(`/comment/${id}`, { state: { selectedOption: index } });
   };
 
   if (loading) return <LoadingSpinner />;
