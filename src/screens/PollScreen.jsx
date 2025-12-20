@@ -1,3 +1,4 @@
+// PollScreen.jsx
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner.jsx';
@@ -26,6 +27,12 @@ export default function PollScreen() {
   useEffect(() => {
     loadPoll();
   }, [id]);
+
+  useEffect(() => {
+    if (poll) {
+      fetch(`https://the8th.ru/api/view_poll.php?id=${id}`);
+    }
+  }, [poll, id]);
 
   const handleVote = async (index) => {
     const comment = prompt('Ваш комментарий (необязательно)');
