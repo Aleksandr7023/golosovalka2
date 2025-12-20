@@ -46,13 +46,13 @@ export default function MainScreen() {
           setPage(prev => prev + 1);
         }
       },
-      { rootMargin: '200px' } // срабатывает раньше
+      { rootMargin: '200px' }
     );
 
     observer.observe(sentinel.current);
 
     return () => observer.disconnect();
-  }, [loading, hasMore, sentinel]);
+  }, [loading, hasMore, sentinel.current]); // ← исправлено
 
   const handleNewPoll = async () => {
     const title = prompt('Тема опроса');
