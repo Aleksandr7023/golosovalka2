@@ -85,7 +85,23 @@ export default function PollScreen() {
 
       <p style={{marginTop: '30px', fontWeight: 'bold'}}>Всего голосов: {totalVotes}</p>
 
-      <a href="/" style={{display: 'block', marginTop: '40px', color: '#0969da', fontSize: '18px'}}>← Назад</a>
+      <h2 style={{marginTop: '40px'}}>Комментарии</h2>
+      <div style={{marginBottom: '40px'}}>
+        {poll.comments && poll.comments.length > 0 ? (
+          poll.comments.map((c, i) => (
+            <div key={i} style={{padding: '15px', background: '#f6f8fa', borderRadius: '8px', marginBottom: '10px'}}>
+              <strong>{c.display_name || 'Аноним'}</strong>: {c.text}
+              <small style={{display: 'block', color: '#666', marginTop: '5px'}}>
+                {new Date(c.created_at).toLocaleString()}
+              </small>
+            </div>
+          ))
+        ) : (
+          <p>Комментариев пока нет</p>
+        )}
+      </div>
+
+      <a href="/" style={{display: 'block', color: '#0969da', fontSize: '18px'}}>← Назад</a>
     </div>
   );
 }
