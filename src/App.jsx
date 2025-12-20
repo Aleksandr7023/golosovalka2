@@ -1,7 +1,9 @@
+// App.jsx
 import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import MainScreen from './screens/MainScreen.jsx';
 import PollScreen from './screens/PollScreen.jsx';
+import CommentScreen from './screens/CommentScreen.jsx';
 import { APP_VERSION, APP_NAME } from './utils/constants.js';
 
 export default function App() {
@@ -40,6 +42,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<MainScreen />} />
           <Route path="/poll/:id" element={<PollScreen />} />
+          <Route path="/comment/:id" element={<CommentScreen />} />
         </Routes>
       </main>
     </div>
