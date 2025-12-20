@@ -1,3 +1,6 @@
+// PollCard.jsx
+import { Link } from 'react-router-dom';
+
 export default function PollCard({ poll }) {
   const totalVotes = poll.votes ? poll.votes.reduce((sum, v) => sum + v, 0) : 0;
 
@@ -9,7 +12,7 @@ export default function PollCard({ poll }) {
         <span>{poll.views_count} просмотров</span>
         <span>{totalVotes} голосов</span>
       </div>
-      <a href={`/poll/${poll.id}`}>Открыть →</a>
+      <Link to={`/poll/${poll.id}`}>Открыть →</Link>
     </div>
   );
 }
