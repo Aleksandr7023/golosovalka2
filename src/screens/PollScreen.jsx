@@ -37,18 +37,22 @@ export default function PollScreen() {
   const handleVote = async (index) => {
     const comment = prompt('Ваш комментарий (необязательно)');
     try {
-      await fetch(`${API_BASE}/vote.php?poll_id=${id}&option=${index}`);
+      const res = await fetch(`${API_BASE}/vote.php?poll_id=${id}&option=${index}`);
+      if (!res.ok) throw new Error('Голос не засчитан');
+
       if (comment?.trim()) {
-        await fetch(`${API_BASE}/add_comment.php`, {
+        const commentRes = await fetch(`${API_BASE}/add_comment.php`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ poll_id: id, text: comment })
         });
+        if (!commentRes.ok) console.error('Комментарий не добавлен');
       }
     } catch (e) {
       alert('Ошибка при голосовании');
+      return;
     }
-    loadPoll(); // ← обновление сразу после голоса
+    loadPoll();
   };
 
   if (loading) return <LoadingSpinner />;
