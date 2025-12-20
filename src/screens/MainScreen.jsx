@@ -15,7 +15,15 @@ export default function MainScreen() {
   const loadPolls = async (pageNum = 1, append = false) => {
     setLoading(true);
     try {
-      const data = await fetchPolls(pageNum);
+      const res = await fetch(`https://the8th.ru/api/get_polls.php?page=${pageNum}`);
+      console.log('Status:', res.status);
+      if (!res.ok) {
+        const text = await res.text();
+        console.log('Error body:', text);
+        throw new Error(`HTTP ${res.status}`);
+      }
+      const data = await res.json();
+      console.log('Данные:', data);
       if (append) {
         setPolls(prev => [...prev, ...data]);
       } else {
@@ -23,12 +31,13 @@ export default function MainScreen() {
       }
       setHasMore(data.length === 20);
     } catch (e) {
-      setError('Не удалось загрузить опросы');
+      console.error('Ошибка:', e);
+      setError('Не удалось загрузить опросы: ' + e.message);
     } finally {
       setLoading(false);
     }
   };
-
+  
   useEffect(() => {
     loadPolls(1, false);
   }, []);
