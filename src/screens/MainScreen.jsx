@@ -1,3 +1,4 @@
+//MainScreen.jsx
 import { useState, useEffect, useRef } from 'react';
 import PollCard from '../components/PollCard.jsx';
 import LoadingSpinner from '../components/LoadingSpinner.jsx';
@@ -15,15 +16,7 @@ export default function MainScreen() {
   const loadPolls = async (pageNum = 1, append = false) => {
     setLoading(true);
     try {
-      const res = await fetch(`https://the8th.ru/api/get_polls.php?page=${pageNum}`);
-      console.log('Status:', res.status);
-      if (!res.ok) {
-        const text = await res.text();
-        console.log('Error body:', text);
-        throw new Error(`HTTP ${res.status}`);
-      }
-      const data = await res.json();
-      console.log('Данные:', data);
+      const data = await fetchPolls(pageNum);
       if (append) {
         setPolls(prev => [...prev, ...data]);
       } else {
@@ -31,13 +24,12 @@ export default function MainScreen() {
       }
       setHasMore(data.length === 20);
     } catch (e) {
-      console.error('Ошибка:', e);
-      setError('Не удалось загрузить опросы: ' + e.message);
+      setError('Не удалось загрузить опросы');
     } finally {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
     loadPolls(1, false);
   }, []);
@@ -61,7 +53,7 @@ export default function MainScreen() {
     observer.observe(sentinel.current);
 
     return () => observer.disconnect();
-  }, [loading, hasMore, sentinel.current]); // ← исправлено
+  }, [loading, hasMore, sentinel.current]);
 
   const handleNewPoll = async () => {
     const title = prompt('Тема опроса');
