@@ -1,4 +1,4 @@
-//MainScreen.jsx
+// MainScreen.jsx
 import { useState, useEffect, useRef } from 'react';
 import PollCard from '../components/PollCard.jsx';
 import LoadingSpinner from '../components/LoadingSpinner.jsx';
@@ -11,7 +11,19 @@ export default function MainScreen() {
   const [error, setError] = useState('');
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [telegramId, setTelegramId] = useState(null);
   const sentinel = useRef(null);
+
+  // Получаем Telegram ID при загрузке
+  useEffect(() => {
+    if (window.Telegram?.WebApp) {
+      const initData = window.Telegram.WebApp.initDataUnsafe;
+      const userId = initData?.user?.id || null;
+      setTelegramId(userId);
+      console.log('Telegram ID:', userId);
+      window.Telegram.WebApp.ready();
+    }
+  }, []);
 
   const loadPolls = async (pageNum = 1, append = false) => {
     setLoading(true);
@@ -56,6 +68,11 @@ export default function MainScreen() {
   }, [loading, hasMore, sentinel.current]);
 
   const handleNewPoll = async () => {
+    if (!telegramId) {
+      alert('Не удалось определить ваш Telegram ID');
+      return;
+    }
+
     const title = prompt('Тема опроса');
     if (!title) return;
     const question = prompt('Вопрос');
@@ -64,7 +81,7 @@ export default function MainScreen() {
     if (!options) return;
 
     try {
-      await createPoll({ title, question, options });
+      await createPoll({ title, question, options, telegramId });
       loadPolls(1, false);
     } catch (e) {
       alert('Ошибка создания опроса');
