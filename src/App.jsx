@@ -1,13 +1,15 @@
 // App.jsx
 import { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import MainScreen from './screens/MainScreen.jsx';
 import PollScreen from './screens/PollScreen.jsx';
 import CommentScreen from './screens/CommentScreen.jsx';
+import ProfileScreen from './screens/ProfileScreen.jsx';
 import { APP_VERSION, APP_NAME } from './utils/constants.js';
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className="app">
@@ -35,6 +37,12 @@ export default function App() {
           minWidth: '160px'
         }}>
           <p style={{ margin: '8px 0', fontSize: '14px' }}>Версия: {APP_VERSION}</p>
+          <button 
+            onClick={() => navigate('/profile')} 
+            style={{ width: '100%', padding: '8px', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer' }}
+          >
+            Мой профиль
+          </button>
         </div>
       )}
 
@@ -43,6 +51,7 @@ export default function App() {
           <Route path="/" element={<MainScreen />} />
           <Route path="/poll/:id" element={<PollScreen />} />
           <Route path="/comment/:id" element={<CommentScreen />} />
+          <Route path="/profile" element={<ProfileScreen />} />
         </Routes>
       </main>
     </div>
