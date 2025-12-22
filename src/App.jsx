@@ -1,4 +1,3 @@
-// App.jsx
 import { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import MainScreen from './screens/MainScreen.jsx';
@@ -36,12 +35,17 @@ export default function App() {
           zIndex: 10,
           minWidth: '160px'
         }}>
-          <p style={{ margin: '8px 0', fontSize: '14px' }}>Версия: {APP_VERSION}</p>
           <button 
-            onClick={() => navigate('/profile')} 
-            style={{ width: '100%', padding: '8px', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer' }}
+            onClick={() => navigate('/profile')}
+            style={{ width: '100%', padding: '10px', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '14px' }}
           >
             Мой профиль
+          </button>
+          <button 
+            onClick={() => alert(`Версия: ${APP_VERSION}`)}
+            style={{ width: '100%', padding: '10px', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '14px' }}
+          >
+            О программе
           </button>
         </div>
       )}
