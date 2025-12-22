@@ -14,15 +14,14 @@ export default function MainScreen() {
   const [telegramId, setTelegramId] = useState(null);
   const sentinel = useRef(null);
 
-  // Получаем Telegram ID при загрузке
   useEffect(() => {
-    if (window.Telegram?.WebApp) {
-      const initData = window.Telegram.WebApp.initDataUnsafe;
-      const userId = initData?.user?.id || null;
-      setTelegramId(userId);
-      console.log('Telegram ID:', userId);
-      window.Telegram.WebApp.ready();
+    let userId = null;
+    if (window.Telegram?.WebApp?.initDataUnsafe?.user?.id) {
+      userId = window.Telegram.WebApp.initDataUnsafe.user.id;
     }
+    setTelegramId(userId || 9999); // ПК — тестовый ID
+    console.log('Telegram ID:', userId || 9999);
+    if (window.Telegram?.WebApp) window.Telegram.WebApp.ready();
   }, []);
 
   const loadPolls = async (pageNum = 1, append = false) => {
@@ -68,11 +67,6 @@ export default function MainScreen() {
   }, [loading, hasMore, sentinel.current]);
 
   const handleNewPoll = async () => {
-    if (!telegramId) {
-      alert('Не удалось определить ваш Telegram ID');
-      return;
-    }
-
     const title = prompt('Тема опроса');
     if (!title) return;
     const question = prompt('Вопрос');
