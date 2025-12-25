@@ -17,17 +17,22 @@ export default function App() {
   useEffect(() => {
     let id = null;
 
-    // Смартфон — реальный Telegram ID
     if (window.Telegram?.WebApp?.initDataUnsafe?.user?.id) {
       id = window.Telegram.WebApp.initDataUnsafe.user.id;
     }
 
-    // ПК — localhost = ты (тестовый пользователь)
     if (!id && (location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
       id = 9999;
     }
 
     setTelegramId(id);
+
+    // Проверка определения ID
+    if (id) {
+      console.log(`Telegram ID определён: ${id}`);
+    } else {
+      console.log('Telegram ID не определён (режим просмотра)');
+    }
   }, []);
 
   return (
