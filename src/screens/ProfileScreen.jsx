@@ -1,25 +1,42 @@
+// ProfileScreen.jsx
 import { useState, useEffect } from 'react';
+import { useContext } from 'react';
 import LoadingSpinner from '../components/LoadingSpinner.jsx';
+import { UserContext } from '../App.jsx';
 
 const API_BASE = 'https://the8th.ru/api';
 
 export default function ProfileScreen() {
+  const { telegramId } = useContext(UserContext);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const loadUser = async () => {
+  const loadUser = async () => {
+    try {
       const res = await fetch(`${API_BASE}/get_user.php`);
       const data = await res.json();
       setUser(data);
+    } catch (e) {
+      alert('Ошибка загрузки профиля');
+    } finally {
       setLoading(false);
-    };
-    loadUser();
-  }, []);
+    }
+  };
+
+  useEffect(() => {
+    if (!telegramId) {
+      // Создаём нового пользователя
+      fetch(`${API_BASE}/create_user.php`, { method: 'POST' })
+        .then(() => loadUser());
+    } else {
+      loadUser();
+    }
+  }, [telegramId]);
 
   const save = async () => {
     await fetch(`${API_BASE}/update_user.php`, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(user)
     });
     alert('Сохранено');
