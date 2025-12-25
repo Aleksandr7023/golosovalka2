@@ -1,3 +1,4 @@
+// App.jsx
 import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import MainScreen from './screens/MainScreen.jsx';
@@ -14,11 +15,19 @@ export default function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let id = null;
+
+    // Смартфон — реальный Telegram ID
     if (window.Telegram?.WebApp?.initDataUnsafe?.user?.id) {
-      setTelegramId(window.Telegram.WebApp.initDataUnsafe.user.id);
-    } else {
-      setTelegramId(null); // ПК или нет ID
+      id = window.Telegram.WebApp.initDataUnsafe.user.id;
     }
+
+    // ПК — localhost = ты (тестовый пользователь)
+    if (!id && (location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+      id = 9999;
+    }
+
+    setTelegramId(id);
   }, []);
 
   return (
