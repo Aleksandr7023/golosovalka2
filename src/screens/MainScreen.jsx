@@ -26,37 +26,21 @@ export default function MainScreen() {
       source = 'Mini App (смартфон)';
     }
 
-    // 2. Telegram Web (ПК) — из URL хэша (#tgWebAppData=...)
-    if (!id && window.location.hash.includes('tgWebAppData')) {
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const webAppData = hashParams.get('tgWebAppData');
-      if (webAppData) {
-        try {
-          const decoded = decodeURIComponent(webAppData);
-          const parsed = JSON.parse(decoded);
-          id = parsed.user?.id || null;
-          source = 'Telegram Web (ПК, URL hash)';
-        } catch (e) {
-          console.error('Ошибка парсинга tgWebAppData', e);
-        }
-      }
-    }
-
-    // 3. Резерв — localStorage (Telegram Web)
+    // 2. Telegram Web — из localStorage.user_auth (рабочий способ)
     if (!id) {
-      const stored = localStorage.getItem('user_auth') || localStorage.getItem('tg_user_auth');
+      const stored = localStorage.getItem('user_auth');
       if (stored) {
         try {
           const userData = JSON.parse(stored);
-          id = userData.id || null;
+          id = userData.id; // ← вот он, прямой id
           source = 'Telegram Web (localStorage)';
         } catch (e) {
-          console.error('Ошибка парсинга localStorage', e);
+          console.error('Ошибка парсинга user_auth', e);
         }
       }
     }
 
-    // 4. Локальный тест (ПК, npm run dev)
+    // 3. Локальный тест
     if (!id && (location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
       id = 9999;
       source = 'Тестовый режим (локально)';
