@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import PollCard from '../components/PollCard.jsx';
 import LoadingSpinner from '../components/LoadingSpinner.jsx';
-import { fetchPolls } from '../utils/api.js';
+import { fetchPolls, createPoll } from '../utils/api.js';
 import '../styles/mainScreen.css';
 
 export default function MainScreen() {
@@ -15,42 +15,55 @@ export default function MainScreen() {
   const [idMessage, setIdMessage] = useState('');
   const sentinel = useRef(null);
 
-  // Определение Telegram ID при запуске
+  // Определение Telegram ID — полный и рабочий вариант
   useEffect(() => {
     let id = null;
-    let source = '';
+    let source = 'не определён';
 
-    // 1. Смартфон — Mini App
+    // 1. Mini App (смартфон внутри Telegram)
     if (window.Telegram?.WebApp?.initDataUnsafe?.user?.id) {
       id = window.Telegram.WebApp.initDataUnsafe.user.id;
-      source = 'Telegram Mini App (смартфон)';
-    } else {
-      // 2. ПК — Telegram Web (localStorage)
-      const stored = localStorage.getItem('user_auth') || localStorage.getItem('tg_user_auth');
-      if (stored) {
+      source = 'Mini App (смартфон)';
+    }
+
+    // 2. Telegram Web — из URL (tgWebAppData)
+    if (!id) {
+      const params = new URLSearchParams(window.location.search);
+      const webAppData = params.get('tgWebAppData');
+      if (webAppData) {
         try {
-          const userData = JSON.parse(stored);
-          id = userData.id;
-          source = 'Telegram Web (ПК)';
+          const decoded = decodeURIComponent(webAppData);
+          const parsed = JSON.parse(decoded);
+          id = parsed.user?.id || null;
+          source = 'Telegram Web (URL параметр)';
         } catch (e) {
-          // Ошибка парсинга — игнорируем
+          console.error('Ошибка парсинга tgWebAppData', e);
         }
       }
     }
 
-    // 3. Тестовый режим (локальный запуск без Telegram)
+    // 3. Telegram Web — из localStorage (резерв)
+    if (!id) {
+      const stored = localStorage.getItem('user_auth') || localStorage.getItem('tg_user_auth');
+      if (stored) {
+        try {
+          const userData = JSON.parse(stored);
+          id = userData.id || null;
+          source = 'Telegram Web (localStorage)';
+        } catch (e) {
+          console.error('Ошибка парсинга localStorage', e);
+        }
+      }
+    }
+
+    // 4. Локальный тест (ПК, npm run dev)
     if (!id && (location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
       id = 9999;
       source = 'Тестовый режим (локальный запуск)';
     }
 
-    if (id) {
-      setIdMessage(`Ваш Telegram ID: ${id} (${source})`);
-    } else {
-      setIdMessage('Telegram ID не определён (режим просмотра)');
-    }
-
     setTelegramId(id);
+    setIdMessage(id ? `Ваш Telegram ID: ${id} (${source})` : 'Telegram ID не определён (режим просмотра)');
   }, []);
 
   const loadPolls = async (pageNum = 1, append = false) => {
