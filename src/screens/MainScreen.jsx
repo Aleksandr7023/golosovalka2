@@ -26,7 +26,28 @@ export default function MainScreen() {
       source = 'Mini App (смартфон)';
     }
 
-    // 2. Telegram Web (ПК и смартфон) — из localStorage.user_auth
+    // 2. Telegram Web — из tgWebAppData в URL hash
+    if (!id && window.location.hash) {
+      const hash = window.location.hash.substring(1);
+      const params = new URLSearchParams(hash);
+      const webAppData = params.get('tgWebAppData');
+      if (webAppData) {
+        try {
+          const webParams = new URLSearchParams(webAppData);
+          const userEncoded = webParams.get('user');
+          if (userEncoded) {
+            const userJson = decodeURIComponent(userEncoded);
+            const user = JSON.parse(userJson);
+            id = user.id;
+            source = 'Telegram Web (URL hash)';
+          }
+        } catch (e) {
+          console.error('Ошибка парсинга tgWebAppData', e);
+        }
+      }
+    }
+
+    // 3. Резерв — localStorage.user_auth
     if (!id) {
       const stored = localStorage.getItem('user_auth');
       if (stored) {
@@ -35,12 +56,12 @@ export default function MainScreen() {
           id = userData.id;
           source = 'Telegram Web (localStorage)';
         } catch (e) {
-          console.error('Ошибка парсинга user_auth', e);
+          console.error('Ошибка парсинга localStorage', e);
         }
       }
     }
 
-    // 3. Локальный тест (ПК)
+    // 4. Локальный тест
     if (!id && (location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
       id = 9999;
       source = 'Тестовый режим (локально)';
