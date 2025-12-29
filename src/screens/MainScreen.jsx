@@ -15,7 +15,6 @@ export default function MainScreen() {
   const [idMessage, setIdMessage] = useState('');
   const sentinel = useRef(null);
 
-  // Полное определение Telegram ID
   useEffect(() => {
     let id = null;
     let source = 'не определён';
@@ -26,23 +25,24 @@ export default function MainScreen() {
       source = 'Mini App (смартфон)';
     }
 
-    // 2. Telegram Web — из tgWebAppData в URL (основной способ на web.telegram.org)
-    if (!id) {
-      const params = new URLSearchParams(window.location.hash.substring(1)); // #tgWebAppData=...
+    // 2. Telegram Web — из хэша URL (#tgWebAppData=...)
+    if (!id && window.location.hash) {
+      const hash = window.location.hash.substring(1); // убираем #
+      const params = new URLSearchParams(hash);
       const webAppData = params.get('tgWebAppData');
       if (webAppData) {
         try {
           const decoded = decodeURIComponent(webAppData);
           const parsed = JSON.parse(decoded);
           id = parsed.user?.id || null;
-          source = 'Telegram Web (URL hash)';
+          source = 'Telegram Web (хэш URL)';
         } catch (e) {
-          console.error('Ошибка парсинга tgWebAppData из hash', e);
+          console.error('Ошибка парсинга tgWebAppData', e);
         }
       }
     }
 
-    // 3. Telegram Web — из localStorage (резерв)
+    // 3. Резерв — localStorage
     if (!id) {
       const stored = localStorage.getItem('user_auth') || localStorage.getItem('tg_user_auth');
       if (stored) {
