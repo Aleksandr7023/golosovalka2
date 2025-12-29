@@ -1,4 +1,4 @@
-//MainScreen.jsx
+// MainScreen.jsx
 import { useState, useEffect, useRef } from 'react';
 import PollCard from '../components/PollCard.jsx';
 import LoadingSpinner from '../components/LoadingSpinner.jsx';
@@ -11,7 +11,47 @@ export default function MainScreen() {
   const [error, setError] = useState('');
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [telegramId, setTelegramId] = useState(null);
+  const [idMessage, setIdMessage] = useState('');
   const sentinel = useRef(null);
+
+  // Определение Telegram ID при запуске
+  useEffect(() => {
+    let id = null;
+    let source = '';
+
+    // 1. Смартфон — Mini App
+    if (window.Telegram?.WebApp?.initDataUnsafe?.user?.id) {
+      id = window.Telegram.WebApp.initDataUnsafe.user.id;
+      source = 'Telegram Mini App (смартфон)';
+    } else {
+      // 2. ПК — Telegram Web (localStorage)
+      const stored = localStorage.getItem('user_auth') || localStorage.getItem('tg_user_auth');
+      if (stored) {
+        try {
+          const userData = JSON.parse(stored);
+          id = userData.id;
+          source = 'Telegram Web (ПК)';
+        } catch (e) {
+          // Ошибка парсинга — игнорируем
+        }
+      }
+    }
+
+    // 3. Тестовый режим (локальный запуск без Telegram)
+    if (!id && (location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+      id = 9999;
+      source = 'Тестовый режим (локальный запуск)';
+    }
+
+    if (id) {
+      setIdMessage(`Ваш Telegram ID: ${id} (${source})`);
+    } else {
+      setIdMessage('Telegram ID не определён (режим просмотра)');
+    }
+
+    setTelegramId(id);
+  }, []);
 
   const loadPolls = async (pageNum = 1, append = false) => {
     setLoading(true);
@@ -64,7 +104,7 @@ export default function MainScreen() {
     if (!options) return;
 
     try {
-      await createPoll({ title, question, options });
+      await createPoll({ title, question, options, telegramId });
       loadPolls(1, false);
     } catch (e) {
       alert('Ошибка создания опроса');
@@ -82,6 +122,19 @@ export default function MainScreen() {
           + Новый
         </button>
       </header>
+
+      {idMessage && (
+        <div style={{
+          background: '#e3f2fd',
+          padding: '12px',
+          borderRadius: '8px',
+          margin: '10px 0',
+          fontSize: '14px',
+          color: '#1976d2'
+        }}>
+          {idMessage}
+        </div>
+      )}
 
       <section className="poll-list">
         {polls.map(poll => <PollCard key={poll.id} poll={poll} />)}
