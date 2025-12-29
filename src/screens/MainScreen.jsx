@@ -26,13 +26,13 @@ export default function MainScreen() {
       source = 'Mini App (смартфон)';
     }
 
-    // 2. Telegram Web — из localStorage.user_auth (рабочий способ)
+    // 2. Telegram Web (ПК и смартфон) — из localStorage.user_auth
     if (!id) {
       const stored = localStorage.getItem('user_auth');
       if (stored) {
         try {
           const userData = JSON.parse(stored);
-          id = userData.id; // ← вот он, прямой id
+          id = userData.id;
           source = 'Telegram Web (localStorage)';
         } catch (e) {
           console.error('Ошибка парсинга user_auth', e);
@@ -40,7 +40,7 @@ export default function MainScreen() {
       }
     }
 
-    // 3. Локальный тест
+    // 3. Локальный тест (ПК)
     if (!id && (location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
       id = 9999;
       source = 'Тестовый режим (локально)';
