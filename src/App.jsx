@@ -15,7 +15,7 @@ export default function App() {
   const [telegramId, setTelegramId] = useState(null);
   const navigate = useNavigate();
 
-  // Определение Telegram ID — один раз в App
+  // Определение Telegram ID — перенесено из MainScreen (полный и рабочий вариант)
   useEffect(() => {
     let id = null;
     let source = 'не определён';
