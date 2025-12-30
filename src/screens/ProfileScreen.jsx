@@ -36,7 +36,7 @@ export default function ProfileScreen() {
         location_id: data.location_id || null
       });
     } catch (e) {
-      // Если пользователь не найден — создаём пустые поля (сервер создаст при сохранении)
+      // Если не найден — оставляем пустые поля (сервер создаст при первом запросе)
       setUser({
         display_name: '',
         full_name: '',
@@ -67,6 +67,7 @@ export default function ProfileScreen() {
           full_name: user.full_name
         })
       });
+
       if (res.ok) {
         alert('Профиль сохранён');
       } else {
