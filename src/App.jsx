@@ -1,5 +1,5 @@
 // App.jsx
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; // ← React импортирован
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import MainScreen from './screens/MainScreen.jsx';
 import PollScreen from './screens/PollScreen.jsx';
@@ -15,7 +15,7 @@ export default function App() {
   const [telegramId, setTelegramId] = useState(null);
   const navigate = useNavigate();
 
-  // Определение Telegram ID — перенесено из MainScreen (полный и рабочий вариант)
+  // Определение Telegram ID — полный рабочий вариант
   useEffect(() => {
     let id = null;
     let source = 'не определён';
