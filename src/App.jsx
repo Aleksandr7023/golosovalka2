@@ -1,13 +1,15 @@
 // App.jsx
 import { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import MainScreen from './screens/MainScreen.jsx';
 import PollScreen from './screens/PollScreen.jsx';
 import CommentScreen from './screens/CommentScreen.jsx';
+import ProfileScreen from './screens/ProfileScreen.jsx';
 import { APP_VERSION, APP_NAME } from './utils/constants.js';
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className="app">
@@ -32,9 +34,20 @@ export default function App() {
           padding: '10px',
           boxShadow: '0 4px 12px rgba(0,0,0,.1)',
           zIndex: 10,
-          minWidth: '160px'
+          minWidth: '180px'
         }}>
-          <p style={{ margin: '8px 0', fontSize: '14px' }}>Версия: {APP_VERSION}</p>
+          <button 
+            onClick={() => navigate('/profile')}
+            style={{ width: '100%', padding: '12px', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '15px' }}
+          >
+            Мой профиль
+          </button>
+          <button 
+            onClick={() => alert(`Голосовалка\nВерсия: ${APP_VERSION}\n© 2025`)}
+            style={{ width: '100%', padding: '12px', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '15px' }}
+          >
+            О программе
+          </button>
         </div>
       )}
 
@@ -43,6 +56,7 @@ export default function App() {
           <Route path="/" element={<MainScreen />} />
           <Route path="/poll/:id" element={<PollScreen />} />
           <Route path="/comment/:id" element={<CommentScreen />} />
+          <Route path="/profile" element={<ProfileScreen />} />
         </Routes>
       </main>
     </div>
