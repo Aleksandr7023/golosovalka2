@@ -17,6 +17,7 @@ export default function ProfileScreen() {
 
   const loadUser = async () => {
     if (!telegramId) {
+      alert('Telegram ID не определён');
       setLoading(false);
       return;
     }
@@ -35,6 +36,7 @@ export default function ProfileScreen() {
         location_id: data.location_id || null
       });
     } catch (e) {
+      // Если пользователь не найден — создаём пустые поля (сервер создаст при сохранении)
       setUser({
         display_name: '',
         full_name: '',
@@ -81,7 +83,7 @@ export default function ProfileScreen() {
     <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
       <h1 style={{ fontSize: '28px', color: '#0969da' }}>Мой профиль</h1>
 
-      <p style={{ fontSize: '16px', margin: '20px 0', color: '#333' }}>
+      <p style={{ fontSize: '16px', margin: '20px 0' }}>
         Ваш Telegram ID: <strong>{telegramId || 'не определён'}</strong>
       </p>
 
