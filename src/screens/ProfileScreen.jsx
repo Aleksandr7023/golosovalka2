@@ -10,7 +10,6 @@ export default function ProfileScreen() {
   const { telegramId } = useContext(UserContext);
   const [user, setUser] = useState({
     display_name: '',
-    full_name: '',
     location_id: null
   });
   const [loading, setLoading] = useState(true);
@@ -47,7 +46,6 @@ export default function ProfileScreen() {
 
       setUser({
         display_name: data.display_name || '',
-        full_name: data.full_name || '',
         location_id: data.location_id || null
       });
     } catch (e) {
@@ -55,7 +53,6 @@ export default function ProfileScreen() {
       // Если пользователь не найден — оставляем пустые поля
       setUser({
         display_name: '',
-        full_name: '',
         location_id: null
       });
     } finally {
@@ -79,8 +76,7 @@ export default function ProfileScreen() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           telegram_id: telegramId,
-          display_name: user.display_name,
-          full_name: user.full_name
+          display_name: user.display_name
         })
       });
 
@@ -110,16 +106,6 @@ export default function ProfileScreen() {
           type="text"
           value={user.display_name}
           onChange={(e) => setUser({ ...user, display_name: e.target.value })}
-          style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #d0d7de' }}
-        />
-      </label>
-
-      <label style={{ display: 'block', margin: '20px 0' }}>
-        ФИО:<br />
-        <input
-          type="text"
-          value={user.full_name}
-          onChange={(e) => setUser({ ...user, full_name: e.target.value })}
           style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #d0d7de' }}
         />
       </label>
