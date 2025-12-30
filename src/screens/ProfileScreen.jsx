@@ -1,23 +1,47 @@
 // ProfileScreen.jsx
 import { useState, useEffect } from 'react';
-import LoadingSpinner from '../components/LoadingSpinner.jsx';
 import { useContext } from 'react';
-import { UserContext } from '../App.jsx'; // ← импортируем контекст
+import LoadingSpinner from '../components/LoadingSpinner.jsx';
+import { UserContext } from '../App.jsx';
 
 const API_BASE = 'https://the8th.ru/api';
 
 export default function ProfileScreen() {
-  const { telegramId } = useContext(UserContext); // ← берём telegramId из контекста
-  const [user, setUser] = useState(null);
+  const { telegramId } = useContext(UserContext);
+  const [user, setUser] = useState({
+    display_name: '',
+    full_name: '',
+    location_id: null
+  });
   const [loading, setLoading] = useState(true);
 
+  // Загрузка профиля с передачей telegram_id
   const loadUser = async () => {
+    if (!telegramId) {
+      setLoading(false);
+      return;
+    }
+
     try {
-      const res = await fetch(`${API_BASE}/get_user.php`);
+      const res = await fetch(`${API_BASE}/get_user.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ telegram_id: telegramId })
+      });
+      if (!res.ok) throw new Error();
       const data = await res.json();
-      setUser(data);
+      setUser({
+        display_name: data.display_name || '',
+        full_name: data.full_name || '',
+        location_id: data.location_id || null
+      });
     } catch (e) {
-      alert('Ошибка загрузки профиля');
+      // Если пользователь не найден — оставляем пустые поля (сервер создаст при сохранении)
+      setUser({
+        display_name: '',
+        full_name: '',
+        location_id: null
+      });
     } finally {
       setLoading(false);
     }
@@ -25,19 +49,25 @@ export default function ProfileScreen() {
 
   useEffect(() => {
     loadUser();
-  }, []);
+  }, [telegramId]);
 
   const handleSave = async () => {
+    if (!telegramId) {
+      alert('Telegram ID не определён');
+      return;
+    }
+
     try {
       const res = await fetch(`${API_BASE}/update_user.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          telegram_id: telegramId, // ← передаём ID
+          telegram_id: telegramId,
           display_name: user.display_name,
           full_name: user.full_name
         })
       });
+
       if (res.ok) {
         alert('Профиль сохранён');
       } else {
@@ -51,24 +81,49 @@ export default function ProfileScreen() {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div style={{padding: '20px', maxWidth: '600px', margin: '0 auto'}}>
-      <h1>Мой профиль</h1>
-      <label>
-        Ник:<br/>
-        <input 
-          value={user?.display_name || ''} 
-          onChange={e => setUser({...user, display_name: e.target.value})} 
+    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
+      <h1 style={{ fontSize: '28px', color: '#0969da' }}>Мой профиль</h1>
+
+      <label style={{ display: 'block', margin: '20px 0' }}>
+        Ник:<br />
+        <input
+          type="text"
+          value={user.display_name}
+          onChange={(e) => setUser({ ...user, display_name: e.target.value })}
+          style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #d0d7de' }}
         />
-      </label><br/><br/>
-      <label>
-        ФИО:<br/>
-        <input 
-          value={user?.full_name || ''} 
-          onChange={e => setUser({...user, full_name: e.target.value})} 
+      </label>
+
+      <label style={{ display: 'block', margin: '20px 0' }}>
+        ФИО:<br />
+        <input
+          type="text"
+          value={user.full_name}
+          onChange={(e) => setUser({ ...user, full_name: e.target.value })}
+          style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #d0d7de' }}
         />
-      </label><br/><br/>
-      <button onClick={handleSave}>Сохранить</button>
-      <a href="/" style={{display: 'block', marginTop: '40px'}}>← Назад</a>
+      </label>
+
+      <button
+        onClick={handleSave}
+        style={{
+          padding: '15px 30px',
+          background: '#2ea44f',
+          color: 'white',
+          border: 'none',
+          borderRadius: '8px',
+          cursor: 'pointer'
+        }}
+      >
+        Сохранить
+      </button>
+
+      <a
+        href="/"
+        style={{ display: 'block', marginTop: '40px', color: '#0969da', fontSize: '18px' }}
+      >
+        ← Назад
+      </a>
     </div>
   );
 }
