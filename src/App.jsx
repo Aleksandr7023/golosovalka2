@@ -1,5 +1,5 @@
 // App.jsx
-import React, { useState, useEffect } from 'react'; // ← React импортирован
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import MainScreen from './screens/MainScreen.jsx';
 import PollScreen from './screens/PollScreen.jsx';
@@ -97,13 +97,19 @@ export default function App() {
             minWidth: '180px'
           }}>
             <button 
-              onClick={() => navigate('/profile')}
+              onClick={() => {
+                setMenuOpen(false); // ← закрываем меню
+                navigate('/profile');
+              }}
               style={{ width: '100%', padding: '12px', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '15px' }}
             >
               Мой профиль
             </button>
             <button 
-              onClick={() => alert(`Голосовалка\nВерсия: ${APP_VERSION}\n© 2025`)}
+              onClick={() => {
+                setMenuOpen(false); // ← закрываем меню
+                alert(`Голосовалка\nВерсия: ${APP_VERSION}\n© 2025`);
+              }}
               style={{ width: '100%', padding: '12px', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '15px' }}
             >
               О программе

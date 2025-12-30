@@ -15,7 +15,6 @@ export default function ProfileScreen() {
   });
   const [loading, setLoading] = useState(true);
 
-  // Загрузка профиля с передачей telegram_id
   const loadUser = async () => {
     if (!telegramId) {
       setLoading(false);
@@ -36,7 +35,6 @@ export default function ProfileScreen() {
         location_id: data.location_id || null
       });
     } catch (e) {
-      // Если пользователь не найден — оставляем пустые поля (сервер создаст при сохранении)
       setUser({
         display_name: '',
         full_name: '',
@@ -67,7 +65,6 @@ export default function ProfileScreen() {
           full_name: user.full_name
         })
       });
-
       if (res.ok) {
         alert('Профиль сохранён');
       } else {
@@ -83,6 +80,10 @@ export default function ProfileScreen() {
   return (
     <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
       <h1 style={{ fontSize: '28px', color: '#0969da' }}>Мой профиль</h1>
+
+      <p style={{ fontSize: '16px', margin: '20px 0', color: '#333' }}>
+        Ваш Telegram ID: <strong>{telegramId || 'не определён'}</strong>
+      </p>
 
       <label style={{ display: 'block', margin: '20px 0' }}>
         Ник:<br />
