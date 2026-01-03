@@ -1,6 +1,6 @@
 // App.jsx
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'; // ← добавлен useLocation
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import MainScreen from './screens/MainScreen.jsx';
 import PollScreen from './screens/PollScreen.jsx';
 import CommentScreen from './screens/CommentScreen.jsx';
@@ -14,40 +14,37 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [telegramId, setTelegramId] = useState(null);
   const navigate = useNavigate();
-  const location = useLocation(); // ← отслеживаем изменения URL
 
-  // Определение Telegram ID — срабатывает при изменении URL (чтобы не терялся при переходах)
+  // Определение Telegram ID — исправленный полный вариант
   useEffect(() => {
     let id = null;
 
-    // 1. Mini App (смартфон)
+    // 1. Mini App (смартфон) — основной способ
     if (window.Telegram?.WebApp?.initDataUnsafe?.user?.id) {
       id = window.Telegram.WebApp.initDataUnsafe.user.id;
     }
 
-    // 2. Telegram Web — из tgWebAppData в URL hash
+    // 2. Telegram Web (ПК) — из URL хэша (#tgWebAppData=...)
     if (!id && window.location.hash) {
-      const hash = window.location.hash.substring(1);
-      const params = new URLSearchParams(hash);
-      const webAppData = params.get('tgWebAppData');
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const webAppData = hashParams.get('tgWebAppData');
       if (webAppData) {
         try {
-          const webParams = new URLSearchParams(webAppData);
-          const userEncoded = webParams.get('user');
-          if (userEncoded) {
-            const userJson = decodeURIComponent(userEncoded);
-            const user = JSON.parse(userJson);
+          const decoded = decodeURIComponent(webAppData);
+          const userStr = new URLSearchParams(decoded).get('user');
+          if (userStr) {
+            const user = JSON.parse(decodeURIComponent(userStr));
             id = user.id;
           }
         } catch (e) {
-          console.error('Ошибка парсинга tgWebAppData', e);
+          console.error('Ошибка парсинга webAppData из хэша', e);
         }
       }
     }
 
-    // 3. Резерв — localStorage.user_auth
+    // 3. Резерв — localStorage (Telegram Web на ПК)
     if (!id) {
-      const stored = localStorage.getItem('user_auth');
+      const stored = localStorage.getItem('user_auth') || localStorage.getItem('tg_user_auth');
       if (stored) {
         try {
           const userData = JSON.parse(stored);
@@ -58,13 +55,13 @@ export default function App() {
       }
     }
 
-    // 4. Локальный тест
+    // 4. Тестовый режим для localhost (ПК, npm run dev)
     if (!id && (location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
       id = 9999;
     }
 
     setTelegramId(id);
-  }, [location.pathname, location.hash]); // ← срабатывает при любом изменении URL
+  }, []);
 
   return (
     <UserContext.Provider value={{ telegramId }}>
@@ -94,7 +91,7 @@ export default function App() {
           }}>
             <button 
               onClick={() => {
-                setMenuOpen(false); // ← закрываем меню
+                setMenuOpen(false);
                 navigate('/profile');
               }}
               style={{ width: '100%', padding: '12px', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '15px' }}
@@ -103,7 +100,7 @@ export default function App() {
             </button>
             <button 
               onClick={() => {
-                setMenuOpen(false); // ← закрываем меню
+                setMenuOpen(false);
                 alert(`Голосовалка\nВерсия: ${APP_VERSION}\n© 2025`);
               }}
               style={{ width: '100%', padding: '12px', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '15px' }}
