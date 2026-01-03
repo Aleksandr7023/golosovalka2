@@ -16,6 +16,7 @@ export default function App() {
   const [telegramUsername, setTelegramUsername] = useState('');
   const navigate = useNavigate();
 
+  // Определение Telegram ID и Username — один раз при монтировании
   useEffect(() => {
     let id = null;
     let username = '';
@@ -56,9 +57,7 @@ export default function App() {
           const userData = JSON.parse(stored);
           id = userData.id;
           username = userData.username || '';
-        } catch (e) {
-          console.error('Ошибка парсинга localStorage', e);
-        }
+        } catch (e) {}
       }
     }
 
@@ -68,9 +67,29 @@ export default function App() {
       username = 'test_user';
     }
 
+    // Сохраняем в localStorage
+    if (id) {
+      localStorage.setItem('app_telegram_id', id);
+    }
+    if (username) {
+      localStorage.setItem('app_telegram_username', username);
+    }
+
     setTelegramId(id);
     setTelegramUsername(username);
   }, []);
+
+  // Резервное восстановление из localStorage (если state сбросился)
+  useEffect(() => {
+    if (telegramId === null) {
+      const savedId = localStorage.getItem('app_telegram_id');
+      if (savedId) setTelegramId(savedId);
+    }
+    if (telegramUsername === '') {
+      const savedUsername = localStorage.getItem('app_telegram_username');
+      if (savedUsername) setTelegramUsername(savedUsername);
+    }
+  }, [telegramId, telegramUsername]);
 
   return (
     <UserContext.Provider value={{ telegramId, telegramUsername }}>
