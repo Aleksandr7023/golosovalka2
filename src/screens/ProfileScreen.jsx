@@ -10,21 +10,17 @@ export default function ProfileScreen() {
   const { telegramId } = useContext(UserContext);
   const [user, setUser] = useState({
     display_name: '',
+    full_name: '',
     location_id: null
   });
   const [loading, setLoading] = useState(true);
 
   const loadUser = async () => {
-    console.log('loadUser called, telegramId:', telegramId);
-
     if (!telegramId) {
-      console.log('No telegramId — abort');
       alert('Telegram ID не определён');
       setLoading(false);
       return;
     }
-
-    console.log('Sending POST to get_user.php with telegram_id:', telegramId);
 
     try {
       const res = await fetch(`${API_BASE}/get_user.php`, {
@@ -32,27 +28,18 @@ export default function ProfileScreen() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ telegram_id: telegramId })
       });
-
-      console.log('Response status:', res.status);
-
-      if (!res.ok) {
-        const text = await res.text();
-        console.log('Response body:', text);
-        throw new Error('Server error');
-      }
-
+      if (!res.ok) throw new Error('Ошибка сервера');
       const data = await res.json();
-      console.log('User data:', data);
-
       setUser({
         display_name: data.display_name || '',
+        full_name: data.full_name || '',
         location_id: data.location_id || null
       });
     } catch (e) {
-      console.error('Error loading user', e);
-      // Если пользователь не найден — оставляем пустые поля
+      // Оставляем пустые поля для нового пользователя
       setUser({
         display_name: '',
+        full_name: '',
         location_id: null
       });
     } finally {
@@ -76,10 +63,10 @@ export default function ProfileScreen() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           telegram_id: telegramId,
-          display_name: user.display_name
+          display_name: user.display_name,
+          full_name: user.full_name
         })
       });
-
       if (res.ok) {
         alert('Профиль сохранён');
       } else {
@@ -106,6 +93,16 @@ export default function ProfileScreen() {
           type="text"
           value={user.display_name}
           onChange={(e) => setUser({ ...user, display_name: e.target.value })}
+          style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #d0d7de' }}
+        />
+      </label>
+
+      <label style={{ display: 'block', margin: '20px 0' }}>
+        ФИО:<br />
+        <input
+          type="text"
+          value={user.full_name}
+          onChange={(e) => setUser({ ...user, full_name: e.target.value })}
           style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #d0d7de' }}
         />
       </label>
