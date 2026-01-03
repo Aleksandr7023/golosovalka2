@@ -10,8 +10,9 @@ export default function ProfileScreen() {
   const { telegramId } = useContext(UserContext);
   const [user, setUser] = useState({
     display_name: '',
-    full_name: '',
-    location_id: null
+    bio: '',
+    preferred_lang: 'ru',
+    show_profile: 1
   });
   const [loading, setLoading] = useState(true);
 
@@ -28,19 +29,21 @@ export default function ProfileScreen() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ telegram_id: telegramId })
       });
-      if (!res.ok) throw new Error('Ошибка сервера');
+      if (!res.ok) throw new Error();
       const data = await res.json();
       setUser({
         display_name: data.display_name || '',
-        full_name: data.full_name || '',
-        location_id: data.location_id || null
+        bio: data.bio || '',
+        preferred_lang: data.preferred_lang || 'ru',
+        show_profile: data.show_profile ?? 1
       });
     } catch (e) {
-      // Оставляем пустые поля для нового пользователя
+      // Новый пользователь — пустые поля
       setUser({
         display_name: '',
-        full_name: '',
-        location_id: null
+        bio: '',
+        preferred_lang: 'ru',
+        show_profile: 1
       });
     } finally {
       setLoading(false);
@@ -64,7 +67,9 @@ export default function ProfileScreen() {
         body: JSON.stringify({
           telegram_id: telegramId,
           display_name: user.display_name,
-          full_name: user.full_name
+          bio: user.bio,
+          preferred_lang: user.preferred_lang,
+          show_profile: user.show_profile
         })
       });
       if (res.ok) {
@@ -98,12 +103,11 @@ export default function ProfileScreen() {
       </label>
 
       <label style={{ display: 'block', margin: '20px 0' }}>
-        ФИО:<br />
-        <input
-          type="text"
-          value={user.full_name}
-          onChange={(e) => setUser({ ...user, full_name: e.target.value })}
-          style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #d0d7de' }}
+        О себе (био):<br />
+        <textarea
+          value={user.bio}
+          onChange={(e) => setUser({ ...user, bio: e.target.value })}
+          style={{ width: '100%', height: '150px', padding: '10px', borderRadius: '8px', border: '1px solid #d0d7de' }}
         />
       </label>
 
