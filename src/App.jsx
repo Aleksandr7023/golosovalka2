@@ -1,6 +1,6 @@
 // App.jsx
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'; // ← добавлен useLocation
 import MainScreen from './screens/MainScreen.jsx';
 import PollScreen from './screens/PollScreen.jsx';
 import CommentScreen from './screens/CommentScreen.jsx';
@@ -14,16 +14,15 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [telegramId, setTelegramId] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation(); // ← отслеживаем изменения URL
 
-  // Определение Telegram ID — полный рабочий вариант
+  // Определение Telegram ID — срабатывает при изменении URL (чтобы не терялся при переходах)
   useEffect(() => {
     let id = null;
-    let source = 'не определён';
 
     // 1. Mini App (смартфон)
     if (window.Telegram?.WebApp?.initDataUnsafe?.user?.id) {
       id = window.Telegram.WebApp.initDataUnsafe.user.id;
-      source = 'Mini App (смартфон)';
     }
 
     // 2. Telegram Web — из tgWebAppData в URL hash
@@ -39,7 +38,6 @@ export default function App() {
             const userJson = decodeURIComponent(userEncoded);
             const user = JSON.parse(userJson);
             id = user.id;
-            source = 'Telegram Web (URL hash)';
           }
         } catch (e) {
           console.error('Ошибка парсинга tgWebAppData', e);
@@ -54,7 +52,6 @@ export default function App() {
         try {
           const userData = JSON.parse(stored);
           id = userData.id;
-          source = 'Telegram Web (localStorage)';
         } catch (e) {
           console.error('Ошибка парсинга localStorage', e);
         }
@@ -64,11 +61,10 @@ export default function App() {
     // 4. Локальный тест
     if (!id && (location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
       id = 9999;
-      source = 'Тестовый режим (локально)';
     }
 
     setTelegramId(id);
-  }, []);
+  }, [location.pathname, location.hash]); // ← срабатывает при любом изменении URL
 
   return (
     <UserContext.Provider value={{ telegramId }}>
