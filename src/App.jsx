@@ -7,21 +7,24 @@ import CommentScreen from './screens/CommentScreen.jsx';
 import ProfileScreen from './screens/ProfileScreen.jsx';
 import { APP_VERSION, APP_NAME } from './utils/constants.js';
 
-// Контекст для передачи telegramId
-export const UserContext = React.createContext(null);
+// Контекст для передачи telegramId и telegramUsername
+export const UserContext = React.createContext({ telegramId: null, telegramUsername: '' });
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [telegramId, setTelegramId] = useState(null);
+  const [telegramUsername, setTelegramUsername] = useState('');
   const navigate = useNavigate();
 
-  // Определение Telegram ID — один раз при монтировании
   useEffect(() => {
     let id = null;
+    let username = '';
 
     // 1. Mini App (смартфон)
-    if (window.Telegram?.WebApp?.initDataUnsafe?.user?.id) {
-      id = window.Telegram.WebApp.initDataUnsafe.user.id;
+    if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
+      const user = window.Telegram.WebApp.initDataUnsafe.user;
+      id = user.id;
+      username = user.username || '';
     }
 
     // 2. Telegram Web — из tgWebAppData в URL hash
@@ -37,6 +40,7 @@ export default function App() {
             const userJson = decodeURIComponent(userEncoded);
             const user = JSON.parse(userJson);
             id = user.id;
+            username = user.username || '';
           }
         } catch (e) {
           console.error('Ошибка парсинга tgWebAppData', e);
@@ -51,35 +55,25 @@ export default function App() {
         try {
           const userData = JSON.parse(stored);
           id = userData.id;
-        } catch (e) {}
+          username = userData.username || '';
+        } catch (e) {
+          console.error('Ошибка парсинга localStorage', e);
+        }
       }
     }
 
     // 4. Локальный тест
     if (!id && (location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
       id = 9999;
-    }
-
-    // Сохраняем в localStorage — чтобы не потерять при неожиданных перезагрузках/кэше
-    if (id) {
-      localStorage.setItem('app_telegram_id', id);
+      username = 'test_user';
     }
 
     setTelegramId(id);
-  }, []); // один раз при монтировании
-
-  // Если ID потерялся (редкий случай) — подтягиваем из localStorage
-  useEffect(() => {
-    if (telegramId === null) {
-      const saved = localStorage.getItem('app_telegram_id');
-      if (saved) {
-        setTelegramId(saved);
-      }
-    }
-  }, [telegramId]);
+    setTelegramUsername(username);
+  }, []);
 
   return (
-    <UserContext.Provider value={{ telegramId }}>
+    <UserContext.Provider value={{ telegramId, telegramUsername }}>
       <div className="app">
         <header style={{ padding: '20px', background: 'white', boxShadow: '0 2px 8px rgba(0,0,0,.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h1 style={{ margin: 0, fontSize: '24px', color: '#0969da' }}>{APP_NAME}</h1>

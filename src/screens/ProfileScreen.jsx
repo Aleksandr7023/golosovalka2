@@ -7,7 +7,7 @@ import { UserContext } from '../App.jsx';
 const API_BASE = 'https://the8th.ru/api';
 
 export default function ProfileScreen() {
-  const { telegramId } = useContext(UserContext);
+  const { telegramId, telegramUsername } = useContext(UserContext);
   const [user, setUser] = useState({
     display_name: '',
     bio: ''
@@ -27,7 +27,7 @@ export default function ProfileScreen() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ telegram_id: telegramId })
       });
-      if (!res.ok) throw new Error('Ошибка сервера');
+      if (!res.ok) throw new Error();
       const data = await res.json();
       setUser({
         display_name: data.display_name || '',
@@ -81,6 +81,10 @@ export default function ProfileScreen() {
 
       <p style={{ fontSize: '16px', margin: '20px 0' }}>
         Ваш Telegram ID: <strong>{telegramId || 'не определён'}</strong>
+      </p>
+
+      <p style={{ fontSize: '16px', marginBottom: '20px' }}>
+        Ваш Telegram ник: <strong>{telegramUsername || 'не указан'}</strong>
       </p>
 
       <label style={{ display: 'block', margin: '20px 0' }}>
