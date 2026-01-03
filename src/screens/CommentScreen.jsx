@@ -1,17 +1,21 @@
-// src/screens/CommentScreen.jsx
+// CommentScreen.jsx
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom'; // Добавлен useLocation для state
 import LoadingSpinner from '../components/LoadingSpinner.jsx';
+import { UserContext } from '../App.jsx'; // Добавлен контекст для telegramId
 
 const API_BASE = 'https://the8th.ru/api';
 
 export default function CommentScreen() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { telegramId } = useContext(UserContext); // Получаем telegramId
+
   const [poll, setPoll] = useState(null);
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(true);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const selectedOption = location.state?.selectedOption ?? null; // Получаем selectedOption из state
 
   useEffect(() => {
     const fetchPoll = async () => {
@@ -30,17 +34,24 @@ export default function CommentScreen() {
   }, [id]);
 
   const handleSend = async () => {
-    if (!comment.trim()) return alert('Комментарий пуст');
     if (selectedOption === null) return alert('Выберите вариант');
 
-    await fetch(`${API_BASE}/vote.php?poll_id=${id}&option=${selectedOption}`);
-    if (comment.trim()) {
-      await fetch(`${API_BASE}/add_comment.php`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ poll_id: id, text: comment })
-      });
+    try {
+      // Голосование с telegram_id
+      await fetch(`${API_BASE}/vote.php?poll_id=${id}&option=${selectedOption}&telegram_id=${telegramId}`);
+
+      // Комментарий (если есть)
+      if (comment.trim()) {
+        await fetch(`${API_BASE}/add_comment.php`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ poll_id: id, text: comment, telegram_id: telegramId })
+        });
+      }
+    } catch (e) {
+      alert('Ошибка отправки');
     }
+
     navigate(`/poll/${id}`);
   };
 
