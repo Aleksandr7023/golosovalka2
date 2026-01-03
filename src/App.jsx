@@ -15,53 +15,68 @@ export default function App() {
   const [telegramId, setTelegramId] = useState(null);
   const navigate = useNavigate();
 
-  // Определение Telegram ID — исправленный полный вариант
+  // Определение Telegram ID — один раз при монтировании
   useEffect(() => {
     let id = null;
 
-    // 1. Mini App (смартфон) — основной способ
+    // 1. Mini App (смартфон)
     if (window.Telegram?.WebApp?.initDataUnsafe?.user?.id) {
       id = window.Telegram.WebApp.initDataUnsafe.user.id;
     }
 
-    // 2. Telegram Web (ПК) — из URL хэша (#tgWebAppData=...)
+    // 2. Telegram Web — из tgWebAppData в URL hash
     if (!id && window.location.hash) {
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const webAppData = hashParams.get('tgWebAppData');
+      const hash = window.location.hash.substring(1);
+      const params = new URLSearchParams(hash);
+      const webAppData = params.get('tgWebAppData');
       if (webAppData) {
         try {
-          const decoded = decodeURIComponent(webAppData);
-          const userStr = new URLSearchParams(decoded).get('user');
-          if (userStr) {
-            const user = JSON.parse(decodeURIComponent(userStr));
+          const webParams = new URLSearchParams(webAppData);
+          const userEncoded = webParams.get('user');
+          if (userEncoded) {
+            const userJson = decodeURIComponent(userEncoded);
+            const user = JSON.parse(userJson);
             id = user.id;
           }
         } catch (e) {
-          console.error('Ошибка парсинга webAppData из хэша', e);
+          console.error('Ошибка парсинга tgWebAppData', e);
         }
       }
     }
 
-    // 3. Резерв — localStorage (Telegram Web на ПК)
+    // 3. Резерв — localStorage.user_auth
     if (!id) {
-      const stored = localStorage.getItem('user_auth') || localStorage.getItem('tg_user_auth');
+      const stored = localStorage.getItem('user_auth');
       if (stored) {
         try {
           const userData = JSON.parse(stored);
           id = userData.id;
-        } catch (e) {
-          console.error('Ошибка парсинга localStorage', e);
-        }
+        } catch (e) {}
       }
     }
 
-    // 4. Тестовый режим для localhost (ПК, npm run dev)
+    // 4. Локальный тест
     if (!id && (location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
       id = 9999;
     }
 
+    // Сохраняем в localStorage — чтобы не потерять при неожиданных перезагрузках/кэше
+    if (id) {
+      localStorage.setItem('app_telegram_id', id);
+    }
+
     setTelegramId(id);
-  }, []);
+  }, []); // один раз при монтировании
+
+  // Если ID потерялся (редкий случай) — подтягиваем из localStorage
+  useEffect(() => {
+    if (telegramId === null) {
+      const saved = localStorage.getItem('app_telegram_id');
+      if (saved) {
+        setTelegramId(saved);
+      }
+    }
+  }, [telegramId]);
 
   return (
     <UserContext.Provider value={{ telegramId }}>
