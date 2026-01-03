@@ -10,9 +10,7 @@ export default function ProfileScreen() {
   const { telegramId } = useContext(UserContext);
   const [user, setUser] = useState({
     display_name: '',
-    bio: '',
-    preferred_lang: 'ru',
-    show_profile: 1
+    bio: ''
   });
   const [loading, setLoading] = useState(true);
 
@@ -29,21 +27,16 @@ export default function ProfileScreen() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ telegram_id: telegramId })
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) throw new Error('Ошибка сервера');
       const data = await res.json();
       setUser({
         display_name: data.display_name || '',
-        bio: data.bio || '',
-        preferred_lang: data.preferred_lang || 'ru',
-        show_profile: data.show_profile ?? 1
+        bio: data.bio || ''
       });
     } catch (e) {
-      // Новый пользователь — пустые поля
       setUser({
         display_name: '',
-        bio: '',
-        preferred_lang: 'ru',
-        show_profile: 1
+        bio: ''
       });
     } finally {
       setLoading(false);
@@ -67,9 +60,7 @@ export default function ProfileScreen() {
         body: JSON.stringify({
           telegram_id: telegramId,
           display_name: user.display_name,
-          bio: user.bio,
-          preferred_lang: user.preferred_lang,
-          show_profile: user.show_profile
+          bio: user.bio
         })
       });
       if (res.ok) {
