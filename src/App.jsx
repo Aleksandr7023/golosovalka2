@@ -129,7 +129,7 @@ export default function App() {
             <button 
               onClick={() => {
                 setMenuOpen(false);
-                alert(`Голосовалка\nВерсия: ${APP_VERSION}\n© 2025`);
+                alert(`Голосовалка\nВерсия: ${APP_VERSION}\n© 2026`);
               }}
               style={{ width: '100%', padding: '12px', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '15px' }}
             >

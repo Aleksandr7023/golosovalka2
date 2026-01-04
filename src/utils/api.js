@@ -1,3 +1,4 @@
+// utils/api.js
 const API_BASE = 'https://the8th.ru/api';
 
 export const fetchPolls = async (page = 1) => {
@@ -7,14 +8,15 @@ export const fetchPolls = async (page = 1) => {
   return Array.isArray(data) ? data : data.polls || [];
 };
 
-export const createPoll = async ({ title, question, options }) => {
+export const createPoll = async ({ title, question, options, telegramId }) => {
   const res = await fetch(`${API_BASE}/create_poll.php`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       title,
       question,
-      options: options.split('\n').map(s => s.trim()).filter(Boolean)
+      options,
+      telegram_id: telegramId // ← добавили
     })
   });
   return await res.json();
