@@ -67,10 +67,15 @@ export default function MainScreen() {
     if (!options) return;
 
     try {
-      await createPoll({ title, question, options, telegramId });
-      loadPolls(1, false);
+      const res = await createPoll({ title, question, options, telegramId });
+      if (res.success) {
+        alert('Опрос успешно создан как черновик!\nОжидайте одобрения и публикации.');
+        loadPolls(1, false);
+      } else {
+        alert('Ошибка создания опроса: ' + (res.error || 'неизвестно'));
+      }
     } catch (e) {
-      alert('Ошибка создания опроса');
+      alert('Ошибка сети при создании опроса');
     }
   };
 
