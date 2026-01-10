@@ -15,6 +15,7 @@ export default function App() {
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [telegramId, setTelegramId] = useState(null);
   const [telegramUsername, setTelegramUsername] = useState('');
+  const [scrollPosition, setScrollPosition] = useState(0); // ← добавлен state для скролла
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -92,9 +93,9 @@ export default function App() {
 
   const handleBack = () => {
     if (isPollScreen) {
-      navigate('/'); // ← с PollScreen всегда на главную
+      navigate('/');
     } else {
-      navigate(-1); // ← на других экранах — по истории
+      navigate(-1);
     }
   };
 
@@ -208,7 +209,7 @@ export default function App() {
 
         <main>
           <Routes>
-            <Route path="/" element={<MainScreen />} />
+            <Route path="/" element={<MainScreen scrollPosition={scrollPosition} setScrollPosition={setScrollPosition} />} /> {/* ← передаём */}
             <Route path="/poll/:id" element={<PollScreen />} />
             <Route path="/comment/:id" element={<CommentScreen />} />
             <Route path="/profile" element={<ProfileScreen />} />
