@@ -209,7 +209,7 @@ export default function App() {
 
         <main>
           <Routes>
-            <Route path="/" element={<MainScreen scrollPosition={scrollPosition} setScrollPosition={setScrollPosition} />} /> {/* ← передаём */}
+            <Route path="/" element={<MainScreen scrollPosition={scrollPosition} setScrollPosition={setScrollPosition} />} />
             <Route path="/poll/:id" element={<PollScreen />} />
             <Route path="/comment/:id" element={<CommentScreen />} />
             <Route path="/profile" element={<ProfileScreen />} />
